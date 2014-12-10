@@ -7,7 +7,7 @@
 static s6dns_constants_error_message_t const array[] =
 {
   { ENETUNREACH, "no available DNS server" },
-  { EBADMSG, "server did not understand query" },
+  { EILSEQ, "server did not understand query" },
   { EBUSY, "server failure" },
   { ENOENT, "no such domain" },
   { ENOTSUP, "not implemented in server" },

@@ -14,7 +14,7 @@ int s6dns_message_parse (s6dns_message_header_t *h, char const *packet, unsigned
   switch (h->rcode)
   {
     case 0 : break ;
-    case 1 : return (errno = EBADMSG, 0) ;
+    case 1 : return (errno = EILSEQ, 0) ;
     case 2 : return (errno = EBUSY, 0) ;
     case 3 : return (errno = ENOENT, 0) ;
     case 4 : return (errno = ENOTSUP, 0) ;
