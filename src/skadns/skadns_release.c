@@ -1,5 +1,10 @@
 /* ISC license. */
 
+/* OpenBSD sucks */
+#ifndef _BSD_SOURCE
+#define _BSD_SOURCE
+#endif
+
 #include <errno.h>
 #include <skalibs/uint16.h>
 #include <skalibs/alloc.h>
