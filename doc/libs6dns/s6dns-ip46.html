@@ -1,0 +1,69 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>s6-dns: the s6dns_ip46 library interface</title>
+    <meta name="Description" content="s6-dns: the s6dns_ip46 library interface" />
+    <meta name="Keywords" content="s6-dns dns s6dns_ip46 library libs6dns" />
+    <!-- <link rel="stylesheet" type="text/css" href="http://skarnet.org/default.css" /> -->
+  </head>
+<body>
+
+<p>
+<a href="index.html">libs6dns</a><br />
+<a href="../">s6-dns</a><br />
+<a href="http://skarnet.org/software/">Software</a><br />
+<a href="http://skarnet.org/">skarnet.org</a>
+</p>
+
+<h1> The <tt>s6dns_ip46</tt> library interface </h1>
+
+<p>
+ The following functions are declared in the <tt>s6-dns/s6dns-ip46.h</tt> header,
+and implemented as macros.
+</p>
+
+<h2> General information </h2>
+
+<p>
+ <tt>s6dns_ip46</tt> is the transport abstraction layer. It allows
+the functions declared in <a href="s6dns-engine.html">s6-dns/s6dns-engine.h</a>
+and <a href="s6dns-rci.html">s6-dns/s6dns-rci.h</a> to be transport-agnostic,
+i.e. to be able to work with both IPv4 and IPv6.
+</p>
+
+<p>
+ If the underlying <a href="http://skarnet.org/software/skalibs/">skalibs</a>
+has been compiled with
+ <a href="http://skarnet.org/software/skalibs/flags.html#noipv6">flag-noipv6</a>,
+or if it has detected at build time that the target host does not support
+IPv6, then the s6dns-ip46 abstraction will be totally transparent and use
+no resources at all.
+</p>
+
+<h2> Data structures </h2>
+
+<p>
+ A <tt>s6dns_ip46list_t</tt> structure holds a list of S6DNS_MAX_SERVERS (16)
+IPv4 <em>or</em> IPv6 addresses. Such a mixed list can be constructed, for
+instance, if the <tt>/etc/resolv.conf</tt> file contains both v4 and v6
+<tt>nameserver</tt> lines.
+</p>
+
+<h2> Functions </h2>
+
+<p>
+ If <em>list</em> is a <tt>s6dns_ip46list_t</tt> and <em>i</em> an integer
+between 0 and DNS_MAX_SERVERS-1, then
+</p>
+
+<ul>
+ <li> <code>s6dns_ip46list_is6(&amp;list, i)</code> is 1 if the <em>i</em>th
+address in <em>list</em> is IPv6 and 0 if it is IPv4. </li>
+ <li> <code>s6dns_ip46list_ip(&amp;list, i)</code> is a <tt>char *</tt> pointer to
+16 (if IPv6) or 4 (IPv4) bytes representing the <em>i</em>th address in
+<em>list</em>, in network byte order. </li>
+</ul>
+
+</body>
+</html>

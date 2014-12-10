@@ -1,0 +1,387 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>s6-dns: the s6dns_resolve library interface</title>
+    <meta name="Description" content="s6-dns: the s6dns_resolve library interface" />
+    <meta name="Keywords" content="s6-dns dns s6dns_resolve library libs6dns" />
+    <!-- <link rel="stylesheet" type="text/css" href="http://skarnet.org/default.css" /> -->
+  </head>
+<body>
+
+<p>
+<a href="index.html">libs6dns</a><br />
+<a href="../">s6-dns</a><br />
+<a href="http://skarnet.org/software/">Software</a><br />
+<a href="http://skarnet.org/">skarnet.org</a>
+</p>
+
+<h1> The <tt>s6dns_resolve</tt> library interface </h1>
+
+<p>
+ The following functions are declared in the <tt>s6-dns/s6dns-resolve.h</tt> header,
+and implemented in the <tt>libs6dns.a</tt> or <tt>libs6dns.so</tt> library.
+</p>
+
+<h2> General information </h2>
+
+<p>
+ <tt>s6dns_resolve</tt> provides functions and macros - mostly macros -
+to perform high level synchronous DNS resolution.
+</p>
+
+<p>
+ All the functions declared here make synchronous calls to the network, so
+they can block for a non-negligible amount of time. To avoid unbounded
+waiting times, they always take 2 arguments at the end, <em>deadline</em>
+and <em>stamp</em>. <em>deadline</em> is the read-only address of a
+<a href="http://skarnet.org/software/skalibs/libstddjb/tai.h">struct taia</a>
+containing an absolute time which is the deadline for the function, and
+<em>stamp</em> is the read-write address of a <tt>struct taia</tt> being
+an accurate enough representation of the current absolute time. If
+the function has not returned by *<em>deadline</em>, then it immediately
+returns with a failure code and errno set to ETIMEDOUT. In every case,
+*<em>stamp</em> is automatically updated so it always represents the
+absolute time accurately enough.
+</p>
+
+<p>
+ In a single-threaded program, the STAMP global variable can be used to
+store the current time. Macros ending with <tt>_g</tt> use this variable
+automatically so you don't have to provide the <em>stamp</em> argument
+everytime. Additionally, several resolution functions make implicit use
+of global variables such as:
+</p>
+
+<ul>
+ <li> <tt>s6dns_engine_here</tt>: a global
+<a href="s6dns-engine.html">s6dns_engine_t</a> storing the current
+query, for sequential queries. </li>
+ <li> <tt>s6dns_debughook_zero</tt>: a global <tt>s6dns_debughook_t</tt>
+meaning no debugging is needed. </li>
+ <li> <tt>s6dns_rci_here</tt>: a global
+<a href="s6dns-rci.html">s6dns_rci_t</a> containing the current
+resolv.conf information. </li>
+</ul>
+
+<p>
+ Reentrant, non-global-using functions are also provided, with the <tt>_r</tt>
+suffix. In other words, if <em>foobarfunc</em> is a resolution function,
+the following prototypes are generally provided, from the simplest to the
+most complex:
+</p>
+
+<ul>
+ <li> <em>foobarfunc_g</em>: only the relevant parameters and a deadline
+must be given, the function uses the STAMP global and maybe DNS-specific
+globals </li>
+ <li> <em>foobarfunc</em>: a deadline and stamp must be given, the function
+uses all the DNS-specific globals </li>
+ <li> <em>foobarfunc_r_g</em>: No DNS-specific globals are used, the
+information must be given via parameters, but the STAMP global is used </li>
+ <li> <em>foobarfunc_r</em>: fully reentrant function using no globals
+at all </li>
+</ul>
+
+<p>
+ For each set of four functions, only one is documented here.
+The other prototypes can be found in the <tt>s6-dns/s6dns-resolve.h</tt> file.
+</p>
+
+<p>
+ Some <tt>errno</tt> codes reported by these functions do not have
+exactly the system meaning given by
+<a href="http://pubs.opengroup.org/onlinepubs/9699919799/functions/strerror.html">strerror()</a>.
+To get a user-friendly error message, use
+<tt>s6dns_constants_error_str(errno)</tt> instead. The <tt>s6dns_constants_error_str</tt>
+function is declared in the <tt>s6dns-constants.h</tt> header.
+</p>
+
+<h2> Functions </h2>
+
+<h3> Single query resolution </h3>
+
+<p>
+ These functions are ordered from the lowest level to the highest level.
+</p>
+
+<h4> Basic wrapper around s6dns_engine </h4>
+
+<p>
+<code> int s6dns_resolve_loop_r_g (s6dns_engine_t *dt, struct taia const *deadline) </code> <br />
+Resolves the query stored in <tt>dt</tt>.
+Returns 1 on success or 0 on failure.
+</p>
+
+<h4> Generic resolution functions </h4>
+
+<p>
+<code> int s6dns_resolve_core_g (s6dns_domain_t const *d, uint16 qtype, struct taia const *deadline) </code> <br />
+Resolves the query on domain *<em>d</em> (in packet form), of type <em>qtype</em>.
+Returns 0 on failure, or 1 on success, in which case
+<tt>s6dns_engine_here</tt> contains the answer.
+</p>
+
+<p>
+<code> int s6dns_resolve_parse_g (s6dns_domain_t const *d, uint16 qtype, s6dns_message_rr_func_t *f, void *data, struct taia const *deadline) </code> <br />
+Resolves the query on domain *<em>d</em> (in packet form), of type <em>qtype</em>,
+then parses the answer with function <em>f</em> and stores the result into <em>data</em>.
+Returns 1 if it succeeds, 0 if no data can be extracted from the answer, or -1 if an
+error occurs. Sets errno in the last two cases.
+</p>
+
+<p>
+ Note that the function can return 1 without appending anything to <em>data</em>.
+This means that the servers confirmed that the domain exists, but <em>f</em>
+has not been able to find any data relevant to the query in the answer.
+This is very different from NXDOMAIN, which means that
+the servers deny the actual existence of the domain, and which is reported
+here as a return code of 0 with errno set to ENOENT.
+</p>
+
+<p>
+<code> int s6dns_resolvenoq_g (char const *name, unsigned int len, uint16 qtype, s6dns_message_rr_func_t *f, void *data, struct taia const *deadline) </code> <br />
+Performs a query of type <em>qtype</em> on name <em>name</em> of length <em>len</em>,
+without qualifying it. Parses the answer with function <em>f</em> and stores the
+result into <em>data</em>. Returns 1 if it succeeds, 0 if no data can be extracted,
+or -1 if an error occurs. Sets errno in the last two cases.
+</p>
+
+<p>
+<code> int s6dns_resolveq_g (char const *name, unsigned int len, uint16 qtype, s6dns_message_rr_func_t *f, void *data, struct taia const *deadline) </code> <br />
+Performs a query of type <em>qtype</em> on name <em>name</em> of length <em>len</em>,
+qualifying it first. Parses the answer with function <em>f</em> and stores the
+result into <em>data</em>. Returns 1 if it succeeds, 0 if none of the FQDNs can
+get a positive answer, or -1 if an error occurs. Sets errno in the last two cases.
+</p>
+
+<p>
+<code> int s6dns_resolve_g (char const *name, unsigned int len, uint16 qtype, s6dns_message_rr_func_t *f, void *data, int qualif, struct taia const *deadline) </code> <br />
+Performs a query of type <em>qtype</em> on name <em>name</em> of length <em>len</em>.
+Qualifies <em>name</em> first if <em>qualif</em> is nonzero; else, does not
+qualify it. Parses the answer with function <em>f</em> and stores the
+result into <em>data</em>. Returns 1 if it succeeds, 0 if none of the FQDNs can
+get a positive answer, or -1 if an error occurs. Sets errno in the last two cases.
+</p>
+
+<h4> High-level type-specific functions </h4>
+
+<p>
+<code> int s6dns_resolve_a_g (stralloc *ips, char const *name, unsigned int len, int qualif, struct taia const *deadline) </code> <br />
+Performs an A query on name <em>name</em> of length <em>len</em>, qualifying it
+iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
+can be obtained from servers, or 1 if it succeeds, in which case the IPs are
+appended to the stralloc *<em>ips</em>, using 4 bytes per answer.
+</p>
+
+<p>
+<code> int s6dns_resolve_aaaa_g (stralloc *ips, char const *name, unsigned int len, int qualif, struct taia const *deadline) </code> <br />
+Performs an AAAA query on name <em>name</em> of length <em>len</em>, qualifying it
+iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
+can be obtained from servers, or 1 if it succeeds, in which case the IPs are
+appended to the stralloc *<em>ips</em>, using 16 bytes per answer.
+</p>
+
+<p>
+<code> int s6dns_resolve_aaaaa_g (genalloc *ips, char const *name, unsigned int len, int qualif, struct taia const *deadline) </code> <br />
+Performs an AAAA query and an A query at the same time on name <em>name</em>
+of length <em>len</em>, qualifying it first iff <em>qualif</em> is nonzero.
+Returns -1 if an error occurs, or 0 if no answer
+can be obtained from servers, or a positive number if it succeeds: 1 if IPv4 addresses
+were found, 2 if IPv6 addresses were found, and 3 if both were found.
+The IPs are appended to the genalloc *<em>ips</em>, which contains an array of
+<tt>ip46_t</tt>, the skalibs structure used to store IPv4 and IPv6 addresses
+indiscriminately.
+</p>
+
+<p>
+<code> int s6dns_resolve_ptr_g (genalloc *ds, char const *name, unsigned int len, int qualif, struct taia const *deadline) </code> <br />
+Performs a PTR query on name <em>name</em> of length <em>len</em>, qualifying it
+iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
+can be obtained from servers, or 1 if it succeeds, in which case the domains are
+appended to the genalloc *<em>ds</em>, which contains an array of <tt>s6dns_domain_t</tt>.
+</p>
+
+<p>
+<code> int s6dns_resolve_name4_g (genalloc *ds, char const *ip, struct taia const *deadline) </code> <br />
+Performs a PTR query on the <tt>in-addr.arpa.</tt> name representing the IPv4
+address <em>ip</em> (4 network-order bytes).
+Returns -1 if an error occurs, or 0 if no answer
+can be obtained from servers, or 1 if it succeeds, in which case the domains are
+appended to the genalloc *<em>ds</em>, which contains an array of <tt>s6dns_domain_t</tt>.
+</p>
+
+<p>
+<code> int s6dns_resolve_name6_g (genalloc *ds, char const *ip, struct taia const *deadline) </code> <br />
+Performs a PTR query on the <tt>ip6.arpa.</tt> name representing the IPv6
+address <em>ip</em> (16 network-order bytes).
+Returns -1 if an error occurs, or 0 if no answer
+can be obtained from servers, or 1 if it succeeds, in which case the domains are
+appended to the genalloc *<em>ds</em>, which contains an array of <tt>s6dns_domain_t</tt>.
+</p>
+
+<p>
+<code> int s6dns_resolve_name46_g (genalloc *ds, ip46_t const *ip, struct taia const *deadline) </code> <br />
+Calls <tt>s6dns_resolve_name6_g()</tt> or <tt>s6dns_resolve_name4_g()</tt>
+depending on which <em>ip</em> is an IPv6 or IPv4 address.
+</p>
+
+<p>
+<code> int s6dns_resolve_ns_g (genalloc *ds, char const *name, unsigned int len, int qualif, struct taia const *deadline) </code> <br />
+Performs a NS query on name <em>name</em> of length <em>len</em>, qualifying it
+iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
+can be obtained from servers, or 1 if it succeeds, in which case the domains are
+appended to the genalloc *<em>ds</em>, which contains an array of <tt>s6dns_domain_t</tt>.
+</p>
+
+<p>
+<code> int s6dns_resolve_cname_g (genalloc *ds, char const *name, unsigned int len, int qualif, struct taia const *deadline) </code> <br />
+Performs a CNAME query on name <em>name</em> of length <em>len</em>, qualifying it
+iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
+can be obtained from servers, or 1 if it succeeds, in which case the domains are
+appended to the genalloc *<em>ds</em>, which contains an array of <tt>s6dns_domain_t</tt>.
+</p>
+
+<p>
+<code> int s6dns_resolve_hinfo_g (genalloc *hinfos, char const *name,
+unsigned int len, int qualif, struct taia const *deadline) </code> <br />
+ Performs an HINFO query on name <em>name</em> of length <em>len</em>, qualifying it
+iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
+can be obtained from servers, or 1 if it succeeds, in which case the domains are
+appended to the genalloc *<em>hinfos</em>, which contains an array of
+<tt>s6dns_message_rr_hinfo_t</tt>.
+</p>
+
+<p>
+<code> int s6dns_resolve_mx_g (genalloc *mxs, char const *name,
+unsigned int len, int qualif, struct taia const *deadline) </code> <br />
+ Performs an MX query on name <em>name</em> of length <em>len</em>, qualifying it
+iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
+can be obtained from servers, or 1 if it succeeds, in which case the domains are
+appended to the genalloc *<em>mxs</em>, which contains an array of
+<tt>s6dns_message_rr_mx_t</tt>.
+</p>
+
+<p>
+<code> int s6dns_resolve_soa_g (genalloc *soas, char const *name,
+unsigned int len, int qualif, struct taia const *deadline) </code> <br />
+ Performs an SOA query on name <em>name</em> of length <em>len</em>, qualifying it
+iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
+can be obtained from servers, or 1 if it succeeds, in which case the domains are
+appended to the genalloc *<em>soas</em>, which contains an array of
+<tt>s6dns_message_rr_soa_t</tt>.
+</p>
+
+<p>
+<code> int s6dns_resolve_srv_g (genalloc *srvs, char const *name,
+unsigned int len, int qualif, struct taia const *deadline) </code> <br />
+ Performs an SRV query on name <em>name</em> of length <em>len</em>, qualifying it
+iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
+can be obtained from servers, or 1 if it succeeds, in which case the domains are
+appended to the genalloc *<em>srvs</em>, which contains an array of
+<tt>s6dns_message_rr_srv_t</tt>.
+</p>
+
+<p>
+<code> int s6dns_resolve_txt_g (stralloc *sa, genalloc *offsets, char const *name,
+unsigned int len, int qualif, struct taia const *deadline) </code> <br />
+ Performs an TXT query on name <em>name</em> of length <em>len</em>, qualifying it
+iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
+can be obtained from servers, or 1 if it succeeds, in which case:
+</p>
+
+<ul>
+ <li> The resulting strings are all stored into stralloc *<em>sa</em>.
+Every string is terminated by a null character. </li>
+ <li> A series of unsigned ints is appended to genalloc *<em>offsets</em>.
+Every integer represents the offset in *<em>sa</em> at which a string is stored.
+The number of appended integers is the total number of answers. </li>
+</ul>
+
+<h4> Parallel resolution </h4>
+
+<p>
+<code> int s6dns_resolven_loop_g (s6dns_engine_t *dtl, unsigned int n,
+unsigned int or, struct taia const *deadline) </code> <br />
+ Resolves the <em>n</em> queries stored in the array pointed to by <em>dtl</em>,
+in parallel. If <em>or</em> is zero, it does not return before all answers
+have arrived. If <em>or</em> is 1, it returns when an answer arrives, but does
+not return if a query generates an error (unless all queries do so). If
+<em>or</em> is 2, it returns when an answer arrives or an error occurs.
+Other values of <em>or</em> are unspecified yet.
+
+<p>
+ The return code is as follows:
+</p>
+
+<ul>
+ <li> If <em>or</em> is 0: -1 on a global error (i.e. not specific to
+a query), or a non-negative number which is the total of successful
+queries. </li>
+ <li> If <em>or</em> is 1 or 2: -1 on a global error, or a non-negative
+number which is the index of the query that triggered the event. </li>
+</ul>
+
+<p>
+ If <em>or</em> is 1, a return code of -1 with errno set to ENOENT
+means that all the queries failed.
+</p>
+
+<p>
+ After the function returns, the <tt>status</tt> field of each
+<tt>s6dns_engine_t</tt> contains the error code relative to the query.
+A status of 0 means that an answer has properly arrived; EAGAIN means
+that the query is still pending (and the s6dns_engine_t has not been
+recycled); ECONNABORTED means that the query has not been properly
+initialized. Other codes report various network problems.
+</p>
+
+<p>
+<code> int s6dns_resolven_parse_g (s6dns_resolve_t const *list, unsigned int n,
+struct taia const *deadline) </code> <br />
+Performs <em>n</em> complete resolutions in parallel, parsing the results.
+Returns 1 in case of success or 0 if a global error occurred.
+</p>
+
+<p>
+<em>list</em> is a pointer to an array of <em>n</em> <tt>s6dns_resolve_t</tt>,
+which is a structure containing at least the following fields:
+</p>
+
+<ul>
+ <li> <tt>q</tt>&nbsp;: a <tt>s6dns_domain_t</tt> containing the query.
+It must be in encoded form. </li>
+ <li> <tt>qtype</tt>&nbsp;: a <tt>uint16</tt> containing the query type.
+A list of valid query types can be found in the <tt>s6dns-constants.h</tt>
+header. </li>
+ <li> <tt>options</tt>&nbsp;: a <tt>uint32</tt> containing options passed
+to <a href="s6dns_engine.html">s6dns_engine_init()</a>. </li>
+ <li> <tt>deadline</tt>&nbsp;: a <tt>struct taia</tt> containing the
+deadline for this query, i.e. the query will fail with an ETIMEDOUT code
+if no answer has arrived by then. Note that the <em>deadline</em>
+argument given to s6dns_resolven_parse() is a global deadline that
+can make the function return with 0 ETIMEDOUT, but is independent from
+this field, which is local to every query. </li>
+ <li> <tt>parsefunc</tt>&nbsp;: a <tt>s6dns_message_rr_func_t</tt>
+function that will be used to parse the answer. </li>
+ <li> <tt>data</tt>&nbsp;: a <tt>void *</tt> that will be passed as an
+additional pointer to the <tt>parsefunc</tt> function; it is generally
+used to store the parsing result. </li>
+ <li> <tt>status</tt>&nbsp;: an <tt>int</tt>. It does not need to be
+initialized. It will contain the error code for the query after the
+function returns. ECONNABORTED means that the query could not be
+started at all; EAGAIN means that the query was still pending when
+an error happened; other codes report various network problems. </li>
+</ul>
+
+<p>
+ The s6dns_resolven_parse() function is a simple, convenient way to
+perform several resolutions in parallel to avoid the waiting time
+incurred by serial resolutions. However, it is still a synchronous
+function, and cannot replace a real asynchronous DNS library: for
+more complex parallel resolution needs, use the
+<a href="../skadns/">skadns</a> library.
+</p>
+
+</body>
+</html>

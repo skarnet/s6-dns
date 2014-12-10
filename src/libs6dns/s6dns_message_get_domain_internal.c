@@ -1,0 +1,47 @@
+/* ISC license. */
+
+#include <errno.h>
+#include <skalibs/error.h>
+#include <skalibs/bytestr.h>
+#include "s6dns-message-internal.h"
+
+unsigned int s6dns_message_get_domain_internal (char *out, unsigned int outmax, char const *s, unsigned int len, unsigned int *pos)
+{
+  unsigned int w = 0 ; /* writing head */
+  unsigned int r = *pos ; /* reading head */
+  unsigned int jumps = 0 ;
+  register int hasjumped = 0 ;
+  for (;;)
+  {
+    unsigned char c ;
+    if (r >= len) return (errno = EPROTO, 0) ;
+    c = s[r] ;
+    if (c < 64) /* normal label */
+    {
+      if (r + ++c > len) return (errno = EPROTO, 0) ;
+      if (out)
+      {
+        if (w + c > outmax) return (errno = ENAMETOOLONG, 0) ;
+        byte_copy(out + w, c, s + r) ;
+      }
+      w += c ; r += c ; if (!hasjumped) *pos += c ;
+      if (c == 1) break ;
+    }
+    else if (c >= 192) /* pointer */
+    {
+      if (r + 1 >= len) return (errno = EPROTO, 0) ;
+      if (hasjumped)
+      {
+        if (++jumps > 1000) return (errno = EPROTO, 0) ;
+      }
+      else
+      {
+        *pos += 2 ;
+        hasjumped = 1 ;
+      }
+      r = (((unsigned int)c & 63) << 8) | (unsigned char)(s[r + 1]) ;
+    }
+    else return (errno = EPROTONOSUPPORT, 0) ; /* unsupported extension */
+  }
+  return w ;
+}

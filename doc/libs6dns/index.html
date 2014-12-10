@@ -1,0 +1,104 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>s6-dns: the s6dns library interface</title>
+    <meta name="Description" content="s6-dns: the s6dns library interface" />
+    <meta name="Keywords" content="s6-dns dns s6dns library libs6dns" />
+    <!-- <link rel="stylesheet" type="text/css" href="http://skarnet.org/default.css" /> -->
+  </head>
+<body>
+
+<p>
+<a href="../">s6-dns</a><br />
+<a href="http://skarnet.org/software/">Software</a><br />
+<a href="http://skarnet.org/">skarnet.org</a>
+</p>
+
+<h1> The <tt>s6dns</tt> library interface </h1>
+
+<h2> General information </h2>
+
+<p>
+ <tt>libs6dns</tt> is a DNS client library, designed for clarity
+and simplicity - which translates into smallness of the code.
+</p>
+
+<p>
+ A major focus of <tt>libs6dns</tt> is to avoid unnecessary use
+of heap memory. Memory is only allocated in the heap to store
+queries and response packets during a DNS resolution process, and
+to store the final answers into a user-provided
+<a href="http://skarnet.org/software/skalibs/libstddjb/stralloc.html">
+stralloc</a>; all the other operations use stack memory, and perform
+as few copies as possible.
+</p>
+
+<h2> Compiling </h2>
+
+<ul>
+ <li> Make sure the s6-dns headers, as well as the skalibs headers,
+are visible in your header search path. </li>
+ <li> Use <tt>#include &lt;s6-dns/s6dns.h&gt;</tt> </li>
+</ul>
+
+<h2> Linking </h2>
+
+<ul>
+ <li> Make sure the s6-dns libraries, as well as the skalibs libraries,
+are visible in your library search path. </li>
+ <li> Link against <tt>-ls6dns</tt>, <tt>-lskarnet</tt>, </li>
+<tt>`cat $SYSDEPS/socket.lib`</tt> and
+<tt>`cat $SYSDEPS/tainnow.lib`</tt>, $SYSDEPS being your skalibs
+sysdeps directory. </li>
+</ul>
+
+<h2> Programming </h2>
+
+<p>
+ The <tt>s6dns.h</tt> header is actually a concatenation of other headers:
+the libs6dns is separated into several modules, each of them with its
+own header.
+</p>
+
+<ul>
+ <li> The <tt>s6dns-constants.h</tt> header provides constants used in
+other parts of the library. </li>
+ <li> The <a href="s6dns-ip46.html">s6dns-ip46.h</a> header provides an
+abstraction for IPv4 and IPv6 transports. </li>
+ <li> The <a href="s6dns-domain.html">s6dns-domain.h</a> header provides
+basic string manipulation primitives for domain names. </li>
+ <li> The <a href="s6dns-message.html">s6dns-message.h</a> header provides
+function to parse a message following the DNS protocol. </li>
+ <li> The <a href="s6dns-engine.html">s6dns-engine.h</a> header provides
+the low-level asynchronous networking functions. </li>
+ <li> The <a href="s6dns-rci.html">s6dns-rci.h</a> header provides an
+interface to <tt>resolv.conf</tt> reading. </li>
+ <li> The <a href="s6dns-resolve.html">s6dns-resolve.h</a> header provides
+the user-level synchronous resolution functions. </li>
+ <li> The <a href="s6dns-fmt.html">s6dns-fmt.h</a> header provides
+formatting primitives to display RR contents. </li>
+</ul>
+
+<p>
+ (User-level asynchronous resolution functions are provided in the
+<a href="../skadns/">skadns</a> library.)
+</p>
+
+<p>
+ Two functional macros are actually directly declared in the <tt>s6dns.h</tt>
+header:
+</p>
+
+<ul>
+ <li> Call <tt>s6dns_init()</tt> before all your s6dns operations.
+s6dns_init() calls <a href="s6dns-rci.html">s6dns_rci_init()</a>,
+extracting <tt>resolv.conf</tt> information to an internal global
+variable. The function returns 1 on success, and 0 (and sets errno)
+on failure. </li>
+ <li> Call <tt>s6dns_finish()</tt> when you're done with the libs6dns.
+It frees the resources used. </li>
+</ul>
+
+</body>
+</html>

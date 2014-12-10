@@ -1,0 +1,137 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>s6-dns: the s6dns_domain library interface</title>
+    <meta name="Description" content="s6-dns: the s6dns_domain library interface" />
+    <meta name="Keywords" content="s6-dns dns s6dns_domain library libs6dns" />
+    <!-- <link rel="stylesheet" type="text/css" href="http://skarnet.org/default.css" /> -->
+  </head>
+<body>
+
+<p>
+<a href="index.html">libs6dns</a><br />
+<a href="../">s6-dns</a><br />
+<a href="http://skarnet.org/software/">Software</a><br />
+<a href="http://skarnet.org/">skarnet.org</a>
+</p>
+
+<h1> The <tt>s6dns_domain</tt> library interface </h1>
+
+<p>
+ The following functions and structures are declared in the <tt>s6-dns/s6dns-domain.h</tt> header,
+and implemented in the <tt>libs6dns.a</tt> or <tt>libs6dns.so</tt> library.
+</p>
+
+<h2> General information </h2>
+
+<p>
+ <tt>s6dns_domain</tt> provides primitives to perform basic operations
+on domain names.
+</p>
+
+<h2> Data structures </h2>
+
+<p>
+ A <tt>s6dns_domain_t</tt> is a structure that s6dns uses internally to
+represent a domain name. It can be in <em>string form</em> (or
+<em>decoded form</em>), which is close to the printable form seen
+by users, or in <em>packet form</em> (or <em>encoded form</em>), which
+is the format used in the DNS protocol.
+</p>
+
+<p>
+ A <tt>s6dns_domain_t</tt> is a flat structure and can be declared
+on the stack.
+</p>
+
+<h2> Functions </h2>
+
+<p>
+<code> int s6dns_domain_fromstring (s6dns_domain_t *d, char const *s, unsigned int len) </code> <br />
+Makes a (string form) domain from string <em>s</em> of length <em>len</em>,
+and stores it into *<em>d</em>. Returns 1 if it succeeds, otherwise it
+returns 0 and sets errno appropriately - most likely ENAMETOOLONG, i.e.
+the name in <em>s</em> is not a well-formed domain name.
+</p>
+
+<p>
+<code> unsigned int s6dns_domain_tostring (char *s, unsigned int max, s6dns_domain_t const *d) </code> <br />
+Writes into string <em>s</em> the domain contained in *<em>d</em> (in string
+form). Returns the number of bytes written, or 0 in case of failure. If
+the output would be more than <em>max</em> bytes, 0 ENAMETOOLONG is returned.
+</p>
+
+<p>
+<code> int s6dns_domain_noqualify (s6dns_domain_t *d) </code> <br />
+Makes sure that *<em>d</em> is fully qualified. This is done without using
+qualification: a trailing dot is simply appended if the domain
+doesn't already have one. Returns 1 if it succeeds, or 0 if it fails.
+</p>
+
+<p>
+<code> unsigned int s6dns_domain_qualify (s6dns_domain_t *list, s6dns_domain_t const *d, char const *rules, unsigned int rulesnum) </code> <br />
+Performs qualification on domain *<em>d</em> according to the first
+<em>rulesnum</em> rules stored in string <em>rules</em>. Stores the output
+(at most <em>rulesnum</em> domains) into the array pointed to by <em>list</em>.
+Returns 0 on failure, or the number of written domains if it succeeds. This
+number can be lesser than <em>rulesnum</em>, for instance if *<em>d</em> is
+already fully qualified. <br />
+Valid <em>rules</em> and <em>rulesnum</em> can be obtained via functions
+declared in <a href="s6dns-rci.html">s6dns-rci.h</a>.
+</p>
+
+<p>
+<code> int s6dns_domain_encode (s6dns_domain_t *d) </code> <br />
+Encodes domain *<em>d</em> from string form to packet form. Returns 1
+if it succeeds or 0 if it fails - for instance, *<em>d</em> is not a
+valid string form (EINVAL).
+</p>
+
+<p>
+<code> unsigned int s6dns_domain_encodelist (s6dns_domain_t *list, unsigned int n) </code> <br />
+Encodes <em>n</em> domains pointed to by <em>list</em> from string form to packet form,
+stopping at the first failure.
+Returns the number of successfully encoded domains, normally <em>n</em>.
+</p>
+
+<p>
+<code> int s6dns_domain_decode (s6dns_domain_t *d) </code> <br />
+Decodes domain *<em>d</em> from packet form to string form. Returns 1
+if it succeeds or 0 if it fails - for instance, *<em>d</em> is not a
+valid packet form (EPROTO).
+</p>
+
+<p>
+<code> int s6dns_domain_fromstring_noqualify_encode (s6dns_domain_t *d, char const *s, unsigned int len) </code> <br />
+Higher-level function wrapping some of the above. Makes an encoded, fully qualified
+(without resorting to qualification) domain from string <em>s</em> of
+length <em>len</em>. Returns 1 if it succeeds and 0 if it fails.
+</p>
+
+<p>
+<code> unsigned int s6dns_domain_fromstring_qualify_encode (s6dns_domain_t *list, char const *s, unsigned int len, char const *rules, unsigned int rulesnum) </code> <br />
+Another wrapping function. It makes a list of encoded, fully qualified domains,
+from string <em>s</em> of length <em>len</em> using <em>rulesnum</em> qualification
+rules in <em>rules</em>. It writes at most <em>rulesnum</em> domains into the array
+pointed to by <em>list</em> and returns the number of written domains, or 0 on an
+error.
+</p>
+
+<p>
+<code> void s6dns_domain_arpafromip4 (s6dns_domain_t *d, char const *ip) </code> <br />
+Writes into <em>d</em> the <tt>in-addr.arpa.</tt> domain corresponding to IPv4 address
+<em>ip</em> (4 bytes, in network byte order), in string form.
+</p>
+
+<p>
+<code> void s6dns_domain_arpafromip6 (s6dns_domain_t *d, char const *ip, unsigned int mask) </code> <br />
+Writes into <em>d</em> the <tt>ip6.arpa.</tt> domain corresponding to the first
+<em>mask</em> bits of IPv6 address <em>ip</em> (16 bytes, in network byte order),
+in string form.
+Only multiples of 4 count for <em>mask</em>, i.e. the output will be the same
+if mask is (for instance) 125, 126, 127 or 128.
+</p>
+
+</body>
+</html>

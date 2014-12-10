@@ -1,0 +1,175 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>s6-dns - a complete DNS client suite</title>
+    <meta name="Description" content="s6-dns - a complete DNS client suite" />
+    <meta name="Keywords" content="s6-dns s6dns s6 DNS resolution unix linux laurent bercot ska skarnet" />
+    <!-- <link rel="stylesheet" type="text/css" href="http://skarnet.org/default.css" /> -->
+  </head>
+<body>
+
+<p>
+<a href="http://skarnet.org/software/">Software</a><br />
+<a href="http://skarnet.org/">skarnet.org</a>
+</p>
+
+<h1> s6-dns </h1>
+
+<h2> What is it&nbsp;? </h2>
+
+<p>
+ s6-dns is a suite of DNS client programs and libraries for Unix
+systems, as an alternative to the BIND, djbdns or other DNS clients.
+</p>
+
+<p>
+ s6-dns may include its own series of DNS caches and servers at some
+point in the future.
+</p>
+
+<hr />
+
+<ul>
+<li> <a href="getaddrinfo.html">Why a separate client library&nbsp;?</a> Why not just use <tt>getaddrinfo()</tt>&nbsp;?</li>
+<li> <a href="libresolv.html">What is wrong with libresolv, BIND's client library&nbsp;?</a></li>
+</ul>
+
+<hr />
+
+<h2> Installation </h2>
+
+<h3> Requirements </h3>
+
+<ul>
+ <li> A POSIX-compliant system with a standard C development environment </li>
+ <li> GNU make, version 3.81 or later </li>
+ <li> <a href="http://skarnet.org/software/skalibs/">skalibs</a> version
+2.0.0.0 or later </li>
+</ul>
+
+<h3> Licensing </h3>
+
+<p>
+ s6-dns is free software. It is available under the
+<a href="http://opensource.org/licenses/ISC">ISC license</a>.
+</p>
+
+<h3> Download </h3>
+
+<ul>
+ <li> The current released version of s6-dns is <a href="s6-dns-2.0.0.0.tar.gz">2.0.0.0</a>. </li>
+ <li> Alternatively, you can checkout a copy of the s6-dns git repository:
+<pre> git clone git://git.skarnet.org/s6-dns </pre> </li>
+</ul>
+
+<h3> Compilation </h3>
+
+<ul>
+ <li> See the enclosed INSTALL file for installation details. </li>
+</ul>
+
+<h3> Upgrade notes </h3>
+
+<ul>
+ <li> <a href="upgrade.html">This page</a> lists the differences to be aware of between
+the previous versions of s6-dns and the current one. </li>
+</ul>
+
+<h2> Reference </h2>
+
+<h3> Commands </h3>
+
+<p>
+ All these commands exit 111 if they encounter a temporary error or
+hardware error, and
+100 if they encounter a permanent error - such as a misuse. Short-lived
+commands exit 0 on success. Other exit codes are documented in the
+relevant page.
+</p>
+
+<h4> Command-line DNS clients programs </h4>
+
+<ul>
+<li><a href="s6-dnsip4.html">The <tt>s6-dnsip4</tt> program</a></li>
+<li><a href="s6-dnsip6.html">The <tt>s6-dnsip6</tt> program</a></li>
+<li><a href="s6-dnsname.html">The <tt>s6-dnsname</tt> program</a></li>
+<li><a href="s6-dnsmx.html">The <tt>s6-dnsmx</tt> program</a></li>
+<li><a href="s6-dnsns.html">The <tt>s6-dnsns</tt> program</a></li>
+<li><a href="s6-dnssoa.html">The <tt>s6-dnssoa</tt> program</a></li>
+<li><a href="s6-dnssrv.html">The <tt>s6-dnssrv</tt> program</a></li>
+<li><a href="s6-dnstxt.html">The <tt>s6-dnstxt</tt> program</a></li>
+</ul>
+
+<h4> Filtering tools </h4>
+
+<ul>
+<li><a href="s6-dnsip4-filter.html">The <tt>s6-dnsip4-filter</tt> program</a></li>
+<li><a href="s6-dnsip6-filter.html">The <tt>s6-dnsip6-filter</tt> program</a></li>
+<li><a href="s6-dnsname-filter.html">The <tt>s6-dnsname-filter</tt> program</a></li>
+</ul>
+
+<h4> Command-line qualification </h4>
+
+<ul>
+<li><a href="s6-dnsqualify.html">The <tt>s6-dnsqualify</tt> program</a></li>
+</ul>
+
+<h4> DNS analysis and debug tools </h4>
+
+<ul>
+<li><a href="s6-dnsq.html">The <tt>s6-dnsq</tt> program</a></li>
+<li><a href="s6-dnsqr.html">The <tt>s6-dnsqr</tt> program</a></li>
+</ul>
+
+<h4> Miscellaneous utilities </h4>
+
+<ul>
+<li><a href="s6-randomip.html">The <tt>s6-randomip</tt> program</a></li>
+</ul>
+
+
+<h3> Libraries </h3>
+
+<h4> Protocol implementation and synchronous resolution </h4>
+
+<ul>
+<li><a href="libs6dns/">The <tt>s6dns</tt> library interface</a></li>
+</ul>
+
+<h4> Asynchronous resolution </h4>
+
+<ul>
+<li><a href="skadns/">The <tt>skadns</tt> library interface</a></li>
+</ul>
+
+<hr />
+
+<a name="related">
+<h2> Related resources </h2>
+</a>
+
+<h3> s6-dns discussion </h3>
+
+<ul>
+ <li> <tt>s6-dns</tt> is discussed on the
+<a href="http://skarnet.org/lists.html#skaware">skaware</a> mailing-list. </li>
+ <li> It can also be discussed on the
+<a href="http://cr.yp.to/lists.html#dns">cr.yp.to dns mailing-list</a>. </li>
+</ul>
+
+<h3> Similar work </h3>
+
+<ul>
+ <li> <a href="http://www.isc.org/software/bind">BIND</a> is the most widely
+used DNS software suite on the Internet. It's also arguably the most
+<a href="http://cr.yp.to/djbdns/blurb/unbind.html">buggy</a>,
+convoluted and impossible to understand. </li>
+ <li> <a href="http://cr.yp.to/djbdns.html">djbdns</a> is DJB's DNS suite.
+It works very well, but is unfortunately unmaintained by the author. s6-dns
+follows <a href="http://skarnet.org/software/skalibs/djblegacy.html">the
+same design principles</a>. </li>
+</ul>
+
+</body>
+</html>

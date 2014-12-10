@@ -1,0 +1,103 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>s6-dns: the s6-dnsname-filter program</title>
+    <meta name="Description" content="s6-dns: the s6-dnsname-filter program" />
+    <meta name="Keywords" content="s6-dns client s6-dnsname-filter dnsname domain name ptr ip address filter" />
+    <!-- <link rel="stylesheet" type="text/css" href="http://skarnet.org/default.css" /> -->
+  </head>
+<body>
+
+<p>
+<a href="index.html">s6-dns</a><br />
+<a href="http://skarnet.org/software/">Software</a><br />
+<a href="http://skarnet.org/">skarnet.org</a>
+</p>
+
+<h1> The s6-dnsname-filter program </h1>
+
+<p>
+  s6-dnsname-filter reads IP addresses on its standard input and
+prints the corresponding domain names on its standard output.
+</p>
+
+<h2> Interface </h2>
+
+<pre>
+     s6-dnsname-filter [ -4 ] [ -6 ] [ -l <em>maxlines</em> ] [ -c <em>maxconn</em> ] [ -t <em>timeout</em> ] [ -f <em>normalfmt</em> ] [ -e <em>errorfmt</em> ]
+</pre>
+
+<ul>
+ <li> s6-dnsname-filter reads lines from its stdin, processes them, and prints
+the processed lines to its stdout, in the same order. It exits 0 when it
+reads EOF on stdin. </li>
+ <li> Every line starting with an IP address is processed. Lines not
+starting with an IP address are not, and the formatting rules treat them
+as a pure "remainder". </li>
+ <li> For every processed line, the read IP address is converted to an
+<tt>in-addr.arpa.</tt> or <tt>ip6.arpa.</tt> domain on which a PTR query is made,
+and the result is printed according to the formatting rules. </li>
+ <li> By default, s6-dnsname-filter looks for DNS cache addresses in the
+<tt>/etc/resolv.conf</tt> file. If the DNSCACHEIP environment variable is set
+and contains a list of IP (v4 or v6) addresses, separated by commas,
+semicolons, spaces, tabs, newlines or carriage returns, then this list
+is used instead. </li>
+</ul>
+
+<h2> Options </h2>
+
+<ul>
+ <li> <tt>-4</tt>&nbsp;: scan for IPv4 addresses. </li>
+ <li> <tt>-6</tt>&nbsp;: scan for IPv6 addresses. Both the <tt>-4</tt> and
+<tt>-6</tt> options may be given. If none is given, by default
+s6-dnsname-filter will only scan for IPv4 addresses. </li>
+ <li> <tt>-l</tt>&nbsp;<em>maxlines</em>&nbsp;: maximum lines. s6-dnsname-filter
+will keep at most <em>maxlines</em> lines in memory at the same time. If line
+<em>n</em> is still waiting for resolution and cannot be printed, then
+s6-dnsname-filter will stop reading from stdin before line <em>n+maxlines</em>,
+until the result arrives for line <em>n</em>. By default, <em>maxlines</em>
+is 256. </li>
+ <li> <tt>-c</tt>&nbsp;<em>maxconn</em>&nbsp;: maximum concurrent resolutions.
+s6-dnsname-filter will perform at most <em>maxconn</em> resolutions in
+parallel at the same time. <em>maxlines</em> cannot be lesser than <em>maxconn</em>.
+By default, <em>maxconn</em> is 128. </li>
+ <li> <tt>-t</tt>&nbsp;<em>timeout</em>&nbsp;: if any resolution takes more
+than <em>timeout</em> milliseconds, then it is aborted and printed as a
+timeout error. By default, <em>timeout</em> is 0, which means no timeout. </li>
+ <li> <tt>-f</tt>&nbsp;<em>normalfmt</em>&nbsp;: print the positive results according to
+the <em>normalfmt</em> format string. By default, <em>normalfmt</em> is
+<tt>%s=%d%w%r</tt>, which means: print the original IP address, then an equal
+sign, then the corresponding domain name, then the remainder of the line. </li>
+ <li> <tt>-e</tt>&nbsp;<em>errorfmt</em>&nbsp;: print the negative results according to
+the <em>errorfmt</em> format string. By default, <em>errorfmt</em> is
+<tt>%s=&lt;%e%&gt;%w%r</tt>, which means: print the original IP address, then an equal
+sign, then the error message between angle brackets, then the remainder of the line. </li>
+</ul>
+
+<h2> Formatting rules </h2>
+
+<p>
+ <em>normalfmt</em> and <em>errorfmt</em> are format strings, i.e. they tell the
+program how a line must be printed. The following sequences are recognized:
+</p>
+
+<ul>
+ <li> <tt>%%</tt> prints a single <tt>%</tt> character </li>
+ <li> <tt>%s</tt> prints the original IP address </li>
+ <li> <tt>%d</tt> prints the domain name, if any </li>
+ <li> <tt>%e</tt> prints the error message, if any </li>
+ <li> <tt>%w%r</tt> prints the remainder of the input line </li>
+</ul>
+
+<h2> Notes </h2>
+
+<p>
+ s6-dnsname-filter does not perform DNS resolutions itself. Instead, if forks
+a <a href="skadns/skadnsd.html">skadnsd</a> child and sends it queries, getting
+the results asynchronously. The s6-dns filter programs have actually been
+written as example uses of the <a href="skadns/">skadns library</a>.
+</p>
+
+</body>
+</html>

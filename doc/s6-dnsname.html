@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>s6-dns: the s6-dnsname program</title>
+    <meta name="Description" content="s6-dns: the s6-dnsname program" />
+    <meta name="Keywords" content="s6-dns client s6-dnsname dnsname domain name ip address ipv4 ipv6" />
+    <!-- <link rel="stylesheet" type="text/css" href="http://skarnet.org/default.css" /> -->
+  </head>
+<body>
+
+<p>
+<a href="index.html">s6-dns</a><br />
+<a href="http://skarnet.org/software/">Software</a><br />
+<a href="http://skarnet.org/">skarnet.org</a>
+</p>
+
+<h1> The s6-dnsname program </h1>
+
+<p>
+  s6-dnsname finds the name associated to an IPv4 or IPv6 address.
+</p>
+
+<h2> Interface </h2>
+
+<pre>
+     s6-dnsname [ -4 | -6 ] [ -r ] [ -t <em>timeout</em> ] <em>ip</em>
+</pre>
+
+<ul>
+ <li> s6-dnsname converts the IP address <em>ip</em> to a name
+ending in <tt>in-addr.arpa.</tt> or <tt>ip6.arpa.</tt> then makes a
+PTR query for this name.
+It waits for the result and prints the obtained names, one per line,
+then exits 0. </li>
+ <li> If the domain exists but no relevant field has been found, it exits 1. </li>
+ <li> If the DNS answered but no answer is available, it prints a relevant
+error message and exits 2. </li>
+ <li> By default, s6-dnsname looks for DNS cache addresses in the
+<tt>/etc/resolv.conf</tt> file. If the DNSCACHEIP environment variable is set
+and contains a list of IP (v4 or v6) addresses, separated by commas,
+semicolons, spaces, tabs, newlines or carriage returns, then this list
+is used instead. </li>
+</ul>
+
+<h2> Options </h2>
+
+<ul>
+ <li> <tt>-4</tt>&nbsp;: interpret <em>ip</em> as an IPv4 address. </li>
+ <li> <tt>-6</tt>&nbsp;: interpret <em>ip</em> as an IPv6 address.
+If neither of the <tt>-4</tt> and <tt>-6</tt> is given, or if both are
+given, then <em>ip</em> will be interpreted as v4 or v6 depending on
+its syntax. </li>
+ <li> <tt>-r</tt>&nbsp;: random. By default, the program does not sort the
+result, but prints them in the order received from the DNS. With this
+option, it performs a random permutation on the results before printing
+them. </li>
+ <li> <tt>-t</tt>&nbsp;<em>timeout</em>&nbsp;: if the resolution takes more
+than <em>timeout</em> milliseconds, then it exits 99 right away with an error
+message. By default, <em>timeout</em> is 0, which means no timeout. </li>
+</ul>
+
+<h2> Notes </h2>
+
+<ul>
+ <li> If the underlying skalibs has been compiled with IPv6 support disabled,
+s6-dnsname will not be able to use IPv6 transport for its resolution, but it
+will still accept and resolve IPv6 addresses. </li>
+</ul>
+
+</body>
+</html>

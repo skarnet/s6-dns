@@ -1,0 +1,109 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>s6-dns: the s6dns_rci library interface</title>
+    <meta name="Description" content="s6-dns: the s6dns_rci library interface" />
+    <meta name="Keywords" content="s6-dns dns s6dns_rci resolv.conf library libs6dns" />
+    <!-- <link rel="stylesheet" type="text/css" href="http://skarnet.org/default.css" /> -->
+  </head>
+<body>
+
+<p>
+<a href="index.html">libs6dns</a><br />
+<a href="../">s6-dns</a><br />
+<a href="http://skarnet.org/software/">Software</a><br />
+<a href="http://skarnet.org/">skarnet.org</a>
+</p>
+
+<h1> The <tt>s6dns_rci</tt> library interface </h1>
+
+<p>
+ The following functions and structures are declared in the <tt>s6-dns/s6dns-rci.h</tt> header,
+and implemented in the <tt>libs6dns.a</tt> or <tt>libs6dns.so</tt> library.
+</p>
+
+<h2> General information </h2>
+
+<p>
+ <tt>s6dns_rci</tt> provides functions to get information from
+the <tt>/etc/resolv.conf</tt> file.
+</p>
+
+<h2> Data structures </h2>
+
+<p>
+ A <tt>s6dns_rci_t</tt> is a structure storing information
+provided by the <tt>/etc/resolv.conf</tt> file, i.e.
+</p>
+
+<ul>
+ <li> The list of "nameserver" addresses, i.e. IP addresses of DNS caches
+contacted by clients for recursive queries </li>
+ <li> The list of qualification rules provided by "domain" or "search"
+lines </li>
+</ul>
+
+<p>
+ Nameserver addresses are stored in a
+<a href="s6dns-ip46.html">s6dns_ip46list_t</a>. Qualification rules are
+stored in a <a href="http://skarnet.org/software/skalibs/libstddjb/stralloc.html">stralloc</a>
+with an additional integer storing the number of rules.
+</p>
+
+<p>
+ Most programs won't need more than one <tt>s6dns_rci_t</tt>, so
+the library provides the global variable <tt>s6dns_rci_here</tt>, used
+by default in simple resolution macros.
+</p>
+
+<h2> Functions </h2>
+
+<p>
+<code> int s6dns_rci_init (s6dns_rci_t *rci, char const *file) </code> <br />
+Extracts information from <em>file</em>, which must be in <tt>/etc/resolv.conf</tt>
+format, and stores it into *<em>rci</em>. <em>rci</em> must be previously
+initialized to the <tt>S6DNS_RCI_ZERO</tt> constant. The function returns 1 if
+it succeeds, or 0 (and sets errno) if it fails.
+</p>
+
+<p>
+ If the DNSCACHEIP environment variable is set, and contains a list of
+IP addresses separated by commas, semicolons, spaces, tabs, newlines or
+carriage returns, then this list overrides any nameserver information
+from <em>file</em>. If the variable is empty, <em>file</em> will be used
+as the source of the information.
+</p>
+
+<p>
+ If the DNSQUALIFY environment variable is set, a list of domain suffixes,
+separated by spaces, tabs, newlines or carriage returns, is read from it,
+and overrides any qualification information from <em>file</em>. If the
+variable is empty, it amounts to one rule saying "no qualification".
+</p>
+
+<p>
+ <tt>s6dns_init()</tt> is an alias to
+<tt>s6dns_rci_init(&amp;s6dns_rci_here, "/etc/resolv.conf")</tt>.
+</p>
+
+<p>
+<code> void s6dns_rci_free (s6dns_rci_t *rci) </code> <br />
+Frees the memory used by *<em>rci</em>. <em>rci</em> is then suitable to
+be reused in a <tt>s6dns_rci_init</tt> call.
+</p>
+
+<p>
+ <tt>s6dns_finish()</tt> calls <tt>s6dns_rci_free(&amp;s6dns_rci_here)</tt>.
+</p>
+
+<p>
+<code> unsigned int s6dns_qualify (s6dns_domain_t *list, s6dns_domain_t const *d) </code> <br />
+Qualifies domain *<em>d</em> into the list of domains pointed to by <em>list</em>
+according to the rules stored in <tt>s6dns_rci_here</tt>. Returns the number of
+written domains (0 if it fails); this number cannot exceed
+<tt>s6dns_rci_here.rulesnum</tt>.
+</p>
+
+</body>
+</html>

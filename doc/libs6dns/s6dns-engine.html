@@ -1,0 +1,255 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>s6-dns: the s6dns_engine library interface</title>
+    <meta name="Description" content="s6-dns: the s6dns_engine library interface" />
+    <meta name="Keywords" content="s6-dns dns s6dns_engine library libs6dns" />
+    <!-- <link rel="stylesheet" type="text/css" href="http://skarnet.org/default.css" /> -->
+  </head>
+<body>
+
+<p>
+<a href="index.html">libs6dns</a><br />
+<a href="../">s6-dns</a><br />
+<a href="http://skarnet.org/software/">Software</a><br />
+<a href="http://skarnet.org/">skarnet.org</a>
+</p>
+
+<h1> The <tt>s6dns_engine</tt> library interface </h1>
+
+<p>
+ The following functions are declared in the <tt>s6-dns/s6dns-engine.h</tt> header,
+and implemented in the <tt>libs6dns.a</tt> or <tt>libs6dns.so</tt> library.
+</p>
+
+<h2> General information </h2>
+
+<p>
+ <tt>s6dns_engine</tt> is the nitty-gritty of DNS query management. These
+are the low-level asynchronous primitives sending DNS queries over the
+network, and getting answers.
+</p>
+
+<p>
+ <tt>s6dns_engine</tt> has been inspired by Dan J. Bernstein's
+<a href="http://cr.yp.to/djbdns/dns_transmit.html">dns_transmit</a>
+library, but does not borrow any code from it. Unlike
+<tt>dns_transmit</tt>, <tt>s6dns_engine</tt> does not assume that
+network send operations are instant successes; <tt>s6dns_engine</tt>
+descriptors can be selected for writing as well as for reading.
+Also, if the underlying <a href="http://skarnet.org/software/skalibs">
+skalibs</a> has been compiled with IPv6 support, <tt>s6dns_engine</tt>
+supports native IPv6 transport.
+</p>
+
+<p>
+ The <tt>s6dns_engine</tt> functions are used in the implementation of the
+<tt>s6dns_resolven_loop</tt> function - which is nothing more than a
+simple event loop around the <tt>s6dns_engine</tt> primitives - and the
+<a href="../skadns/skadnsd.html">skadnsd</a> daemon. Both pieces of code are
+good examples of how to use <tt>s6dns_engine</tt>.
+</p>
+
+<p>
+ However, unless you're implementing a DNS cache, you probably should
+not call the
+<tt>s6dns_engine</tt> functions directly: they are very low-level. If you
+need synchronous resolution, use the
+<a href="s6dns-resolve.html">s6dns_resolve</a> functions. If you need
+asynchronous DNS operations, use the 
+<a href="../skadns/index.html">skadns</a> functions, which are
+designed to provide a higher level interface to multiple asynchronous
+DNS queries.
+</p>
+
+<h2> Data structures </h2>
+
+<p>
+ A <tt>s6dns_engine_t</tt> structure holds all the data necessary to
+manage a DNS query (and response). It must be initialized to S6DNS_ENGINE_ZERO
+when first declared, and recycled with <tt>s6dns_engine_recycle()</tt>
+after each use. It contains a stralloc, so it must be freed with
+<tt>s6dns_engine_free()</tt> before being discarded, to avoid memory leaks.
+</p>
+
+<h2> Functions </h2>
+
+<h3> <tt>s6dns_engine_t</tt> life cycle </h3>
+
+<p>
+<code> int s6dns_engine_init (s6dns_engine_t *dt, s6dns_ip46list_t const *servers, uint32 options, char const *q, unsigned int qlen, uint16 qtype, struct taia const *deadline, struct taia const *stamp) </code>
+</p>
+
+<p>
+Initializes <em>dt</em> with query <em>q</em> of length <em>qlen</em>
+and type <em>qtype</em>. If <tt>d</tt> is an
+encoded <tt>s6dns_domain_t</tt>, then <tt>d.s</tt> and <tt>d.len</tt>
+are appropriate candidates for arguments <em>q</em> and <em>qlen</em>
+respectively.
+</p>
+
+<p>
+<em>options</em> can be 0 or an OR'ed
+combination of the following, defined in <tt>s6-dns/s6dns-constants.h</tt>:
+</p>
+
+<ul>
+ <li> S6DNS_O_RECURSIVE: the query will be recursive and assuming it is
+sent to a DNS cache, instead of iterative and assuming it is sent to a
+DNS server. </li>
+ <li> S6DNS_O_STRICT: the library will only accept authoritative answers
+to iterative queries. This is normally the sane behaviour, but badly
+configured DNS software around the world - notably, <a href="../bind.html">
+BIND</a> when it's configured to be both a cache and a server - often
+serve <em>non-</em>authoritative data even when they could, so it
+breaks things, hence why the option isn't set by default. </li>
+</ul>
+
+<p>
+<em>servers</em> must point to a list of IP addresses as defined in
+<a href="s6dns-ip46.html">s6-dns/s6dns-ip46.h</a>. Such a list can be
+obtained from the <tt>/etc/resolv.conf</tt> file via the
+<a href="s6dns-rci.html">s6dns_rci_fill()</a> call when performing a
+recursive query, or it must be constructed from a list of relevant
+NS addresses when performing an iterative query.
+</p>
+
+<p>
+<em>stamp</em> must be an accurate enough timestamp. <em>deadline</em>
+sets up a deadline for the query: if the query hasn't been
+satisfactorily answered by <em>deadline</em> - no matter how many
+round-trips to network servers the library performs internally - then
+it will be considered failed, and a timeout will be reported.
+</p>
+
+<p>
+The function returns 1 if all went well, and 0 if an error occurred.
+It returns instantly; it <em>does not</em> perform any network operation,
+it just prepares <em>dt</em> to send a query. The actual data sending
+will take place on the next <tt>s6dns_engine_event()</tt> call.
+</p>
+
+<p>
+<code> void s6dns_engine_recycle (s6dns_engine_t *dt) </code>
+</p>
+
+<p>
+Recycles <tt>dt</tt>, making it ready for another use. This function
+does not deallocate the heap memory used by dt, so it's faster than
+<tt>s6dns_engine_free()</tt> and does not cause heap fragmentation. 
+</p>
+
+<p>
+<code> void s6dns_engine_free (s6dns_engine_t *dt) </code>
+</p>
+
+<p>
+Frees the heap memory used by <tt>dt</tt>. Also makes <tt>dt</tt>
+ready for another use. It's advised to only use this function when
+certain that <em>dt</em> will not be reused.
+</p>
+
+<h3> Before the <tt>iopause()</tt> </h3>
+
+<p>
+ The descriptor to select on is available as the <tt>fd</tt> field in
+the <tt>s6dns_engine_t</tt> structure.
+<em>dt</em>&rarr;fd should be read every iteration, because it can
+change between iterations even if no event or timeout is reported
+for <em>dt</em>.
+</p>
+
+<p>
+<code> void s6dns_engine_nextdeadline (s6dns_engine_t const *dt, struct taia *a) </code>
+</p>
+
+<p>
+If <em>dt</em> needs handling before the absolute date *<em>a</em>,
+then *<em>a</em> is updated
+so it contains the earlier date. This is useful to compute the next
+deadline in an <tt>iopause()</tt> loop.
+</p>
+
+<p>
+<code> int s6dns_engine_isreadable (s6dns_engine_t const *dt) </code>
+</p>
+
+<p>
+Returns nonzero iff <em>dt</em>&rarr;fd is to be selected for reading.
+Should be called in every iteration.
+</p>
+
+<p>
+<code> int s6dns_engine_iswritable (s6dns_engine_t const *dt) </code>
+</p>
+
+<p>
+Returns nonzero iff <em>dt</em>&rarr;fd is to be selected for writing.
+Should be called in every iteration.
+</p>
+
+<h3> After the <tt>iopause()</tt> </h3>
+
+<p>
+<code> int s6dns_engine_timeout (s6dns_engine_t *dt, struct taia const *stamp) </code>
+</p>
+
+<p>
+This function should be called if your selecting function returned 0, which
+means that an event timed out.
+<em>stamp</em> should contain the current time. The function returns -1 if
+an error occurred, 1 if <em>dt</em> actually timed out, and 0 if nothing
+special happened to <em>dt</em> (and your iopause timeout was caused by
+something else). If the return value is not 0, <em>dt</em> is automatically
+recycled.
+</p>
+
+<p>
+<code> int s6dns_engine_event (s6dns_engine_t *dt, struct taia const *stamp) </code>
+</p>
+
+<p>
+This function should be called if your selecting function returned a positive
+number, which means that some event got triggered.
+<em>stamp</em> should contain the current time. The function returns
+-1 if an error occurred (and <em>dt</em> is automatically recycled). It
+returns 0 if no answer has arrived yet, and 1 if an answer is available.
+</p>
+
+<p>
+The <tt>s6dns_engine_timeout()</tt> and <tt>s6dns_engine_event()</tt> functions,
+when returning -1, make use of the following error codes:
+</p>
+<ul>
+ <li> EINVAL: Invalid <em>dt</em>.
+ <li> ENETUNREACH: All the servers in the <em>servers</em> list have been
+unsuccessfully tried. </li>
+ <li> EPROTO: An answer arrived, but it didn't follow the DNS protocol. </li>
+ <li> Other error codes reporting socket or system failures. </li>
+</ul>
+
+<p>
+<code> char *s6dns_engine_packet (s6dns_engine_t const *dt) </code>
+</p>
+
+<p>
+Points to the response packet received from the network,
+if <tt>s6dns_engine_event()</tt> returned 1.
+</p>
+
+<p>
+<code> unsigned int s6dns_engine_packetlen (s6dns_engine_t const *dt) </code>
+</p>
+
+<p>
+Gives the length of the response packet,
+if <tt>s6dns_engine_event()</tt> returned 1.
+</p>
+
+<p>
+ You should recycle or free <em>dt</em> after reading the response packet.
+</p>
+
+</body>
+</html>

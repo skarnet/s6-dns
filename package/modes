@@ -1,0 +1,16 @@
+skadnsd			0755
+s6-randomip		0755
+s6-dnsqualify		0755
+s6-dnsip4		0755
+s6-dnsip6		0755
+s6-dnsmx		0755
+s6-dnsname		0755
+s6-dnsns		0755
+s6-dnssoa		0755
+s6-dnssrv		0755
+s6-dnstxt		0755
+s6-dnsip4-filter	0755
+s6-dnsip6-filter	0755
+s6-dnsname-filter	0755
+s6-dnsq			0755
+s6-dnsqr		0755

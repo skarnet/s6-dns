@@ -1,0 +1,140 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>s6-dns: the problem with libresolv</title>
+    <meta name="Description" content="s6-dns: the problem with libresolv" />
+    <meta name="Keywords" content="s6-dns client library libresolv BIND API interface" />
+    <!-- <link rel="stylesheet" type="text/css" href="http://skarnet.org/default.css" /> -->
+  </head>
+<body>
+
+<p>
+<a href="index.html">s6-dns</a><br />
+<a href="http://skarnet.org/software/">Software</a><br />
+<a href="http://skarnet.org/">skarnet.org</a>
+</p>
+
+<h1> The problem with libresolv </h1>
+
+<p>
+ The BIND name server software comes with its own client library,
+named <em>libresolv</em>.
+</p>
+
+<p>
+ As can be expected from an ISC product, libresolv is not good software.
+Here are a few reasons why.
+</p>
+
+<h2> libresolv's security model is flawed. </h2>
+
+<p>
+ The same people who wrote BIND wrote libresolv. That is the amount of
+trust you can place in libresolv. Ten years ago, the security status
+of libresolv looked like
+<a href="http://cr.yp.to/djbdns/res-disaster.html">this</a>. I am not
+confident that is has improved: bugs in the software may have been
+fixed, but new ones will appear, and most importantly, the security
+management policy at ISC is still the same: security holes will be
+denied instead of acknowledged and worked upon.
+</p>
+
+<p>
+ If you find a bug, and <em>a fortiori</em> a security hole, in
+s6-dns, you can be sure it will be fixed promptly with apologies
+from the author. skarnet.org doesn't do obfuscation, and never lets
+politics get in the way of technical quality.
+</p>
+
+<h2> libresolv is unboundedly synchronous. </h2>
+
+<p>
+ You'd expect a real DNS client library to do better in this aspect
+than <a href="getaddrinfo.html">getaddrinfo()</a>, but no: libresolv's
+function calls are still purely synchronous and may uncontrollably
+block if the network is unresponsive.
+</p>
+
+<p>
+ Additionally, libresolv <em>only</em> provides a synchronous
+interface to clients. Despite the fundamentally asynchronous nature
+of DNS, and the need to implement asynchronous primitives
+internally, only blocking calls are made available in the API.
+This forces users to stack yet another piece of software on top
+of their dependencies if they need asynchronous DNS resolution.
+</p>
+
+<p>
+ libs6dns provides several layers of asynchronous interfaces.
+The user has access to
+<a href="libs6dns/s6dns_engine.html">low-level packet sending
+and receiving</a>, to
+<a href="libs6dns/s6dns_resolve.html#parallel">synchronous
+resolution of several queries at once</a>, and to a
+<a href="skadns/">real high-level asynchronous DNS library</a>.
+</p>
+
+<h2> It is too big for what it does. </h2>
+
+<p>
+ The <tt>libresolv-2.13.so</tt> binary file compiled for an i386
+Debian Linux system is roughly 71k bytes. The <tt>libs6dns.so.2.0</tt>
+file, for the same system, is roughly 41k bytes, while offering
+more functionality. libresolv does not do any high-level answer
+parsing, so the user still has to do some work after the libresolv
+calls. s6-dns tries to be small and still provide the user comfortable
+interfaces.
+</p>
+
+<h2> The API is cumbersome to use. </h2>
+
+<p>
+ Some examples of less-than-ideal interfaces for the users:
+</p>
+
+<ul>
+ <li> There is a flag in libresolv's global state structure that
+determines if queries are to be sent recursive or iterative. Which
+means that a program that needs to make both recursive and iterative
+queries must duplicate this state structure and use one for recursive
+queries, one for iterative queries. Why this complexity&nbsp;? The
+recursive flag should be given for every query, not be a part
+of the resolver state. </li>
+ <li> When a libresolv answer arrives but doesn't fit into the
+user-supplied buffer, the query is discarded and has to be retried.
+Does "network efficiency" ring a bell&nbsp;? Also, the length of
+the original answer is returned by the first call, which is a good
+thing: the user can now provide a large enough buffer so the call
+succeeds the next time, right&nbsp;? Wrong. The next answer can
+be different from the first, and in particular, longer, which
+means that the next query can <em>still fail</em>. </li>
+</ul>
+
+<p>
+ There is a reason why system calls and local functions take
+user-supplied buffers as arguments. They are relatively fast, it is
+not too costly to call them again if the buffer is too small the
+first time, and the result is consistent, i.e. after the first call,
+the right buffer length is <em>known</em>. But functions making
+network exchanges with variable-length results from one call to
+another&nbsp;? Those <em>need</em> heap-allocated storage. It is
+good design to avoid using the heap whenever possible, but it is
+not good design to waste network round-trips to save a <tt>malloc()</tt>.
+</p>
+
+<h2> Conclusion </h2>
+
+<p>
+ Like many other "standards", and C library interfaces in particular,
+<tt>libresolv</tt> is at best a mediocre one, that people use because
+there has been nothing better so far.
+</p>
+
+<p>
+ s6-dns tries to be an alternative solution - not as ambitious,
+but based on solid design principles and a reliable code base.
+</p>
+
+</body>
+</html>

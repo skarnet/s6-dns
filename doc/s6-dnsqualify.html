@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>s6-dns: the s6-dnsqualify program</title>
+    <meta name="Description" content="s6-dns: the s6-dnsqualify program" />
+    <meta name="Keywords" content="s6-dns s6-dnsqualify domain name qualification fqdn resolv.conf" />
+    <!-- <link rel="stylesheet" type="text/css" href="http://skarnet.org/default.css" /> -->
+  </head>
+<body>
+
+<p>
+<a href="index.html">s6-dns</a><br />
+<a href="http://skarnet.org/software/">Software</a><br />
+<a href="http://skarnet.org/">skarnet.org</a>
+</p>
+
+<h1> The s6-dnsqualify program </h1>
+
+<p>
+  s6-dnsqualify qualifies a domain name.
+</p>
+
+<h2> Interface </h2>
+
+<pre>
+     s6-dnsqualify <em>domain</em>
+</pre>
+
+<ul>
+ <li> s6-dnsqualify qualifies <em>domain</em> according to the "domain" and
+"search" rules in <tt>/etc/resolv.conf</tt>. It prints the result on
+stdout, one FQDN per line. </li>
+ <li> If the DNSQUALIFY
+environment variable is set and contains a list of suffixes separated by spaces,
+tabs, newlines or carriage returns, then this list is used instead of the
+<tt>/etc/resolv.conf</tt> rules. </li>
+</ul>
+
+</body>
+</html>

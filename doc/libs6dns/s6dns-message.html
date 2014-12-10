@@ -1,0 +1,261 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>s6-dns: the s6dns_message library interface</title>
+    <meta name="Description" content="s6-dns: the s6dns_message library interface" />
+    <meta name="Keywords" content="s6-dns dns s6dns_message library libs6dns" />
+    <!-- <link rel="stylesheet" type="text/css" href="http://skarnet.org/default.css" /> -->
+  </head>
+<body>
+
+<p>
+<a href="index.html">libs6dns</a><br />
+<a href="../">s6-dns</a><br />
+<a href="http://skarnet.org/software/">Software</a><br />
+<a href="http://skarnet.org/">skarnet.org</a>
+</p>
+
+<h1> The <tt>s6dns_message</tt> library interface </h1>
+
+<p>
+ The following functions are declared in the <tt>s6-dns/s6dns-message.h</tt> header,
+and implemented in the <tt>libs6dns.a</tt> or <tt>libs6dns.so</tt> library.
+</p>
+
+<h2> General information </h2>
+
+<p>
+ <tt>s6dns_message</tt> provides functions to read and parse DNS messages
+sent by servers and caches and containing answers to queries.
+</p>
+
+<h2> Data structures </h2>
+
+<p>
+ A <tt>s6dns_message_header_t</tt> is a structure containing the header
+of a received DNS packet, broken down for easy access to the bits.
+</p>
+
+<p>
+ A <tt>s6dns_message_rr_t</tt> is a structure containing the information
+about a resource record given by an answer packet - all of it, except the
+value of the answer itself, which is rtype-specific and has to be decoded
+by rtype-specific functions.
+</p>
+
+<p>
+ A <tt>s6dns_message_rr_func_t</tt> is the type of such a function. The
+prototype is <br />
+<code> int f (s6dns_message_rr_t const *rr, char const *packet, unsigned int packetlen, unsigned int pos, unsigned int section, void *data) </code> <br />
+</p>
+
+<ul>
+ <li> *<em>rr</em> contains the header information of the resource record,
+including the domain to which it applies, the rtype, and the ttl. </li>
+ <li> <em>packet</em> points to the <strong>whole DNS packet</strong> the RR
+is a part of. </li>
+ <li> <em>packetlen</em> is the total length of said packet. </li>
+ <li> <em>pos</em> is the offset of the RR in the DNS packet, i.e. <em>f</em>
+should start parsing at <em>packet + pos</em>. </li>
+ <li> <em>section</em> is the section the RR belongs to: 2 for answer, 3 for
+authority, 4 for additional. </li>
+ <li> <em>data</em> is a user-specified pointer; it is typically used to
+write the decoded output, in a rtype-specific way. </li>
+ <li> <em>f</em> must return 1 or more if it succeeds in decoding the packet.
+Else it must set errno appropriately, and return -1 if the error is local,
+unrelated to the packet - for instance, it has run out of memory - or 0 if it
+cannot decode the RR because of the packet contents. </li>
+</ul>
+
+<p>
+ Various structures designed to store specific resource record types are
+also provided. The list includes:
+</p>
+
+<ul>
+ <li> <tt>s6dns_message_rr_hinfo</tt> for HINFO RRs </li>
+ <li> <tt>s6dns_message_rr_mx</tt> for MX RRs </li>
+ <li> <tt>s6dns_message_rr_soa</tt> for SOA RRs </li>
+ <li> <tt>s6dns_message_rr_srv</tt> for SRV RRs </li>
+</ul>
+
+<h2> Functions </h2>
+
+<h3> Header management </h3>
+
+<p>
+<code> void s6dns_message_header_pack (char *s, s6dns_message_header_t const *h) </code> <br />
+Packs the header *<em>h</em> into the 12 bytes pointed to by <em>s</em>.
+</p>
+
+<p>
+<code> void s6dns_message_header_unpack (char const *s, s6dns_message_header_t *h) </code> <br />
+Unpacks the 12 bytes pointed to by <em>s</em> into the structure *<em>h</em>.
+</p>
+
+<h3> Low-level RR decoding </h3>
+
+<p>
+ The following primitives are used in the implementation of
+<tt>s6dns_message_rr_func_t</tt>-typed functions, to read and decode information
+stored in a DNS packet. Their arguments are:
+</p>
+
+<ol>
+ <li> A pointer to the structure where the information is going to be stored </li>
+ <li> A read-only pointer to the beginning of the DNS packet </li>
+ <li> The length of the DNS packet </li>
+ <li> A pointer to an integer containing the current position in the
+DNS packet, i.e. where the information is going to be read. If the functions
+succeed, they automatically update the position so information can be read
+sequentially. </li>
+</ol>
+
+<p>
+<code> int s6dns_message_get_string (s6dns_domain_t *d, char const *packet, unsigned int packetlen, unsigned int *pos) </code> <br />
+Reads a character-string and stores it into *<em>d</em>. Returns 1 on success
+and 0 on failure. Note that *<em>d</em> does not contain a domain, but the
+<tt>s6dns_domain_t</tt> structure is adapted to store strings that do not
+exceed 255 characters. <em>d</em>&rarr;s can be used to access the string,
+and <em>d</em>&rarr;len its length.
+</p>
+
+<p>
+<code> int s6dns_message_get_strings (char *s, unsigned int rdlength, char const *packet, unsigned int packetlen, unsigned int *pos </code> <br />
+This function takes an additional parameter <em>rdlength</em>. It reads a series of
+character-strings and stores their concatenation into the string <em>s</em>, which
+must be preallocated; it can never store more than <em>rdlength</em> bytes. It returns
+-1 if it fails; on success, it returns the number of bytes written. The
+<em>rdlength</em> parameter must be the length of the resource record containing
+the series of character-strings.
+</p>
+
+<p>
+<code> unsigned int s6dns_message_get_domain (s6dns_domain_t *d, char const *packet, unsigned int packetlen, unsigned int *pos) </code> <br />
+Reads a domain and stores it, in string form, into *<em>d</em>.
+Returns 1 on success and 0 on failure, and sets errno:
+</p>
+
+<ul>
+ <li> EPROTO: there is no proper domain to be read in position *<em>pos</em> of
+<em>packet</em>. Either the packet is malformed or the function is being
+misused. </li>
+ <li> EPROTONOSUPPORT: the domain encoding uses an extension that the function
+does not recognize. </li>
+</ul>
+
+<p>
+<code> int s6dns_message_get_hinfo (s6dns_message_rr_hinfo_t *p, char const *packet, unsigned int packetlen, unsigned int *pos) </code> <br />
+Reads a HINFO RR and stores it into *<em>p</em>. Returns 1 on success or 0
+on failure.
+</p>
+
+<p>
+<code> int s6dns_message_get_mx (s6dns_message_rr_mx_t *p, char const *packet, unsigned int packetlen, unsigned int *pos) </code> <br />
+Reads a MX RR and stores it into *<em>p</em>. Returns 1 on success or 0 on failure.
+</p>
+
+<p>
+<code> int s6dns_message_get_soa (s6dns_message_rr_soa_t *p, char const *packet, unsigned int packetlen, unsigned int *pos) </code> <br />
+Reads a SOA RR and stores it into *<em>p</em>. Returns 1 on success or 0 on failure.
+</p>
+
+<p>
+<code> int s6dns_message_get_srv (s6dns_message_rr_srv_t *p, char const *packet, unsigned int packetlen, unsigned int *pos) </code> <br />
+Reads a SRV RR and stores it into *<em>p</em>. Returns 1 on success or 0 on failure.
+</p>
+
+<h3> High-level RR-specific parsing functions </h3>
+
+<p>
+<code> s6dns_message_func_t s6dns_message_parse_answer_strings </code> <br />
+Parses character-strings located in the answer section of the packet. The
+<em>data</em> argument is interpreted as a pointer to a <tt>s6dns_mpag_t</tt>,
+which is a structure defined in the <tt>s6-dns/s6dns-message.h</tt> header
+and used to store multiple character-strings.
+</p>
+
+<p>
+<code> s6dns_message_func_t s6dns_message_parse_answer_domain </code> <br />
+Parses domains located in the answer section of the packet. The
+<em>data</em> argument is interpreted as a pointer to a <tt>s6dns_dpag_t</tt>,
+which is a structure defined in the <tt>s6-dns/s6dns-message.h</tt> header
+and used to store multiple domains.
+</p>
+
+<p>
+<code> s6dns_message_func_t s6dns_message_parse_answer_a </code> <br />
+Parses A RRs located in the answer section of the packet. The
+<em>data</em> argument is interpreted as a pointer to a
+<a href="http://skarnet.org/software/skalibs/libstddjb/stralloc.html">stralloc</a>,
+and 4 bytes are appended to this stralloc for every IPv4 address found.
+</p>
+
+
+<code> s6dns_message_func_t s6dns_message_parse_answer_aaaa </code> <br />
+Parses AAAA RRs located in the answer section of the packet. The
+<em>data</em> argument is interpreted as a pointer to a
+<a href="http://skarnet.org/software/skalibs/libstddjb/stralloc.html">stralloc</a>,
+and 16 bytes are appended to this stralloc for every IPv6 address found.
+</p>
+
+<p>
+<code> s6dns_message_func_t s6dns_message_parse_answer_hinfo </code> <br />
+Parses HINFO RRs located in the answer section of the packet. The
+<em>data</em> argument is interpreted as a pointer to a
+<a href="http://skarnet.org/software/skalibs/libstddjb/genalloc.html">genalloc</a>
+containing <tt>s6dns_message_rr_hinfo_t</tt> structures.
+</p>
+
+<p>
+<code> s6dns_message_func_t s6dns_message_parse_answer_mx </code> <br />
+Parses MX RRs located in the answer section of the packet. The
+<em>data</em> argument is interpreted as a pointer to a
+<a href="http://skarnet.org/software/skalibs/libstddjb/genalloc.html">genalloc</a>
+containing <tt>s6dns_message_rr_mx_t</tt> structures.
+</p>
+
+<p>
+<code> s6dns_message_func_t s6dns_message_parse_answer_soa </code> <br />
+Parses SOA RRs located in the answer section of the packet. The
+<em>data</em> argument is interpreted as a pointer to a
+<a href="http://skarnet.org/software/skalibs/libstddjb/genalloc.html">genalloc</a>
+containing <tt>s6dns_message_rr_soa_t</tt> structures.
+</p>
+
+<p>
+<code> s6dns_message_func_t s6dns_message_parse_answer_srv </code> <br />
+Parses SRV RRs located in the answer section of the packet. The
+<em>data</em> argument is interpreted as a pointer to a
+<a href="http://skarnet.org/software/skalibs/libstddjb/genalloc.html">genalloc</a>
+containing <tt>s6dns_message_rr_srv_t</tt> structures.
+</p>
+
+<h3> High-level packet parsing </h3>
+
+<p>
+<code> int s6dns_message_parse (s6dns_message_header_t *h, char const *packet, unsigned int packetlen, s6dns_message_rr_func_t *f, void *data) </code> <br />
+ This function parses the DNS packet <em>packet</em> of length <em>packetlen</em>.
+It stores the packet header into *<em>h</em>. Then, for every RR in the answer,
+authority or additional section of the packet, it calls <em>f</em> with the
+relevant parameters. <em>data</em> is the extra pointer given to <em>f</em> to
+store information. The function returns 1 if the parsing succeeds. Otherwise it
+returns -1 if there is a local error unrelated to the packet, or 0 if no
+appropriate answer can be decoded from the packet. errno then contains one
+of the following values:
+</p>
+
+<ul>
+ <li> EPROTO: the packet is malformed, syntax error </li>
+ <li> EBADMSG: rcode 1, query format error </li>
+ <li> EBUSY: rcode 2, server failure </li>
+ <li> ENOENT: rcode 3, nxdomain </li>
+ <li> ENOTSUP: rcode 4, query type not implemented </li>
+ <li> ECONNREFUSED: rcode 5, operation refused by server </li>
+ <li> EIO: unknown rcode </li>
+ <li> any other value being set by <em>f</em> if it returns a failure code. </li>
+</ul>
+
+</body>
+</html>

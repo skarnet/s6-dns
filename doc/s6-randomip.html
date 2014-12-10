@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>s6-dns: the s6-randomip program</title>
+    <meta name="Description" content="s6-dns: the s6-randomip program" />
+    <meta name="Keywords" content="s6-dns s6-randomip randomip random ip address filter" />
+    <!-- <link rel="stylesheet" type="text/css" href="http://skarnet.org/default.css" /> -->
+  </head>
+<body>
+
+<p>
+<a href="index.html">s6-dns</a><br />
+<a href="http://skarnet.org/software/">Software</a><br />
+<a href="http://skarnet.org/">skarnet.org</a>
+</p>
+
+<h1> The s6-randomip program </h1>
+
+<p>
+  s6-randomip generates random IP addresses and prints them to
+its standard output, one per line.
+</p>
+
+<h2> Interface </h2>
+
+<pre>
+     s6-randomip [ -4 ] [ -6 ] [ -n <em>max</em> ]
+</pre>
+
+<ul>
+ <li> s6-randomip makes up IP addresses and prints
+them to its stdout. It keeps running until it receives a signal. </li>
+ <li> IP addresses are not guaranteed to represent anything. They are totally random. </li>
+</ul>
+
+<h2> Options </h2>
+
+<ul>
+ <li> <tt>-4</tt>&nbsp;: generate IPv4 addresses. </li>
+ <li> <tt>-6</tt>&nbsp;: generate IPv6 addresses. Both the <tt>-4</tt> and
+<tt>-6</tt> options may be given. If none is given, by default
+s6-randomip will only generate IPv4 addresses. </li>
+ <li> <tt>-n</tt>&nbsp;<em>max</em>&nbsp;: s6-randomip will only generate
+<em>max</em> addresses, then exit 0, instead of running forever. </li>
+</ul>
+
+<h2> Notes </h2>
+
+<p>
+ s6-randomip can be used in conjunction with
+<a href="s6-dnsname-filter">s6-dnsname-filter</a> to stress-test your
+DNS architecture. Please use this responsibly and ethically.
+</p>
+
+</body>
+</html>

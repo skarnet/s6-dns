@@ -1,0 +1,120 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>s6-dns: the skadnsd internal program</title>
+    <meta name="Description" content="s6-dns: the skadnsd internal program" />
+    <meta name="Keywords" content="s6-dns skadnsd asynchronous dns daemon" />
+    <!-- <link rel="stylesheet" type="text/css" href="http://skarnet.org/default.css" /> -->
+  </head>
+<body>
+
+<a href="index.html">libskadns</a><br />
+<a href="../index.html">s6-dns</a><br />
+<a href="http://skarnet.org/software/">Software</a><br />
+<a href="http://skarnet.org/">skarnet.org</a><p />
+
+<h1> The <tt>skadnsd</tt> program </h1>
+
+<p>
+<tt>skadnsd</tt> is the skadns daemon. It reads a series of
+queries from the client on stdin, resolves them asynchronously,
+and writes
+the answers to the client as soon as it gets them. It exits 0
+when its stdin closes. It exits 111 on any serious error,
+writing the error message to stderr.
+</p>
+
+<p>
+<tt>skadnsd</tt> is a stub resolver. It reads <tt>/etc/resolv.conf</tt>
+at start looking for a "nameserver" line containing
+the address of a DNS cache (aka full resolver). It will exit 111 if it cannot
+find any valid cache address in <tt>/etc/resolv.conf</tt>. If the
+<tt>DNSCACHEIP</tt> environment variable is set, its value overrides
+what <tt>/etc/resolv.conf</tt> says.
+</p>
+
+<h2> Interface </h2>
+
+<p>
+skadnsd does not fork, does not background itself automatically,
+and does not use syslog. It is not meant to be run directly by the
+user: it will be invoked and spawned by the skadns library calls.
+</p>
+
+<p>
+ There are 2 ways to use skadnsd:
+</p>
+<ol>
+<li> (preferred) Use the <tt>skadns_startf()</tt> library call.
+A <tt>skadnsd</tt> child will then be spawned from your
+calling process, and automatically reaped when you call
+<tt>skadns_end()</tt>. It requires care with applications that
+trap SIGCHLD. </li>
+<li> Use the <tt>skadns_start()</tt> library call, together with
+a <em>skadnsd service</em>. </li>
+</ol>
+
+<h3> Running skadnsd as a child process </h3>
+
+<p>
+ This is the simplest and safest way of using <em>skadns</em>. Forget
+about <tt>skadnsd</tt>: just start your library calls with
+<tt>skadns_startf()</tt> and end them with <tt>skadns_end()</tt>.
+Be careful though: if you're using SIGCHLD handlers, make sure they do
+not interfere with the child processes your application has without
+knowing. This is a general Unix programming rule.
+</p>
+
+<h3> Running a skadnsd as a daemon: the skadnsd service </h3>
+
+<p>
+ In this mode, you set up a daemon listening on a Unix domain socket,
+and clients connect to this socket to access the service. The
+advantage of this setup is that it works even with badly written
+clients that have trouble handling a child process; the drawback is
+that it requires support from the system administrator.
+</p>
+
+<p>
+skadnsd has no "standalone" mode: it is designed to work with a Unix
+domain superserver, like
+<a href="http://skarnet.org/software/s6-networking/s6-ipcserver.html">s6-ipcserver</a>.
+skadnsd follows the <a href="http://cr.yp.to/proto/ucspi.txt">UCSPI"</a>
+interface, it can be directly executed from the superserver.
+</p>
+
+<p>
+You should run skadnsd (and its Unix superserver) under a specific user
+and group, for elementary security reasons; and you should run its
+dedicated logger as another specific user. Do NOT run skadnsd as root;
+check your super-server documentation to find how
+to run it under a specific account.
+</p>
+
+<h2> Notes </h2>
+
+<ul>
+ <li> Users should never invoke <tt>skadnsd</tt> directly. It's an
+internal program designed to be spawned by the skadns library. </li>
+ <li> If a poorly designed client sends a lot of queries and never reads the
+answers, those will indefinitely queue up in the daemon, eating up
+memory. You should run your process (or your Unix superserver, if you're
+using a skadnsd service) under a program like
+<a href="http://skarnet.org/software/s6/s6-softlimit.html">s6-softlimit</a> to
+set a memory limit to every skadnsd instance. If skadnsd runs out of
+allowed memory, it will simply die. </li>
+ <li> If you're using a skadnsd service: you should configure your
+Unix superserver to set a maximum
+number of concurrent skadnsd instances; most
+Unix superserver implementations provide the
+<tt>-c</tt> option for this. The s6-ipcserver program also
+allows you to specify a maximum number of concurrent daemon
+instances per client. </li>
+<li> The only way to ensure absolute reliability of the skadnsd process is
+to run it as a child, not as a daemon: use <tt>skadnsd_startf()</tt> when
+possible. </li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,262 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>s6-dns: the skadns library interface</title>
+    <meta name="Description" content="s6-dns: the skadns library interface" />
+    <meta name="Keywords" content="s6-dns skadns library asynchronous resolution resolver client C interface" />
+    <!-- <link rel="stylesheet" type="text/css" href="http://skarnet.org/default.css" /> -->
+  </head>
+<body>
+
+<p>
+<a href="../index.html">s6-dns</a><br />
+<a href="http://skarnet.org/software/">Software</a><br />
+<a href="http://skarnet.org/">skarnet.org</a>
+</p>
+
+<h1> The <tt>skadns</tt> library interface </h1>
+
+<p>
+ The <tt>skadns</tt> library provides an API for asynchronous DNS
+resolution.
+</p>
+
+<h2> Compiling </h2>
+
+<ul>
+<ul>
+ <li> Make sure the s6-dns headers, as well as the skalibs headers,
+are visible in your header search path. </li>
+ <li> Use <tt>#include &lt;s6-dns/skadns.h&gt;</tt> </li>
+ <li> You might also want to include the <tt>s6-dns/s6dns.h</tt> header for
+the definition of the <tt>s6dns_domain_t</tt> type and the various
+qtype constants </li>
+</ul>
+
+<h2> Linking </h2>
+
+<ul>
+ <li> Make sure the s6 libraries, as well as the skalibs libraries,
+are visible in your library search path. </li>
+ <li> Link against <tt>-lskadns</tt> and <tt>-lskarnet</tt>. </li>
+ <li> If you're using a skadnsd service, also add `cat $SYSDEPS/socket.lib`
+to the end of your linking command line, $SYSDEPS standing for your
+skalibs sysdeps directory. </li>
+</ul>
+
+
+<h2> Programming </h2>
+
+<p>
+ Check the <tt>s6-dns/skadns.h</tt> header for the
+exact function prototypes.
+</p>
+
+<p>
+ Make sure your application is not disturbed by children it doesn't
+know it has. This means paying some attention to the SIGCHLD handler,
+if any, and to the way you perform <tt>waitpid()</tt>s. The best
+practice is to use a
+<a href="http://skarnet.org/software/skalibs/libstddjb/selfpipe.html">self-pipe</a>
+to handle SIGCHLD (as well as other signals the application needs to trap),
+and to <em>always</em> use <tt>wait_nohang()</tt> to reap children,
+simply ignoring pids you don't know.
+</p>
+
+<p>
+ If your (badly programmed) application has trouble handling unknown
+children, consider using a skadnsd service.
+</p>
+
+<h3> A programming example </h3>
+
+<p>
+ The <tt>src/clients/s6dns_generic_filter_main.c</tt> file in the s6-dns
+package, used in the <tt>s6-dns*-filter</tt> programs, illustrates how to
+use the skadns library.
+</p>
+
+<h3> Starting and ending a session </h3>
+
+<pre>
+skadns_t a = SKADNS_ZERO ;
+tain_t deadline, stamp ;
+
+tain_now(&amp;stamp) ;
+tain_addsec(&amp;deadline, &amp;stamp, 2)
+
+// char const *path = SKADNS_IPCPATH ;
+// skadns_start(&amp;a, path, &amp;deadline, &amp;stamp) ;
+skadns_startf(&amp;a, &amp;deadline, &amp;stamp) ;
+</pre>
+
+<p>
+<tt>skadns_start</tt> starts a session with a skadnsd service, listening
+on <em>path</em>. <br />
+<tt>skadns_startf</tt> starts a session with a skadnsd process as a child
+(which is the simplest usage). <br />
+<tt>a</tt> is a skadns_t structure that must be declared and
+initialized to SKADNS_ZERO.
+<tt>stamp</tt> must be an accurate enough timestamp. <br />
+If the session initialization fails, the function returns 0 and errno is set;
+else the function returns 1.
+</p>
+<p>
+If the absolute time <tt>deadline</tt> is reached and the function
+has not returned yet, it immediately returns 0 with errno set to ETIMEDOUT.
+
+Only local interprocess communications are involved; unless your system is
+heavily overloaded, the function should return near-instantly. One or two
+seconds of delay between <tt>stamp</tt> and <tt>deadline</tt> should be
+enough: if the function takes more than that to return, then there is a
+problem with the underlying processes.
+</p>
+
+<p>
+ You can have more than one session open in parallel, by declaring
+several distinct <tt>skadns_t</tt> structures and calling
+<tt>skadns_startf</tt> (or <tt>skadns_start</tt>) more than once.
+However, this is only useful if you need to perform more than
+SKADNS_MAXCONCURRENCY, i.e. a thousand, concurrent requests. In
+most situations, a single skadns session will be enough.
+</p>
+
+<pre>
+skadns_end(&amp;a) ;
+</pre>
+
+<p>
+<tt>skadns_end</tt> frees all the resources used by the session. The
+<tt>a</tt> structure is then reusable for another session.
+</p>
+
+<h3> Sending a DNS query </h3>
+
+<pre>
+s6dns_domain_t d ;
+uint16 qtype ;
+uint16 id ;
+tain_t limit, deadline, stamp ;
+
+skadns_send(&amp;a, &amp;id, &amp;d, qtype, &amp;limit, &amp;deadline, &amp;stamp) ;
+</pre>
+
+<p>
+<tt>skadns_send</tt> starts the asynchronous resolution of domain <em>d</em>
+with query type <em>qtype</em>. <em>d</em> must be encoded in packet form.
+<em>stamp</em> must be an accurate enough timetamp.
+If the resolution hasn't completed by deadline <em>limit</em>, it will
+automatically fail with a status set to ETIMEDOUT.
+</p>
+
+<p>
+ Like <tt>skadns_startf()</tt>, the <tt>skadns_send()</tt> call
+is synchronous but should not be blocking; however, if it hasn't returned by
+deadline <em>deadline</em>, it then returns 0 with errno set to ETIMEDOUT.
+On failure, the call returns 0 and sets errno. On success, it returns 1 and
+<em>id</em> is set to a 16-bit number identifying the query.
+</p>
+
+<h3> Cancelling a query </h3>
+
+<pre>
+skadns_cancel(&amp;a, id, &amp;deadline, &amp;stamp) ;
+</pre>
+
+<p>
+ <tt>skadns_cancel</tt> cancels the resolution identified by <em>id</em>.
+<em>stamp</em> must be an accurate enough timestamp.
+The call returns 1 on success, or 0 (and sets errno) on failure. It is
+synchronous but should return almost-instantly; if it hasn't returned
+by <em>deadline</em>, it then returns 0 ETIMEDOUT.
+</p>
+
+<p>
+ After a query has been successfully canceled, its id can be discarded.
+</p>
+
+<h3> Asynchronously waiting for answers </h3>
+
+<p>
+<em> (from now on, the functions are listed with their prototypes instead
+of usage examples.) </em>
+</p>
+
+<pre>
+int skadns_fd (skadns_t const *a)
+</pre>
+
+<p>
+ Returns a file descriptor to select on for reading. Do not
+<tt>read()</tt> it though.
+</p>
+
+<pre>
+int skadns_update (skadns_t *a)
+</pre>
+
+<p>
+ Call this function whenever the fd checks readability: it will
+update <em>a</em>'s internal structures with information from the
+<a href="skadnsd.html">skadnsd</a> daemon. It returns -1 if an error
+occurs; in case of success, it returns the number of identifiers for
+which something happened.
+</p>
+
+<p>
+ When <tt>skadns_update</tt> returns,
+<tt>genalloc_s(uint16, &amp;a-&gt;list)</tt> points to an array of
+<tt>genalloc_len(uint16, &amp;a-&gt;list)</tt> 16-bit unsigned
+integers. Those integers are valid ids that can be used with the
+following functions.
+</p>
+
+<pre>
+char const *skadns_packet (skadns_t *a, uint16 id)
+int skadns_packetlen (skadns_t *a, uint16 id)
+</pre>
+
+<p>
+ <tt>skadns_packet()</tt> returns a pointer to the DNS packet
+containing the answer to the query identified by <em>id</em>,
+and <tt>skadns_packetlen()</tt> returns its length. If an
+error has occurred, <tt>skadns_packet()</tt> returns NULL and
+<tt>skadns_packetlen()</tt> returns -1; either call sets errno
+to a value identifying the error. Some errno values have a
+special meaning:
+</p>
+
+<ul>
+ <li> EAGAIN: the result has not arrived yet. </li>
+ <li> ECANCELED: the query has been canceled. </li>
+ <li> EINVAL: <em>id</em> does not identify a valid query. Note
+that <strong>if</strong> you get EINVAL, <strong>then</strong>
+<em>id</em> is invalid, but the reverse is not true: 
+using invalid ids is a programming error and may result in a crash. </li>
+</ul>
+
+<pre>
+int skadns_release (skadns_t *a, uint16 id)
+</pre>
+
+<p>
+  <tt>skadns_release()</tt> frees the cell holding the result of
+query <em>id</em>. It returns 1 on success, then <em>id</em> can
+be discarded - further calls to <tt>skadns_send()</tt> may reuse
+the same number.
+</p>
+
+<p>
+ <tt>skadns_release()</tt> may fail, and return 0. This signals a
+programming error and shouldn't be relied on - however, if it happens,
+errno can help you identify the problem:
+</p>
+
+<ul>
+ <li> EBUSY: the query is still pending, cancelled or not. </li>
+ <li> EINVAL: <em>id</em> is invalid.
+</ul>
+
+</body>
+</html>
