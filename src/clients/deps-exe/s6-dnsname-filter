@@ -1,4 +1,4 @@
-libs6dnsgenericfilter.a
+s6dns_generic_filter_main.o
 -lskadns
 -ls6dns
 -lskarnet

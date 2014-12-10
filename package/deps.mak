@@ -130,14 +130,13 @@ src/skadns/skadns_update.o src/skadns/skadns_update.lo: src/skadns/skadns_update
 src/skadns/skadns_zero.o src/skadns/skadns_zero.lo: src/skadns/skadns_zero.c src/include/s6-dns/skadns.h
 src/skadns/skadnsd.o src/skadns/skadnsd.lo: src/skadns/skadnsd.c src/include/s6-dns/s6dns.h src/include/s6-dns/skadns.h
 
-libs6dnsgenericfilter.a:  src/clients/s6dns_generic_filter_main.o src/clients/s6dns_namescanner.o
 s6-dnsip4: src/clients/s6-dnsip4.o -ls6dns -lskarnet ${SOCKET_LIB} ${TAINNOW_LIB}
-s6-dnsip4-filter: src/clients/s6-dnsip4-filter.o libs6dnsgenericfilter.a -lskadns -ls6dns -lskarnet ${SOCKET_LIB} ${TAINNOW_LIB}
+s6-dnsip4-filter: src/clients/s6-dnsip4-filter.o src/clients/s6dns_generic_filter_main.o src/clients/s6dns_namescanner.o -lskadns -ls6dns -lskarnet ${SOCKET_LIB} ${TAINNOW_LIB}
 s6-dnsip6: src/clients/s6-dnsip6.o -ls6dns -lskarnet ${SOCKET_LIB} ${TAINNOW_LIB}
-s6-dnsip6-filter: src/clients/s6-dnsip6-filter.o libs6dnsgenericfilter.a -lskadns -ls6dns -lskarnet ${SOCKET_LIB} ${TAINNOW_LIB}
+s6-dnsip6-filter: src/clients/s6-dnsip6-filter.o src/clients/s6dns_generic_filter_main.o src/clients/s6dns_namescanner.o -lskadns -ls6dns -lskarnet ${SOCKET_LIB} ${TAINNOW_LIB}
 s6-dnsmx: src/clients/s6-dnsmx.o -ls6dns -lskarnet ${SOCKET_LIB} ${TAINNOW_LIB}
 s6-dnsname: src/clients/s6-dnsname.o -ls6dns -lskarnet ${SOCKET_LIB} ${TAINNOW_LIB}
-s6-dnsname-filter: src/clients/s6-dnsname-filter.o libs6dnsgenericfilter.a -lskadns -ls6dns -lskarnet ${SOCKET_LIB} ${TAINNOW_LIB}
+s6-dnsname-filter: src/clients/s6-dnsname-filter.o src/clients/s6dns_generic_filter_main.o -lskadns -ls6dns -lskarnet ${SOCKET_LIB} ${TAINNOW_LIB}
 s6-dnsns: src/clients/s6-dnsns.o -ls6dns -lskarnet ${SOCKET_LIB} ${TAINNOW_LIB}
 s6-dnsq: src/clients/s6-dnsq.o -ls6dns -lskarnet ${SOCKET_LIB} ${TAINNOW_LIB}
 s6-dnsqr: src/clients/s6-dnsqr.o -ls6dns -lskarnet ${SOCKET_LIB} ${TAINNOW_LIB}
