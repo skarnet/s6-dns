@@ -3,9 +3,9 @@
 #include <errno.h>
 #include <skalibs/error.h>
 #include <skalibs/uint16.h>
+#include <skalibs/uint.h>
 #include <skalibs/bytestr.h>
 #include <skalibs/genwrite.h>
-#include <skalibs/fmtscan.h>
 #include <s6-dns/s6dns-constants.h>
 #include <s6-dns/s6dns-domain.h>
 #include <s6-dns/s6dns-message.h>

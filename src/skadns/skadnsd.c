@@ -37,7 +37,7 @@ static void remove (unsigned int i)
 static void fail (unsigned int i)
 {
   char pack[3] ;
-  unixmessage_t m = { .s = pack, len = 3, .fds = 0, .nfds = 0 } ;
+  unixmessage_t m = { .s = pack, .len = 3, .fds = 0, .nfds = 0 } ;
   uint16_pack_big(pack, a[i].id) ;
   pack[2] = a[i].dt.status ;
   s6dns_engine_recycle(&a[i].dt) ;
@@ -178,7 +178,7 @@ int main (void)
           unixmessage_v_t mv = { .v = v, .vlen = 2, .fds = 0, .nfds = 0 } ;
           uint16_pack_big(pack, a[i].id) ;
           pack[2] = 0 ;
-          if (!unixmessage_putv(unixmessage_sender_x, v, 2))
+          if (!unixmessage_putv(unixmessage_sender_x, &mv))
             strerr_diefu1sys(111, "unixmessage_put") ;
           s6dns_engine_recycle(&a[i].dt) ;
           remove(i--) ;

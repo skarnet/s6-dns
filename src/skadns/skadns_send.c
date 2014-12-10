@@ -18,7 +18,7 @@ int skadns_send (skadns_t *a, uint16 *u, s6dns_domain_t const *d, uint16 qtype, 
   unsigned int i ;
   char tmp[17] = "--Q" ;
   char err ;
-  siovec_t v[2] = { { .s = tmp, .len = 17 }, { .s = d->s, .len = d->len } } ;
+  siovec_t v[2] = { { .s = tmp, .len = 17 }, { .s = (char *)d->s, .len = d->len } } ;
   if (!gensetdyn_new(&a->q, &i)) return 0 ;
   uint16_pack_big(tmp, (uint16)i) ;
   uint16_pack_big(tmp + 3, qtype) ;

@@ -78,13 +78,12 @@ resolution of several queries at once</a>, and to a
 <h2> It is too big for what it does. </h2>
 
 <p>
- The <tt>libresolv-2.13.so</tt> binary file compiled for an i386
-Debian Linux system is roughly 71k bytes. The <tt>libs6dns.so.2.0</tt>
-file, for the same system, is roughly 41k bytes, while offering
-more functionality. libresolv does not do any high-level answer
-parsing, so the user still has to do some work after the libresolv
-calls. s6-dns tries to be small and still provide the user comfortable
-interfaces.
+ The <tt>libresolv-2.13.so</tt> binary file compiled for an x86_64
+Debian Linux system is roughly 79k bytes. The <tt>libs6dns.so.2.0</tt>
+file, for the same system, is roughly the same size, while offering
+more functionality: high-level answer parsing, user-friendly
+formatting, and in-depth tracing of the DNS resolution process.
+What is all that code in libresolv for&nbsp;?
 </p>
 
 <h2> The API is cumbersome to use. </h2>

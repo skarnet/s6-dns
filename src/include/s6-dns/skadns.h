@@ -4,11 +4,8 @@
 #define SKADNS_H
 
 #include <errno.h>
-#include <skalibs/config.h>
 #include <skalibs/uint16.h>
-#include <skalibs/uint32.h>
 #include <skalibs/tai.h>
-#include <skalibs/stralloc.h>
 #include <skalibs/genalloc.h>
 #include <skalibs/gensetdyn.h>
 #include <skalibs/skaclient.h>

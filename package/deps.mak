@@ -8,6 +8,8 @@ src/include/s6-dns/s6dns-engine.h: src/include/s6-dns/s6dns-constants.h src/incl
 src/include/s6-dns/s6dns-fmt.h: src/include/s6-dns/s6dns-domain.h src/include/s6-dns/s6dns-message.h
 src/include/s6-dns/s6dns-ip46.h: src/include/s6-dns/s6dns-constants.h
 src/include/s6-dns/s6dns-message.h: src/include/s6-dns/s6dns-domain.h
+src/include/s6-dns/s6dns-rci.h: src/include/s6-dns/s6dns-constants.h src/include/s6-dns/s6dns-domain.h src/include/s6-dns/s6dns-ip46.h
+src/include/s6-dns/s6dns-resolve.h: src/include/s6-dns/s6dns-constants.h src/include/s6-dns/s6dns-domain.h src/include/s6-dns/s6dns-engine.h src/include/s6-dns/s6dns-ip46.h src/include/s6-dns/s6dns-message.h src/include/s6-dns/s6dns-rci.h
 src/include/s6-dns/s6dns.h: src/include/s6-dns/s6dns-constants.h src/include/s6-dns/s6dns-domain.h src/include/s6-dns/s6dns-engine.h src/include/s6-dns/s6dns-fmt.h src/include/s6-dns/s6dns-ip46.h src/include/s6-dns/s6dns-message.h src/include/s6-dns/s6dns-rci.h src/include/s6-dns/s6dns-resolve.h
 src/include/s6-dns/skadns.h: src/include/s6-dns/config.h src/include/s6-dns/s6dns-domain.h
 src/clients/s6dns-generic-filter.h: src/include/s6-dns/s6dns-domain.h
@@ -17,7 +19,7 @@ src/clients/s6-dnsip6-filter.o src/clients/s6-dnsip6-filter.lo: src/clients/s6-d
 src/clients/s6-dnsip6.o src/clients/s6-dnsip6.lo: src/clients/s6-dnsip6.c src/include/s6-dns/s6dns.h
 src/clients/s6-dnsmx.o src/clients/s6-dnsmx.lo: src/clients/s6-dnsmx.c src/include/s6-dns/s6dns.h
 src/clients/s6-dnsname-filter.o src/clients/s6-dnsname-filter.lo: src/clients/s6-dnsname-filter.c src/include/s6-dns/s6dns-constants.h src/include/s6-dns/s6dns-domain.h src/include/s6-dns/s6dns-message.h src/clients/s6dns-generic-filter.h
-src/clients/s6-dnsname.o src/clients/s6-dnsname.lo: src/clients/s6-dnsname.c
+src/clients/s6-dnsname.o src/clients/s6-dnsname.lo: src/clients/s6-dnsname.c src/include/s6-dns/s6dns.h
 src/clients/s6-dnsns.o src/clients/s6-dnsns.lo: src/clients/s6-dnsns.c src/include/s6-dns/s6dns.h
 src/clients/s6-dnsq.o src/clients/s6-dnsq.lo: src/clients/s6-dnsq.c src/include/s6-dns/s6dns-analyze.h src/include/s6-dns/s6dns-debug.h src/include/s6-dns/s6dns.h
 src/clients/s6-dnsqr.o src/clients/s6-dnsqr.lo: src/clients/s6-dnsqr.c src/include/s6-dns/s6dns-analyze.h src/include/s6-dns/s6dns-debug.h src/include/s6-dns/s6dns.h
@@ -27,7 +29,7 @@ src/clients/s6-dnssrv.o src/clients/s6-dnssrv.lo: src/clients/s6-dnssrv.c src/in
 src/clients/s6-dnstxt.o src/clients/s6-dnstxt.lo: src/clients/s6-dnstxt.c src/include/s6-dns/s6dns.h
 src/clients/s6-randomip.o src/clients/s6-randomip.lo: src/clients/s6-randomip.c
 src/clients/s6dns_generic_filter_main.o src/clients/s6dns_generic_filter_main.lo: src/clients/s6dns_generic_filter_main.c src/include/s6-dns/s6dns-constants.h src/include/s6-dns/s6dns-domain.h src/include/s6-dns/skadns.h src/clients/s6dns-generic-filter.h
-src/clients/s6dns_namescanner.o src/clients/s6dns_namescanner.lo: src/clients/s6dns_namescanner.c src/include/s6-dns/s6dns-domain.h src/include/s6-dns/s6dns-generic-filter.h
+src/clients/s6dns_namescanner.o src/clients/s6dns_namescanner.lo: src/clients/s6dns_namescanner.c src/include/s6-dns/s6dns-domain.h src/clients/s6dns-generic-filter.h
 src/libs6dns/s6dns_analyze_packet.o src/libs6dns/s6dns_analyze_packet.lo: src/libs6dns/s6dns_analyze_packet.c src/include/s6-dns/s6dns-analyze.h src/include/s6-dns/s6dns-constants.h src/include/s6-dns/s6dns-domain.h src/include/s6-dns/s6dns-message.h
 src/libs6dns/s6dns_analyze_qtype_parse.o src/libs6dns/s6dns_analyze_qtype_parse.lo: src/libs6dns/s6dns_analyze_qtype_parse.c src/include/s6-dns/s6dns-analyze.h src/include/s6-dns/s6dns-constants.h
 src/libs6dns/s6dns_analyze_record.o src/libs6dns/s6dns_analyze_record.lo: src/libs6dns/s6dns_analyze_record.c src/include/s6-dns/s6dns-analyze.h src/include/s6-dns/s6dns-domain.h src/include/s6-dns/s6dns-message.h
@@ -60,7 +62,7 @@ src/libs6dns/s6dns_domain_fromstring_qualify_encode.o src/libs6dns/s6dns_domain_
 src/libs6dns/s6dns_domain_noqualify.o src/libs6dns/s6dns_domain_noqualify.lo: src/libs6dns/s6dns_domain_noqualify.c src/include/s6-dns/s6dns-domain.h
 src/libs6dns/s6dns_domain_qualify.o src/libs6dns/s6dns_domain_qualify.lo: src/libs6dns/s6dns_domain_qualify.c src/include/s6-dns/s6dns-domain.h
 src/libs6dns/s6dns_domain_tostring.o src/libs6dns/s6dns_domain_tostring.lo: src/libs6dns/s6dns_domain_tostring.c src/include/s6-dns/s6dns-domain.h
-src/libs6dns/s6dns_engine.o src/libs6dns/s6dns_engine.lo: src/libs6dns/s6dns_engine.c src/include/s6-dns/s6dns-constants.h src/include/s6-dns/s6dns-engine.h src/include/s6-dns/s6dns-message-internal.h src/include/s6-dns/s6dns-message.h
+src/libs6dns/s6dns_engine.o src/libs6dns/s6dns_engine.lo: src/libs6dns/s6dns_engine.c src/include/s6-dns/s6dns-constants.h src/include/s6-dns/s6dns-engine.h src/include/s6-dns/s6dns-message.h src/libs6dns/s6dns-message-internal.h
 src/libs6dns/s6dns_engine_free.o src/libs6dns/s6dns_engine_free.lo: src/libs6dns/s6dns_engine_free.c src/include/s6-dns/s6dns-engine.h
 src/libs6dns/s6dns_engine_freen.o src/libs6dns/s6dns_engine_freen.lo: src/libs6dns/s6dns_engine_freen.c src/include/s6-dns/s6dns-engine.h
 src/libs6dns/s6dns_engine_here.o src/libs6dns/s6dns_engine_here.lo: src/libs6dns/s6dns_engine_here.c src/include/s6-dns/s6dns-engine.h
@@ -75,7 +77,7 @@ src/libs6dns/s6dns_message_counts_next.o src/libs6dns/s6dns_message_counts_next.
 src/libs6dns/s6dns_message_counts_pack.o src/libs6dns/s6dns_message_counts_pack.lo: src/libs6dns/s6dns_message_counts_pack.c src/include/s6-dns/s6dns-message.h
 src/libs6dns/s6dns_message_counts_unpack.o src/libs6dns/s6dns_message_counts_unpack.lo: src/libs6dns/s6dns_message_counts_unpack.c src/include/s6-dns/s6dns-message.h
 src/libs6dns/s6dns_message_counts_zero.o src/libs6dns/s6dns_message_counts_zero.lo: src/libs6dns/s6dns_message_counts_zero.c src/include/s6-dns/s6dns-message.h
-src/libs6dns/s6dns_message_get_domain.o src/libs6dns/s6dns_message_get_domain.lo: src/libs6dns/s6dns_message_get_domain.c src/include/s6-dns/s6dns-domain.h src/include/s6-dns/s6dns-message-internal.h src/include/s6-dns/s6dns-message.h
+src/libs6dns/s6dns_message_get_domain.o src/libs6dns/s6dns_message_get_domain.lo: src/libs6dns/s6dns_message_get_domain.c src/include/s6-dns/s6dns-domain.h src/include/s6-dns/s6dns-message.h src/libs6dns/s6dns-message-internal.h
 src/libs6dns/s6dns_message_get_domain_internal.o src/libs6dns/s6dns_message_get_domain_internal.lo: src/libs6dns/s6dns_message_get_domain_internal.c src/libs6dns/s6dns-message-internal.h
 src/libs6dns/s6dns_message_get_hinfo.o src/libs6dns/s6dns_message_get_hinfo.lo: src/libs6dns/s6dns_message_get_hinfo.c src/include/s6-dns/s6dns-message.h
 src/libs6dns/s6dns_message_get_mx.o src/libs6dns/s6dns_message_get_mx.lo: src/libs6dns/s6dns_message_get_mx.c src/include/s6-dns/s6dns-domain.h src/include/s6-dns/s6dns-message.h
@@ -124,7 +126,7 @@ src/skadns/skadns_release.o src/skadns/skadns_release.lo: src/skadns/skadns_rele
 src/skadns/skadns_send.o src/skadns/skadns_send.lo: src/skadns/skadns_send.c src/include/s6-dns/s6dns-domain.h src/include/s6-dns/skadns.h
 src/skadns/skadns_start.o src/skadns/skadns_start.lo: src/skadns/skadns_start.c src/include/s6-dns/skadns.h
 src/skadns/skadns_startf.o src/skadns/skadns_startf.lo: src/skadns/skadns_startf.c src/include/s6-dns/skadns.h
-src/skadns/skadns_update.o src/skadns/skadns_update.lo: src/skadns/skadns_update.c
+src/skadns/skadns_update.o src/skadns/skadns_update.lo: src/skadns/skadns_update.c src/include/s6-dns/skadns.h
 src/skadns/skadns_zero.o src/skadns/skadns_zero.lo: src/skadns/skadns_zero.c src/include/s6-dns/skadns.h
 src/skadns/skadnsd.o src/skadns/skadnsd.lo: src/skadns/skadnsd.c src/include/s6-dns/s6dns.h src/include/s6-dns/skadns.h
 

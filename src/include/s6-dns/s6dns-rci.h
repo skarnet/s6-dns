@@ -4,9 +4,9 @@
 #define S6DNS_RCI_H
 
 #include <skalibs/stralloc.h>
-#include <skalibs/s6dns-constants.h>
-#include <skalibs/s6dns-ip46.h>
-#include <skalibs/s6dns-domain.h>
+#include <s6-dns/s6dns-constants.h>
+#include <s6-dns/s6dns-ip46.h>
+#include <s6-dns/s6dns-domain.h>
 
  /* rci: resolv.conf information */
 

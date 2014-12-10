@@ -9,7 +9,7 @@
 #include <skalibs/gensetdyn.h>
 #include <skalibs/unixmessage.h>
 #include <skalibs/skaclient.h>
-#include <s6/skadns.h>
+#include <s6-dns/skadns.h>
 
 static int msghandler (unixmessage_t const *m, void *context)
 {

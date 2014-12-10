@@ -1,6 +1,7 @@
 /* ISC license. */
 
 #include <errno.h>
+#include <skalibs/uint.h>
 #include <skalibs/sgetopt.h>
 #include <skalibs/strerr2.h>
 #include <skalibs/buffer.h>
@@ -9,7 +10,7 @@
 #include <skalibs/genalloc.h>
 #include <skalibs/ip46.h>
 #include <skalibs/random.h>
-#include <skalibs/s6dns.h>
+#include <s6-dns/s6dns.h>
 
 #define USAGE "s6-dnsname [ -4 | -6 ] [ -r ] [ -t timeout ] ip"
 #define dieusage() strerr_dieusage(100, USAGE)
@@ -66,7 +67,7 @@ int main (int argc, char const *const *argv)
     char buf[S6DNS_FMT_DOMAINLIST(genalloc_len(s6dns_domain_t, &ds))] ;
     unsigned int len = s6dns_fmt_domainlist(buf, S6DNS_FMT_DOMAINLIST(genalloc_len(s6dns_domain_t, &ds)), genalloc_s(s6dns_domain_t, &ds), genalloc_len(s6dns_domain_t, &ds), "\n", 1) ;
     if (!len) strerr_diefu1sys(111, "format result") ;
-    if (buffer_putalign(buffer_1, buf, len) < 0) goto err ;
+    if (buffer_put(buffer_1, buf, len) < 0) goto err ;
   }
   if (buffer_putflush(buffer_1, "\n", 1) < 0) goto err ;
   return 0 ;

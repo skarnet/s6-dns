@@ -14,9 +14,9 @@
 #include <skalibs/ip46.h>
 #include <skalibs/random.h>
 #include <s6-dns/s6dns-constants.h>
-#include <s6-dns/s6dns-message-internal.h>
 #include <s6-dns/s6dns-message.h>
 #include <s6-dns/s6dns-engine.h>
+#include "s6dns-message-internal.h"
 
 
  /* Utility functions */

@@ -10,12 +10,12 @@
 #include <skalibs/stralloc.h>
 #include <skalibs/genalloc.h>
 #include <skalibs/ip46.h>
-#include <skalibs/s6dns-constants.h>
-#include <skalibs/s6dns-ip46.h>
-#include <skalibs/s6dns-domain.h>
-#include <skalibs/s6dns-message.h>
-#include <skalibs/s6dns-engine.h>
-#include <skalibs/s6dns-rci.h>
+#include <s6-dns/s6dns-constants.h>
+#include <s6-dns/s6dns-ip46.h>
+#include <s6-dns/s6dns-domain.h>
+#include <s6-dns/s6dns-message.h>
+#include <s6-dns/s6dns-engine.h>
+#include <s6-dns/s6dns-rci.h>
 
  /*
     Synchronous DNS resolution primitives.

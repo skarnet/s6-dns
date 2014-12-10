@@ -1,7 +1,7 @@
 /* ISC license. */
 
 #include <s6-dns/s6dns-domain.h>
-#include <s6-dns/s6dns-generic-filter.h>
+#include "s6dns-generic-filter.h"
 
 unsigned int s6dns_namescanner (s6dns_domain_t *d, char const *s)
 {
