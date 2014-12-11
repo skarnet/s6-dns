@@ -31,7 +31,7 @@ struct line_s
   unsigned int pending : 1 ;
 } ;
 
-#define LINE_ZERO { STRALLOC_ZERO, 0, 0, "\0", 0 }
+#define LINE_ZERO { .swrd = STRALLOC_ZERO, .wpos = 0, .dpos = 0, .w = "\0", .pending = 0 }
 
 static void line_recycle (line_t_ref l)
 {
@@ -85,7 +85,7 @@ int s6dns_generic_filter_main (int argc, char const *const *argv, char const *co
     strerr_diefu1sys(111, "ndelay_on") ;
 
   {
-    iopause_fd x[3] = { { 0, 0, 0 }, { 1, 0, 0 }, { -1, 0, 0 } } ;
+    iopause_fd x[3] = { { .fd = 0, .events = 0, .revents = 0 }, { .fd = 1, .events = 0, .revents = 0 }, { .fd = skadns_fd(&a), .events = 0, .revents = 0 } } ;
     uint16 lhead = 0, ltail = 0, numlines = 0, pending = 0 ;
     line_t storage[maxlines+1] ;
     uint16 lineindex[maxconn] ;
@@ -158,7 +158,7 @@ int s6dns_generic_filter_main (int argc, char const *const *argv, char const *co
         for (; (numlines < maxlines) && (pending < maxconn) ; lhead = (lhead+1) % (maxlines+1), numlines++)
         {
           s6dns_domain_t d ;
-          register line_t_ref line = storage + lhead ;
+          register line_t *line = storage + lhead ;
           register int r = skagetln(buffer_0, &line->swrd, '\n') ;
           if (r < 0)
           {
