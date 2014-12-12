@@ -12,7 +12,7 @@
 
 #define USAGE "s6-dnsname-filter [ -4 ] [ -6 ] [ -l lines ] [ -c concurrency ] [ -t timeout ] [ -f format ] [ -e errorformat ]"
 
-static unsigned int ipscanner (s6dns_domain_t_ref d, char const *s)
+static unsigned int ipscanner (s6dns_domain_t *d, char const *s)
 {
   char ip[16] ;
   register unsigned int pos ;
@@ -34,7 +34,7 @@ static unsigned int ipscanner (s6dns_domain_t_ref d, char const *s)
       goto yes ;
     }
   }
-  return 0 ;
+  return (errno = 0, 0) ;
  yes:
   if (!s6dns_domain_encode(d)) return 0 ;
   return pos ;

@@ -33,7 +33,7 @@ struct line_s
 
 #define LINE_ZERO { .swrd = STRALLOC_ZERO, .wpos = 0, .dpos = 0, .w = "\0", .pending = 0 }
 
-static void line_recycle (line_t_ref l)
+static void line_recycle (line_t *l)
 {
   l->swrd.len = 0 ;
   l->pending = 0 ;
@@ -89,7 +89,6 @@ int s6dns_generic_filter_main (int argc, char const *const *argv, char const *co
     uint16 lhead = 0, ltail = 0, numlines = 0, pending = 0 ;
     line_t storage[maxlines+1] ;
     uint16 lineindex[maxconn] ;
-    x[2].fd = skadns_fd(&a) ;
     {
       line_t line_zero = LINE_ZERO ;
       char const *args[4] = { "", "", "", "" } ;
@@ -165,11 +164,13 @@ int s6dns_generic_filter_main (int argc, char const *const *argv, char const *co
             if (error_isagain(errno)) break ;
             if (errno != EPIPE) strerr_diefu1sys(111, "read from stdin") ;
             if (!stralloc_catb(&line->swrd, "\n", 1)) strerr_diefu1sys(111, "stralloc_catb") ;
+            fd_close(x[0].fd) ;
             x[0].fd = -1 ;
             break ;
           }
           else if (!r)
           {
+            fd_close(x[0].fd) ;
             x[0].fd = -1 ;
             break ;
           }
@@ -201,8 +202,6 @@ int s6dns_generic_filter_main (int argc, char const *const *argv, char const *co
           }
         }
       }
-
-      if (x[0].revents & IOPAUSE_EXCEPT) x[0].fd = -1 ;
 
 
      /* Send processed lines to stdout */
