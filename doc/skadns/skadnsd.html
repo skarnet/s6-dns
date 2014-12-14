@@ -18,9 +18,9 @@
 
 <p>
 <tt>skadnsd</tt> is the skadns daemon. It reads a series of
-queries from the client on stdin, resolves them asynchronously,
-and writes
-the answers to the client as soon as it gets them. It exits 0
+queries from the client its stdin socket, resolves them asynchronously,
+and sends
+the answers back to the client as soon as it gets them. It exits 0
 when its stdin closes. It exits 111 on any serious error,
 writing the error message to stderr.
 </p>
@@ -80,7 +80,7 @@ that it requires support from the system administrator.
 skadnsd has no "standalone" mode: it is designed to work with a Unix
 domain superserver, like
 <a href="http://skarnet.org/software/s6-networking/s6-ipcserver.html">s6-ipcserver</a>.
-skadnsd follows the <a href="http://cr.yp.to/proto/ucspi.txt">UCSPI"</a>
+skadnsd follows the <a href="http://cr.yp.to/proto/ucspi.txt">UCSPI</a>
 interface, it can be directly executed from the superserver.
 </p>
 
@@ -96,7 +96,10 @@ to run it under a specific account.
 
 <ul>
  <li> Users should never invoke <tt>skadnsd</tt> directly. It's an
-internal program designed to be spawned by the skadns library. </li>
+internal program designed to be spawned by the skadns library.
+It follows <a href="http://skarnet.org/software/skalibs/">skalibs</a>'
+"skaclient" protocol and is unusable unless spawned by the right client
+library also using that protocol. </li>
  <li> If a poorly designed client sends a lot of queries and never reads the
 answers, those will indefinitely queue up in the daemon, eating up
 memory. You should run your process (or your Unix superserver, if you're
