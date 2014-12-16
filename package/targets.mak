@@ -1,4 +1,4 @@
-BIN_TARGETS = \
+BIN_TARGETS := \
 skadnsd \
 s6-randomip \
 s6-dnsqualify \
@@ -16,12 +16,12 @@ s6-dnsname-filter \
 s6-dnsq \
 s6-dnsqr
 
-LIBEXEC_TARGETS =
+LIBEXEC_TARGETS :=
 
-SHARED_LIBS = \
-libs6dns.so \
-libskadns.so
+ifdef DO_SHARED
+SHARED_LIBS := libs6dns.so libskadns.so
+endif
 
-STATIC_LIBS = \
-libs6dns.a \
-libskadns.a
+ifdef DO_STATIC
+STATIC_LIBS := libs6dns.a libskadns.a
+endif
