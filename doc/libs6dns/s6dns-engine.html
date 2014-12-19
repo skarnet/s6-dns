@@ -78,7 +78,7 @@ after each use. It contains a stralloc, so it must be freed with
 <h3> <tt>s6dns_engine_t</tt> life cycle </h3>
 
 <p>
-<code> int s6dns_engine_init (s6dns_engine_t *dt, s6dns_ip46list_t const *servers, uint32 options, char const *q, unsigned int qlen, uint16 qtype, struct taia const *deadline, struct taia const *stamp) </code>
+<code> int s6dns_engine_init (s6dns_engine_t *dt, s6dns_ip46list_t const *servers, uint32 options, char const *q, unsigned int qlen, uint16 qtype, tain_t const *deadline, tain_t const *stamp) </code>
 </p>
 
 <p>
@@ -161,7 +161,7 @@ for <em>dt</em>.
 </p>
 
 <p>
-<code> void s6dns_engine_nextdeadline (s6dns_engine_t const *dt, struct taia *a) </code>
+<code> void s6dns_engine_nextdeadline (s6dns_engine_t const *dt, tain_t *a) </code>
 </p>
 
 <p>
@@ -192,7 +192,7 @@ Should be called in every iteration.
 <h3> After the <tt>iopause()</tt> </h3>
 
 <p>
-<code> int s6dns_engine_timeout (s6dns_engine_t *dt, struct taia const *stamp) </code>
+<code> int s6dns_engine_timeout (s6dns_engine_t *dt, tain_t const *stamp) </code>
 </p>
 
 <p>
@@ -206,7 +206,7 @@ recycled.
 </p>
 
 <p>
-<code> int s6dns_engine_event (s6dns_engine_t *dt, struct taia const *stamp) </code>
+<code> int s6dns_engine_event (s6dns_engine_t *dt, tain_t const *stamp) </code>
 </p>
 
 <p>
