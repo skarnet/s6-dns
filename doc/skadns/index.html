@@ -25,13 +25,12 @@ resolution.
 <h2> Compiling </h2>
 
 <ul>
-<ul>
  <li> Make sure the s6-dns headers, as well as the skalibs headers,
 are visible in your header search path. </li>
  <li> Use <tt>#include &lt;s6-dns/skadns.h&gt;</tt> </li>
  <li> You might also want to include the <tt>s6-dns/s6dns.h</tt> header for
 the definition of the <tt>s6dns_domain_t</tt> type and the various
-qtype constants </li>
+qtype constants. </li>
 </ul>
 
 <h2> Linking </h2>
@@ -40,8 +39,8 @@ qtype constants </li>
  <li> Make sure the s6 libraries, as well as the skalibs libraries,
 are visible in your library search path. </li>
  <li> Link against <tt>-lskadns</tt> and <tt>-lskarnet</tt>. </li>
- <li> If you're using a skadnsd service, also add `cat $SYSDEPS/socket.lib`
-to the end of your linking command line, $SYSDEPS standing for your
+ <li> If you're using a skadnsd service, also add <tt>`cat $sysdeps/socket.lib`</tt>
+to the end of your linking command line, <tt>$sysdeps</tt> standing for your
 skalibs sysdeps directory. </li>
 </ul>
 

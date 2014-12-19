@@ -35,7 +35,7 @@ to perform high level synchronous DNS resolution.
 they can block for a non-negligible amount of time. To avoid unbounded
 waiting times, they always take 2 arguments at the end, <em>deadline</em>
 and <em>stamp</em>. <em>deadline</em> is the read-only address of a
-<a href="http://skarnet.org/software/skalibs/libstddjb/tai.h">tain_t</a>
+<a href="http://skarnet.org/software/skalibs/libstddjb/tai.html">tain_t</a>
 containing an absolute time which is the deadline for the function, and
 <em>stamp</em> is the read-write address of a <tt>tain_t</tt> being
 an accurate enough representation of the current absolute time. If
@@ -355,7 +355,7 @@ It must be in encoded form. </li>
 A list of valid query types can be found in the <tt>s6dns-constants.h</tt>
 header. </li>
  <li> <tt>options</tt>&nbsp;: a <tt>uint32</tt> containing options passed
-to <a href="s6dns_engine.html">s6dns_engine_init()</a>. </li>
+to <a href="s6dns-engine.html">s6dns_engine_init()</a>. </li>
  <li> <tt>deadline</tt>&nbsp;: a <tt>tain_t</tt> containing the
 deadline for this query, i.e. the query will fail with an ETIMEDOUT code
 if no answer has arrived by then. Note that the <em>deadline</em>

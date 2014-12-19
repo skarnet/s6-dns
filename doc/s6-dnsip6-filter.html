@@ -89,7 +89,7 @@ program how a line must be printed. The following sequences are recognized:
 <h2> Notes </h2>
 
 <p>
- s6-dnsip6-filter does not perform DNS resolutions itself. Instead, if forks
+ s6-dnsip6-filter does not perform DNS resolutions itself. Instead, it forks
 a <a href="skadns/skadnsd.html">skadnsd</a> child and sends it queries, getting
 the results asynchronously. The s6-dns filter programs have actually been
 written as example uses of the <a href="skadns/">skadns library</a>.

@@ -34,8 +34,9 @@ i.e. to be able to work with both IPv4 and IPv6.
 
 <p>
  If the underlying <a href="http://skarnet.org/software/skalibs/">skalibs</a>
-has been compiled with
- <a href="http://skarnet.org/software/skalibs/flags.html#noipv6">flag-noipv6</a>,
+has been compiled with the
+ <a href="http://skarnet.org/software/skalibs/flags.html#noipv6">--disable-ipv6</a>
+configure option,
 or if it has detected at build time that the target host does not support
 IPv6, then the s6dns-ip46 abstraction will be totally transparent and use
 no resources at all.
