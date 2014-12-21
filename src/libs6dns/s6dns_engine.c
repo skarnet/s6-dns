@@ -82,54 +82,64 @@ static int thisudp (s6dns_engine_t *dt, tain_t const *stamp)
     if (dt->curserver >= S6DNS_MAX_SERVERS)
     {
       dt->curserver = 0 ;
-      if (++dt->protostate >= 4) return -1 ;
+      if (++dt->protostate >= 4) return -2 ;
     }
     if (byte_diff(s6dns_ip46list_ip(&dt->servers, dt->curserver), SKALIBS_IP_SIZE, S6DNS_ENGINE_LOCAL0)) break ;
   }
-  if (badrandom_string(dt->sa.s + 2, 2) < 2) return 0 ; /* random query id */
+  if (badrandom_string(dt->sa.s + 2, 2) < 2) return -1 ; /* random query id */
   dt->fd = socketudp46(s6dns_ip46list_is6(&dt->servers, dt->curserver)) ;
-  if (dt->fd < 0) return 0 ;
-  if (!randombind(dt->fd, s6dns_ip46list_is6(&dt->servers, dt->curserver))) goto err ; /* random source port */
+  if (dt->fd < 0) return -1 ;
+  if (!randombind(dt->fd, s6dns_ip46list_is6(&dt->servers, dt->curserver)))
+  {
+    register int e = errno ;
+    fd_close(dt->fd) ; dt->fd = -1 ;
+    errno = e ;
+    return -1 ;
+  }
   if ((socketconnect46(dt->fd, s6dns_ip46list_ip(&dt->servers, dt->curserver), 53, s6dns_ip46list_is6(&dt->servers, dt->curserver)) < 0)
-   && (errno != EINPROGRESS)) goto err ;
+   && (errno != EINPROGRESS))
+  {
+    register int e = errno ;
+    fd_close(dt->fd) ; dt->fd = -1 ;
+    errno = e ;
+    return 0 ;
+  }
   tain_add(&dt->localdeadline, stamp, &tain_infinite_relative) ;
   dt->flagreading = 0 ;
   dt->flagwriting = 1 ;
   if (dt->debughook && dt->debughook->pre_send) (*dt->debughook->pre_send)(dt, dt->debughook->external) ;
   return 1 ;
- err:
-  {
-    register int e = errno ;
-    fd_close(dt->fd) ; dt->fd = -1 ;
-    errno = e ;
-  }
-  return 0 ;
 }
 
 static int thistcp (s6dns_engine_t *dt, tain_t const *stamp)
 {
   for (; dt->curserver < S6DNS_MAX_SERVERS ; dt->curserver++)
     if (byte_diff(s6dns_ip46list_ip(&dt->servers, dt->curserver), SKALIBS_IP_SIZE, S6DNS_ENGINE_LOCAL0)) break ;
-  if (dt->curserver >= S6DNS_MAX_SERVERS) return -1 ;
-  if (badrandom_string(dt->sa.s + 2, 2) < 2) return 0 ; /* random query id */
+  if (dt->curserver >= S6DNS_MAX_SERVERS) return -2 ;
+  if (badrandom_string(dt->sa.s + 2, 2) < 2) return -1 ;
   dt->fd = sockettcp46(s6dns_ip46list_is6(&dt->servers, dt->curserver)) ;
-  if (dt->fd < 0) return 0 ;
-  if (!randombind(dt->fd, s6dns_ip46list_is6(&dt->servers, dt->curserver))) goto err ; /* random source port */
+  if (dt->fd < 0) return -1 ;
+  if (!randombind(dt->fd, s6dns_ip46list_is6(&dt->servers, dt->curserver)))
+  {
+    register int e = errno ;
+    fd_close(dt->fd) ; dt->fd = -1 ;
+    errno = e ;
+    return -1 ;
+  }
   if ((socketconnect46(dt->fd, s6dns_ip46list_ip(&dt->servers, dt->curserver), 53, s6dns_ip46list_is6(&dt->servers, dt->curserver)) < 0)
-   && (errno != EINPROGRESS)) goto err ;
+   && (errno != EINPROGRESS))
+  {
+    register int e = errno ;
+    fd_close(dt->fd) ; dt->fd = -1 ;
+    errno = e ;
+    return 0 ;
+  }
   tain_addsec(&dt->localdeadline, stamp, 10) ;
   dt->protostate = 0 ;
   dt->flagtcp = dt->flagconnecting = dt->flagwriting = 1 ;
   dt->flagreading = 0 ;
   if (dt->debughook && dt->debughook->pre_send) (*dt->debughook->pre_send)(dt, dt->debughook->external) ;
   return 1 ;
- err:
-  {
-    register int e = errno ;
-    fd_close(dt->fd) ; dt->fd = -1 ;
-    errno = e ;
-  }
-  return 0 ;
 }
 
 
@@ -140,7 +150,8 @@ static int s6dns_engine_prepare (s6dns_engine_t *dt, tain_t const *stamp, int is
   for (;; dt->curserver++)
     switch (istcp ? thistcp(dt, stamp) : thisudp(dt, stamp))
     {
-      case -1 : return (errno = ENETUNREACH, 0) ;
+      case -2 : return (errno = ENETUNREACH, 0) ;
+      case -1 : return 0 ;
       case 0 : break ;
       case 1 : return 1 ;
       default : return (errno = EDOM, 0) ; /* can't happen */
