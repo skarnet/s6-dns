@@ -18,7 +18,7 @@ void skadns_end (skadns_t *a)
 {
   skaclient_end(&a->connection) ;
   genalloc_free(uint16, &a->list) ;
-  gensetdyn_iter(&a->q, &skadnsanswer_free, 0) ;
+  (void)gensetdyn_iter(&a->q, &skadnsanswer_free, 0) ;
   gensetdyn_free(&a->q) ;
   *a = skadns_zero ;
 }
