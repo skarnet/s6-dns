@@ -18,6 +18,14 @@ s6-dnsqr
 
 LIBEXEC_TARGETS :=
 
+ifdef DO_ALLSTATIC
+LIBS6DNS := libs6dns.a
+LIBSKADNS := libskadns.a
+else
+LIBS6DNS := libs6dns.so
+LIBSKADNS := libskadns.so
+endif
+
 ifdef DO_SHARED
 SHARED_LIBS := libs6dns.so libskadns.so
 endif
