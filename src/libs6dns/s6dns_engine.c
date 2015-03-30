@@ -162,7 +162,7 @@ static void prepare_next (s6dns_engine_t *dt, tain_t const *stamp, int istcp)
 {
   if (!error_isagain(errno))
   {
-    fd_close(dt->fd) ;
+    fd_close(dt->fd) ; dt->fd = -1 ;
     dt->curserver++ ;
     if (s6dns_engine_prepare(dt, stamp, istcp)) errno = EAGAIN ;
   }
@@ -223,7 +223,7 @@ static int s6dns_engine_read_udp (s6dns_engine_t *dt, tain_t const *stamp)
   s6dns_message_header_unpack(buf, &h) ;
   if (h.tc)
   {
-    fd_close(dt->fd) ;
+    fd_close(dt->fd) ; dt->fd = -1 ;
     dt->curserver = 0 ;
     dt->protostate = 0 ;
     if (s6dns_engine_prepare(dt, stamp, 1)) errno = EAGAIN ;
@@ -298,8 +298,7 @@ void s6dns_engine_recycle (s6dns_engine_t *dt)
   if (dt->fd >= 0)
   {
     register int e = errno ;
-    fd_close(dt->fd) ;
-    dt->fd = -1 ;
+    fd_close(dt->fd) ; dt->fd = -1 ;
     errno = e ;
   }
   dt->status = ECONNABORTED ;
@@ -313,7 +312,7 @@ int s6dns_engine_timeout (s6dns_engine_t *dt, tain_t const *stamp)
   else if (!tain_less(&dt->localdeadline, stamp)) return 0 ;
   else if (dt->flagwriting) goto yes ;
   else if (!dt->flagreading) return 0 ;
-  fd_close(dt->fd) ;
+  fd_close(dt->fd) ; dt->fd = -1 ;
   dt->curserver++ ;
   if (!s6dns_engine_prepare(dt, stamp, dt->flagtcp))
   {
