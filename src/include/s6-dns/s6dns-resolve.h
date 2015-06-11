@@ -220,7 +220,7 @@ extern int s6dns_resolve_mpag_r (stralloc *, genalloc *, char const *, unsigned 
  */
 
 extern int s6dns_resolven_loop (s6dns_engine_t_ref, unsigned int, unsigned int, tain_t const *, tain_t *) ;
-#define s6dns_resolven_loop_g(list, n, or, deadline) s6dns_resolven(list, n, or, (deadline), &STAMP)
+#define s6dns_resolven_loop_g(list, n, zor, deadline) s6dns_resolven(list, n, zor, (deadline), &STAMP)
 
 typedef struct s6dns_resolve_s s6dns_resolve_t, *s6dns_resolve_t_ref ;
 struct s6dns_resolve_s
