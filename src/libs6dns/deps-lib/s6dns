@@ -86,3 +86,4 @@ s6dns_debug_dumpdt_stderr.o
 s6dns_debug_dumpdt_post_recv.o
 s6dns_debug_dumpdt_pre_send.o
 s6dns_debug_dumpdt_post_send.o
+-lskarnet

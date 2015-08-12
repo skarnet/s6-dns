@@ -8,3 +8,4 @@ skadns_start.o
 skadns_startf.o
 skadns_update.o
 skadns_zero.o
+-lskarnet
