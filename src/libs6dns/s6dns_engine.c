@@ -107,7 +107,8 @@ static int thisudp (s6dns_engine_t *dt, tain_t const *stamp)
   tain_add(&dt->localdeadline, stamp, &tain_infinite_relative) ;
   dt->flagreading = 0 ;
   dt->flagwriting = 1 ;
-  if (dt->debughook && dt->debughook->pre_send) (*dt->debughook->pre_send)(dt, dt->debughook->external) ;
+  if (dt->debughook && dt->debughook->pre_send)
+    (*dt->debughook->pre_send)(dt, dt->debughook->external) ;
   return 1 ;
 }
 
@@ -138,7 +139,8 @@ static int thistcp (s6dns_engine_t *dt, tain_t const *stamp)
   dt->protostate = 0 ;
   dt->flagtcp = dt->flagconnecting = dt->flagwriting = 1 ;
   dt->flagreading = 0 ;
-  if (dt->debughook && dt->debughook->pre_send) (*dt->debughook->pre_send)(dt, dt->debughook->external) ;
+  if (dt->debughook && dt->debughook->pre_send)
+    (*dt->debughook->pre_send)(dt, dt->debughook->external) ;
   return 1 ;
 }
 
@@ -176,7 +178,8 @@ static int s6dns_engine_write_udp (s6dns_engine_t *dt, tain_t const *stamp)
   tain_addsec(&dt->localdeadline, stamp, s6dns_engine_udp_timeouts[dt->protostate]) ;
   dt->flagwriting = 0 ;
   dt->flagreading = 1 ;
-  if (dt->debughook && dt->debughook->post_send) (*dt->debughook->post_send)(dt, dt->debughook->external) ;
+  if (dt->debughook && dt->debughook->post_send)
+    (*dt->debughook->post_send)(dt, dt->debughook->external) ;
   return (errno = EAGAIN, 1) ;
 }
 
@@ -196,7 +199,8 @@ static int s6dns_engine_write_tcp (s6dns_engine_t *dt, tain_t const *stamp)
   tain_addsec(&dt->localdeadline, stamp, 10) ;
   dt->flagwriting = 0 ;
   dt->flagreading = 1 ;
-  if (dt->debughook && dt->debughook->post_send) (*dt->debughook->post_send)(dt, dt->debughook->external) ;
+  if (dt->debughook && dt->debughook->post_send)
+    (*dt->debughook->post_send)(dt, dt->debughook->external) ;
   return (errno = EAGAIN, 1) ;
 }
 
