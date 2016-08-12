@@ -132,17 +132,17 @@ src/skadns/skadnsd.o src/skadns/skadnsd.lo: src/skadns/skadnsd.c src/include/s6-
 
 s6-dnsip4: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
 s6-dnsip4: src/clients/s6-dnsip4.o ${LIBS6DNS} -lskarnet
-s6-dnsip4-filter: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
+s6-dnsip4-filter: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB} ${SPAWN_LIB}
 s6-dnsip4-filter: src/clients/s6-dnsip4-filter.o src/clients/s6dns_generic_filter_main.o src/clients/s6dns_namescanner.o ${LIBSKADNS} ${LIBS6DNS} -lskarnet
 s6-dnsip6: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
 s6-dnsip6: src/clients/s6-dnsip6.o ${LIBS6DNS} -lskarnet
-s6-dnsip6-filter: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
+s6-dnsip6-filter: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB} ${SPAWN_LIB}
 s6-dnsip6-filter: src/clients/s6-dnsip6-filter.o src/clients/s6dns_generic_filter_main.o src/clients/s6dns_namescanner.o ${LIBSKADNS} ${LIBS6DNS} -lskarnet
 s6-dnsmx: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
 s6-dnsmx: src/clients/s6-dnsmx.o ${LIBS6DNS} -lskarnet
 s6-dnsname: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
 s6-dnsname: src/clients/s6-dnsname.o ${LIBS6DNS} -lskarnet
-s6-dnsname-filter: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
+s6-dnsname-filter: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB} ${SPAWN_LIB}
 s6-dnsname-filter: src/clients/s6-dnsname-filter.o src/clients/s6dns_generic_filter_main.o ${LIBSKADNS} ${LIBS6DNS} -lskarnet
 s6-dnsns: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
 s6-dnsns: src/clients/s6-dnsns.o ${LIBS6DNS} -lskarnet
