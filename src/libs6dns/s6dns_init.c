@@ -1,7 +1,7 @@
 /* ISC license. */
 
 #include <skalibs/random.h>
-#include <s6dns/s6-dns.h>
+#include <s6-dns/s6dns.h>
 
 int s6dns_init (void)
 {

@@ -68,13 +68,13 @@ src/libs6dns/s6dns_engine_freen.o src/libs6dns/s6dns_engine_freen.lo: src/libs6d
 src/libs6dns/s6dns_engine_here.o src/libs6dns/s6dns_engine_here.lo: src/libs6dns/s6dns_engine_here.c src/include/s6-dns/s6dns-engine.h
 src/libs6dns/s6dns_engine_nextdeadline.o src/libs6dns/s6dns_engine_nextdeadline.lo: src/libs6dns/s6dns_engine_nextdeadline.c src/include/s6-dns/s6dns-engine.h
 src/libs6dns/s6dns_engine_zero.o src/libs6dns/s6dns_engine_zero.lo: src/libs6dns/s6dns_engine_zero.c src/include/s6-dns/s6dns-engine.h
-src/libs6dns/s6dns_finish.o src/libs6dns/s6dns_finish.lo: src/libs6dns/s6dns_finish.c
+src/libs6dns/s6dns_finish.o src/libs6dns/s6dns_finish.lo: src/libs6dns/s6dns_finish.c src/include/s6-dns/s6dns.h
 src/libs6dns/s6dns_fmt_domainlist.o src/libs6dns/s6dns_fmt_domainlist.lo: src/libs6dns/s6dns_fmt_domainlist.c src/include/s6-dns/s6dns-domain.h src/include/s6-dns/s6dns-fmt.h
 src/libs6dns/s6dns_fmt_hinfo.o src/libs6dns/s6dns_fmt_hinfo.lo: src/libs6dns/s6dns_fmt_hinfo.c src/include/s6-dns/s6dns-fmt.h src/include/s6-dns/s6dns-message.h
 src/libs6dns/s6dns_fmt_mx.o src/libs6dns/s6dns_fmt_mx.lo: src/libs6dns/s6dns_fmt_mx.c src/include/s6-dns/s6dns-fmt.h src/include/s6-dns/s6dns-message.h
 src/libs6dns/s6dns_fmt_soa.o src/libs6dns/s6dns_fmt_soa.lo: src/libs6dns/s6dns_fmt_soa.c src/include/s6-dns/s6dns-fmt.h src/include/s6-dns/s6dns-message.h
 src/libs6dns/s6dns_fmt_srv.o src/libs6dns/s6dns_fmt_srv.lo: src/libs6dns/s6dns_fmt_srv.c src/include/s6-dns/s6dns-fmt.h src/include/s6-dns/s6dns-message.h
-src/libs6dns/s6dns_init.o src/libs6dns/s6dns_init.lo: src/libs6dns/s6dns_init.c
+src/libs6dns/s6dns_init.o src/libs6dns/s6dns_init.lo: src/libs6dns/s6dns_init.c src/include/s6-dns/s6dns.h
 src/libs6dns/s6dns_message_counts_next.o src/libs6dns/s6dns_message_counts_next.lo: src/libs6dns/s6dns_message_counts_next.c src/include/s6-dns/s6dns-message.h
 src/libs6dns/s6dns_message_counts_pack.o src/libs6dns/s6dns_message_counts_pack.lo: src/libs6dns/s6dns_message_counts_pack.c src/include/s6-dns/s6dns-message.h
 src/libs6dns/s6dns_message_counts_unpack.o src/libs6dns/s6dns_message_counts_unpack.lo: src/libs6dns/s6dns_message_counts_unpack.c src/include/s6-dns/s6dns-message.h
