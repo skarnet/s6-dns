@@ -12,7 +12,7 @@
 #include <s6-dns/s6dns-resolve.h>
 #include <s6-dns/s6dns-fmt.h>
 
-#define s6dns_init() s6dns_rci_init(&s6dns_rci_here, "/etc/resolv.conf")
-#define s6dns_finish() (s6dns_engine_free(&s6dns_engine_here), s6dns_rci_free(&s6dns_rci_here))
+extern int s6dns_init (void) ;
+extern void s6dns_finish (void) ;
 
 #endif

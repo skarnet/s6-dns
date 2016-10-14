@@ -71,7 +71,7 @@ static int randombind (int fd, int flag)
 {
   register unsigned int i = 0 ;
   for (; i < 10 ; i++)
-    if (socketbind46(fd, S6DNS_ENGINE_LOCAL0, 1025 + badrandom_int(64510), flag) >= 0) return 1 ;
+    if (socketbind46(fd, S6DNS_ENGINE_LOCAL0, 1025 + random_uint32(64510), flag) >= 0) return 1 ;
   return (socketbind46(fd, S6DNS_ENGINE_LOCAL0, 0, flag) >= 0) ;
 }
 
@@ -86,7 +86,7 @@ static int thisudp (s6dns_engine_t *dt, tain_t const *stamp)
     }
     if (byte_diff(s6dns_ip46list_ip(&dt->servers, dt->curserver), SKALIBS_IP_SIZE, S6DNS_ENGINE_LOCAL0)) break ;
   }
-  if (badrandom_string(dt->sa.s + 2, 2) < 2) return -1 ; /* random query id */
+  random_string(dt->sa.s + 2, 2) ; /* random query id */
   dt->fd = socketudp46(s6dns_ip46list_is6(&dt->servers, dt->curserver)) ;
   if (dt->fd < 0) return -1 ;
   if (!randombind(dt->fd, s6dns_ip46list_is6(&dt->servers, dt->curserver)))
@@ -117,7 +117,7 @@ static int thistcp (s6dns_engine_t *dt, tain_t const *stamp)
   for (; dt->curserver < S6DNS_MAX_SERVERS ; dt->curserver++)
     if (byte_diff(s6dns_ip46list_ip(&dt->servers, dt->curserver), SKALIBS_IP_SIZE, S6DNS_ENGINE_LOCAL0)) break ;
   if (dt->curserver >= S6DNS_MAX_SERVERS) return -2 ;
-  if (badrandom_string(dt->sa.s + 2, 2) < 2) return -1 ;
+  random_string(dt->sa.s + 2, 2) ;
   dt->fd = sockettcp46(s6dns_ip46list_is6(&dt->servers, dt->curserver)) ;
   if (dt->fd < 0) return -1 ;
   if (!randombind(dt->fd, s6dns_ip46list_is6(&dt->servers, dt->curserver)))

@@ -38,19 +38,16 @@ int main (int argc, char const *const *argv)
   argc -= subgetopt_here.ind ; argv += subgetopt_here.ind ;
   if (!what) what = 1 ;
   what = 1 << (1 << what) ; 
-  if (!badrandom_init()) strerr_diefu1sys(111, "init RNG") ;
+  if (!random_init()) strerr_diefu1sys(111, "init random generator") ;
   for (i = 0 ; !finite || (i < n) ; i++)
   {
     unsigned int len = what ;
     if (len > 16)
     {
-      char c ;
-      if (badrandom_string(&c, 1) < 1)
-        strerr_diefu1sys(111, "badrandom_string") ;
+      unsigned char c = random_char() ;
       len = (c & 1) ? 16 : 4 ;
     }
-    if (badrandom_string(ip, len) < 4)
-      strerr_diefu1sys(111, "badrandom_string") ;
+    random_string(ip, len) ;
     len = (len == 16) ? ip6_fmt(fmt, ip) : ip4_fmt(fmt, ip) ;
     fmt[len++] = '\n' ;
     if (buffer_put(buffer_1, fmt, len) < (int)len)
