@@ -3,7 +3,7 @@
 #ifndef S6DNS_ANALYZE_H
 #define S6DNS_ANALYZE_H
 
-#include <skalibs/uint16.h>
+#include <stdint.h>
 #include <skalibs/genwrite.h>
 #include <s6-dns/s6dns-message.h>
 
@@ -13,7 +13,7 @@ typedef s6dns_analyze_record_func_t *s6dns_analyze_record_func_t_ref ;
 typedef struct s6dns_analyze_rtypetable_s s6dns_analyze_rtypetable_t, *s6dns_analyze_rtypetable_t_ref ;
 struct s6dns_analyze_rtypetable_s
 {
-  uint16 rtype ;
+  uint16_t rtype ;
   char const *string ;
   s6dns_analyze_record_func_t_ref f ;
 } ;

@@ -1,5 +1,6 @@
 /* ISC license. */
 
+#include <sys/types.h>
 #include <skalibs/stralloc.h>
 #include <skalibs/genalloc.h>
 #include <skalibs/tai.h>
@@ -35,9 +36,9 @@ int s6dns_resolvenoq_aaaaa_r (genalloc *ips, char const *name, unsigned int len,
     return -1 ;
   }
   {
-    unsigned int n = genalloc_len(ip46_t, ips) ;
     int e = (!!sa[0].len << 1) | !!sa[1].len ;
-    register unsigned int i = 0 ;
+    size_t n = genalloc_len(ip46_t, ips) ;
+    register size_t i = 0 ;
     for (; i < (sa[0].len >> 4) ; i++)
       ip46_from_ip6(genalloc_s(ip46_t, ips) + n++, sa[0].s + (i << 4)) ;
     for (i = 0 ; i < (sa[1].len >> 2) ; i++)

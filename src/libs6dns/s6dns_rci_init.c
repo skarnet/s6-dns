@@ -1,5 +1,6 @@
 /* ISC license. */
 
+#include <sys/types.h>
 #include <errno.h>
 #include <skalibs/error.h>
 #include <skalibs/bytestr.h>
@@ -12,19 +13,19 @@
 #include <s6-dns/s6dns-constants.h>
 #include <s6-dns/s6dns-rci.h>
 
-static unsigned int readit (char const *file, char *buf, unsigned int max)
+static size_t readit (char const *file, char *buf, size_t max)
 {
-  register int r = openreadnclose(file, buf, max - 1) ;
+  register ssize_t r = openreadnclose(file, buf, max - 1) ;
   if (r < 0)
   {
     if (errno != ENOENT) return 0 ;
     else r = 0 ;
   }
   buf[r++] = '\n' ;
-  return (unsigned int)r ;
+  return r ;
 }
 
-static inline int s6dns_rci_init_servers (s6dns_rci_t *rci, char const *file, char *tmp, unsigned int max, unsigned int *size)
+static inline int s6dns_rci_init_servers (s6dns_rci_t *rci, char const *file, char *tmp, size_t max, size_t *size)
 {
   ip46_t tmplist[S6DNS_MAX_SERVERS] ;
   unsigned int num = 0 ;
@@ -32,15 +33,15 @@ static inline int s6dns_rci_init_servers (s6dns_rci_t *rci, char const *file, ch
   if (x) ip46_scanlist(tmplist, S6DNS_MAX_SERVERS, x, &num) ;
   if (!num)
   {
-    unsigned int i = 0 ;
+    size_t i = 0 ;
     *size = readit(file, tmp, max) ;
     if (!*size) return 0 ;
     while ((i < *size) && (num < S6DNS_MAX_SERVERS))
     {
-      register unsigned int j = byte_chr(tmp + i, *size - i, '\n') ;
+      register size_t j = byte_chr(tmp + i, *size - i, '\n') ;
       if ((i + j < *size) && (j > 13U) && !byte_diff("nameserver", 10, tmp + i))
       {
-        register unsigned int k = 0 ;
+        register size_t k = 0 ;
         while ((tmp[i+10+k] == ' ') || (tmp[i+10+k] == '\t')) k++ ;
         if (k && ip46_scan(tmp+i+10+k, tmplist + num)) num++ ;
       }
@@ -72,10 +73,10 @@ static inline int s6dns_rci_init_servers (s6dns_rci_t *rci, char const *file, ch
 
 static inline int stringrules (stralloc *rules, char const *s, unsigned int *num)
 {
+  size_t base = rules->len ;
+  int wasnull = !rules->s ;
   unsigned int n = 0 ;
   int crunching = 1 ;
-  int wasnull = !rules->s ;
-  unsigned int base = rules->len ;
   char c = ' ' ;
   while (c)
   {
@@ -105,7 +106,7 @@ static inline int stringrules (stralloc *rules, char const *s, unsigned int *num
   return 0 ;
 }
 
-static inline int s6dns_rci_init_rules (s6dns_rci_t_ref rci, char const *file, char *tmp, unsigned int max, unsigned int *size)
+static inline int s6dns_rci_init_rules (s6dns_rci_t_ref rci, char const *file, char *tmp, size_t max, size_t *size)
 {
   unsigned int num = 0 ;
   char const *x = env_get("DNSQUALIFY") ;
@@ -115,7 +116,7 @@ static inline int s6dns_rci_init_rules (s6dns_rci_t_ref rci, char const *file, c
   }
   else
   {
-    unsigned int i = 0 ;
+    size_t i = 0 ;
     if (!*size)
     {
       *size = readit(file, tmp, max) ;
@@ -123,12 +124,12 @@ static inline int s6dns_rci_init_rules (s6dns_rci_t_ref rci, char const *file, c
     }
     while (i < *size)
     {
-      register unsigned int j = byte_chr(tmp + i, *size - i, '\n') ;
+      size_t j = byte_chr(tmp + i, *size - i, '\n') ;
       if ((i + j < *size) && (j > 8U)
        && (!byte_diff("domain", 6, tmp + i) || !byte_diff("search", 6, tmp + i))
        && ((tmp[i+6] == ' ') || (tmp[i+6] == '\t') || (tmp[i+6] == '\r')))
       {
-        unsigned int k = 0 ;
+        size_t k = 0 ;
         int copying = 0 ;
         register int notsearching = (tmp[i] != 's') ;
         if (!stralloc_readyplus(&rci->rules, j)) return 0 ;
@@ -166,7 +167,7 @@ static inline int s6dns_rci_init_rules (s6dns_rci_t_ref rci, char const *file, c
 int s6dns_rci_init (s6dns_rci_t *rci, char const *file)
 {
   char tmp[4096] ;
-  unsigned int size = 0 ;
+  size_t size = 0 ;
   if (!s6dns_rci_init_servers(rci, file, tmp, 4096, &size)) return 0 ;
   if (!s6dns_rci_init_rules(rci, file, tmp, 4096, &size)) return 0 ;
   return 1 ;

@@ -3,9 +3,8 @@
 #ifndef S6DNS_ENGINE_H
 #define S6DNS_ENGINE_H
 
+#include <stdint.h>
 #include <errno.h>
-#include <skalibs/uint16.h>
-#include <skalibs/uint32.h>
 #include <skalibs/tai.h>
 #include <skalibs/stralloc.h>
 #include <s6-dns/s6dns-constants.h>
@@ -45,7 +44,7 @@ struct s6dns_engine_s
   tain_t localdeadline ;
   unsigned int querylen ;
   int fd ;
-  uint32 protostate ;
+  uint32_t protostate ;
   s6dns_ip46list_t servers ;
   s6dns_debughook_t const *debughook ;
   unsigned int curserver ;
@@ -84,7 +83,7 @@ extern void s6dns_engine_freen (s6dns_engine_t *, unsigned int) ;
 
 #define s6dns_engine_init(dt, servers, options, q, qlen, qtype, deadline, stamp) s6dns_engine_init_r(dt, servers, options, q, qlen, qtype, &s6dns_debughook_zero, deadline, stamp)
 #define s6dns_engine_init_g(dt, servers, options, q, qlen, qtype, deadline) s6dns_engine_init(dt, servers, options, q, qlen, qtype, (deadline), &STAMP)
-extern int s6dns_engine_init_r (s6dns_engine_t *, s6dns_ip46list_t const *, uint32, char const *, unsigned int, uint16, s6dns_debughook_t const *, tain_t const *, tain_t const *) ;
+extern int s6dns_engine_init_r (s6dns_engine_t *, s6dns_ip46list_t const *, uint32_t, char const *, unsigned int, uint16_t, s6dns_debughook_t const *, tain_t const *, tain_t const *) ;
 #define s6dns_engine_init_r_g(dt, servers, options, q, qlen, qtype, dbh, deadline) s6dns_engine_init_r(dt, servers, options, q, qlen, qtype, dbh, (deadline), &STAMP)
 
 
@@ -103,6 +102,6 @@ extern int s6dns_engine_event (s6dns_engine_t *, tain_t const *) ;
 #define s6dns_engine_event_g(dt) s6dns_engine_event((dt), &STAMP)
 
 #define s6dns_engine_packet(dt) ((dt)->sa.s + (dt)->querylen)
-#define s6dns_engine_packetlen(dt) ((dt)->sa.len - (dt)->querylen)
+#define s6dns_engine_packetlen(dt) ((unsigned int)((dt)->sa.len - (dt)->querylen))
 
 #endif

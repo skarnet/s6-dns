@@ -1,5 +1,6 @@
 /* ISC license. */
 
+#include <sys/types.h>
 #include <errno.h>
 #include <skalibs/bytestr.h>
 #include <s6-dns/s6dns-domain.h>
@@ -17,7 +18,7 @@ unsigned int s6dns_domain_qualify (s6dns_domain_t *list, s6dns_domain_t const *d
     register unsigned int i = 0 ;
     for (; i < rulesnum ; i++)
     {
-      unsigned int n = str_len(rules) ;
+      size_t n = str_len(rules) ;
       if (d->len + n >= 254) return (errno = ENAMETOOLONG, 0) ;
       list[i] = *d ;
       list[i].s[d->len] = '.' ;

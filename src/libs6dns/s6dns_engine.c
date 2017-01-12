@@ -1,8 +1,9 @@
 /* ISC license. */
 
+#include <sys/types.h>
+#include <stdint.h>
 #include <errno.h>
 #include <skalibs/uint16.h>
-#include <skalibs/uint32.h>
 #include <skalibs/allreadwrite.h>
 #include <skalibs/bytestr.h>
 #include <skalibs/error.h>
@@ -21,7 +22,7 @@
 
  /* Utility functions */
 
-static inline int qdomain_diff (char const *s1, unsigned int n1, char const *s2, unsigned int n2)
+static inline int qdomain_diff (char const *s1, size_t n1, char const *s2, size_t n2)
 {
   return (n1 < n2) ? -1 : (n1 > n2) ? 1 : case_diffb(s1, n1, s2) ;
 }
@@ -30,7 +31,7 @@ static int relevant (char const *q, unsigned int qlen, char const *ans, unsigned
 {
   {
     s6dns_message_header_t h ;
-    uint16 id ;
+    uint16_t id ;
     s6dns_message_header_unpack(ans, &h) ;
     if (!h.qr || h.opcode || h.z || (h.counts.qd != 1)) return 0 ;
     if (h.rd != (q[2] & 1)) return 0 ;
@@ -208,7 +209,7 @@ static int s6dns_engine_read_udp (s6dns_engine_t *dt, tain_t const *stamp)
 {
   s6dns_message_header_t h ;
   char buf[513] ;
-  register int r = fd_recv(dt->fd, buf, 513, 0) ;
+  register ssize_t r = fd_recv(dt->fd, buf, 513, 0) ;
   if (r < 0) return (prepare_next(dt, stamp, 0), 0) ;
   if ((r > 512) || (r < 12)) return (errno = EAGAIN, 0) ;
   switch (relevant(dt->sa.s + 2, dt->querylen - 2, buf, r, dt->flagstrict))
@@ -255,7 +256,7 @@ static int s6dns_engine_read_udp (s6dns_engine_t *dt, tain_t const *stamp)
 
 static int s6dns_engine_read_tcp (s6dns_engine_t *dt, tain_t const *stamp)
 {
-  register int r = sanitize_read(mininetstring_read(dt->fd, &dt->sa, &dt->protostate)) ;
+  register ssize_t r = sanitize_read(mininetstring_read(dt->fd, &dt->sa, &dt->protostate)) ;
   if (r < 0) return (prepare_next(dt, stamp, 1), 0) ;
   else if (!r) return (errno = EAGAIN, 0) ;
   else if ((dt->sa.len - dt->querylen) < 12)
@@ -351,7 +352,7 @@ int s6dns_engine_event (s6dns_engine_t *dt, tain_t const *stamp)
   return -1 ;
 }
 
-int s6dns_engine_init_r (s6dns_engine_t *dt, s6dns_ip46list_t const *servers, uint32 options, char const *q, unsigned int qlen, uint16 qtype, s6dns_debughook_t const *dbh, tain_t const *deadline, tain_t const *stamp)
+int s6dns_engine_init_r (s6dns_engine_t *dt, s6dns_ip46list_t const *servers, uint32_t options, char const *q, unsigned int qlen, uint16_t qtype, s6dns_debughook_t const *dbh, tain_t const *deadline, tain_t const *stamp)
 {
   s6dns_message_header_t h = S6DNS_MESSAGE_HEADER_ZERO ;
   if (!stralloc_ready(&dt->sa, qlen + 18)) return 0 ;

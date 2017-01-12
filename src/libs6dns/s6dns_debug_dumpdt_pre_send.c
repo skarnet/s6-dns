@@ -5,6 +5,8 @@
 #define _BSD_SOURCE
 #endif
 
+#include <sys/types.h>
+#include <stdint.h>
 #include <errno.h>
 #include <skalibs/uint16.h>
 #include <skalibs/fmtscan.h>
@@ -27,8 +29,8 @@
 int s6dns_debug_dumpdt_pre_send (s6dns_engine_t const *dt, void *data)
 {
   genwrite_t *gp = data ;
+  size_t len ;
   char buf[LOCALTMN_FMT] ;
-  unsigned int len ;
   if ((*gp->put)(gp->target, "Preparing to send via ", 22) < 22) return 0 ;
   if ((*gp->put)(gp->target, dt->flagtcp ? "TCP" : "UDP", 3) < 3) return 0 ;
   if ((*gp->put)(gp->target, " to ", 4) < 4) return 0 ;
@@ -52,7 +54,7 @@ int s6dns_debug_dumpdt_pre_send (s6dns_engine_t const *dt, void *data)
   if (dt->flagstrict && (*gp->put)(gp->target, "strict, ", 8) < 8) return 0 ;
   if ((*gp->put)(gp->target, "query id ", 9) < 9) return 0 ;
   {
-    uint16 id ;
+    uint16_t id ;
     uint16_unpack_big(dt->sa.s + 2, &id) ;
     len = uint16_fmt(buf, id) ;
   }

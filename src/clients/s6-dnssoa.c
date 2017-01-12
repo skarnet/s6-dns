@@ -1,5 +1,6 @@
 /* ISC license. */
 
+#include <sys/types.h>
 #include <errno.h>
 #include <skalibs/uint.h>
 #include <skalibs/bytestr.h>
@@ -18,7 +19,8 @@ int main (int argc, char const *const *argv)
 {
   genalloc soas = GENALLOC_ZERO ; /* array of s6dns_message_rr_soa_t */
   tain_t deadline ;
-  unsigned int i = 0 ;
+  size_t i = 0 ;
+  unsigned int t = 0 ;
   int flagqualify = 0 ;
   int flagunsort = 0 ;
   PROG = "s6-dnssoa" ;
@@ -30,7 +32,7 @@ int main (int argc, char const *const *argv)
     {
       case 'q' : flagqualify = 1 ; break ;
       case 'r' : flagunsort = 1 ; break ;
-      case 't' : if (!uint0_scan(subgetopt_here.arg, &i)) dieusage() ; break ;
+      case 't' : if (!uint0_scan(subgetopt_here.arg, &t)) dieusage() ; break ;
       default : dieusage() ;
     }
   }
@@ -38,7 +40,7 @@ int main (int argc, char const *const *argv)
   if (argc < 1) dieusage() ;
 
   tain_now_g() ;
-  if (i) tain_from_millisecs(&deadline, i) ; else deadline = tain_infinite_relative ;
+  if (t) tain_from_millisecs(&deadline, t) ; else deadline = tain_infinite_relative ;
   tain_add_g(&deadline, &deadline) ;
   if (!s6dns_init()) strerr_diefu1sys(111, "s6dns_init") ;
   {
@@ -51,7 +53,7 @@ int main (int argc, char const *const *argv)
   for (i = 0 ; i < genalloc_len(s6dns_message_rr_soa_t, &soas) ; i++)
   {
     char buf[S6DNS_FMT_SOA] ;
-    register unsigned int len = s6dns_fmt_soa(buf, S6DNS_FMT_SOA, genalloc_s(s6dns_message_rr_soa_t, &soas) + i) ;
+    register size_t len = s6dns_fmt_soa(buf, S6DNS_FMT_SOA, genalloc_s(s6dns_message_rr_soa_t, &soas) + i) ;
     if (!len) strerr_diefu1sys(111, "format result") ;
     if (buffer_put(buffer_1, buf, len) < 0) goto err ;
     if (buffer_put(buffer_1, "\n", 1) < 0) goto err ;

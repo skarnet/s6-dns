@@ -1,13 +1,14 @@
 /* ISC license. */
 
+#include <sys/types.h>
 #include <errno.h>
 #include <skalibs/error.h>
 #include <skalibs/bytestr.h>
 #include "s6dns-message-internal.h"
 
-unsigned int s6dns_message_get_domain_internal (char *out, unsigned int outmax, char const *s, unsigned int len, unsigned int *pos)
+size_t s6dns_message_get_domain_internal (char *out, size_t outmax, char const *s, unsigned int len, unsigned int *pos)
 {
-  unsigned int w = 0 ; /* writing head */
+  size_t w = 0 ; /* writing head */
   unsigned int r = *pos ; /* reading head */
   unsigned int jumps = 0 ;
   register int hasjumped = 0 ;

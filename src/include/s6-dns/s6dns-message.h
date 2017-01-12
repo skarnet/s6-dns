@@ -3,8 +3,7 @@
 #ifndef S6DNS_MESSAGE_H
 #define S6DNS_MESSAGE_H
 
-#include <skalibs/uint16.h>
-#include <skalibs/uint32.h>
+#include <stdint.h>
 #include <skalibs/stralloc.h>
 #include <skalibs/genalloc.h>
 #include <s6-dns/s6dns-domain.h>
@@ -15,10 +14,10 @@
 typedef struct s6dns_message_counts_s s6dns_message_counts_t, *s6dns_message_counts_t_ref ;
 struct s6dns_message_counts_s
 {
-  uint16 qd ;
-  uint16 an ;
-  uint16 ns ;
-  uint16 nr ;
+  uint16_t qd ;
+  uint16_t an ;
+  uint16_t ns ;
+  uint16_t nr ;
 } ;
 
 #define S6DNS_MESSAGE_COUNTS_ZERO { .qd = 0, .an = 0, .ns = 0, .nr = 0 }
@@ -31,7 +30,7 @@ extern unsigned int s6dns_message_counts_next (s6dns_message_counts_t *) ;
 typedef struct s6dns_message_header_s s6dns_message_header_t, *s6dns_message_header_t_ref ;
 struct s6dns_message_header_s
 {
-  uint16 id ;
+  uint16_t id ;
   unsigned int qr : 1 ;
   unsigned int opcode : 4 ;
   unsigned int aa : 1 ;
@@ -79,7 +78,7 @@ extern int s6dns_message_get_hinfo (s6dns_message_rr_hinfo_t *, char const *, un
 typedef struct s6dns_message_rr_mx_s s6dns_message_rr_mx_t, *s6dns_message_rr_mx_t_ref ;
 struct s6dns_message_rr_mx_s
 {
-  uint16 preference ;
+  uint16_t preference ;
   s6dns_domain_t exchange ;
 } ;
 
@@ -90,11 +89,11 @@ struct s6dns_message_rr_soa_s
 {
   s6dns_domain_t mname ;
   s6dns_domain_t rname ;
-  uint32 serial ;
-  uint32 refresh ;
-  uint32 retry ;
-  uint32 expire ;
-  uint32 minimum ;
+  uint32_t serial ;
+  uint32_t refresh ;
+  uint32_t retry ;
+  uint32_t expire ;
+  uint32_t minimum ;
 } ;
 
 extern int s6dns_message_get_soa (s6dns_message_rr_soa_t *, char const *, unsigned int, unsigned int *) ;
@@ -102,9 +101,9 @@ extern int s6dns_message_get_soa (s6dns_message_rr_soa_t *, char const *, unsign
 typedef struct s6dns_message_rr_srv_s s6dns_message_rr_srv_t, *s6dns_message_rr_srv_t_ref ;
 struct s6dns_message_rr_srv_s
 {
-  uint16 priority ;
-  uint16 weight ;
-  uint16 port ;
+  uint16_t priority ;
+  uint16_t weight ;
+  uint16_t port ;
   s6dns_domain_t target ;
 } ;
 
@@ -117,10 +116,10 @@ typedef struct s6dns_message_rr_s s6dns_message_rr_t, *s6dns_message_rr_t_ref ;
 struct s6dns_message_rr_s
 {
   s6dns_domain_t name ;
-  uint16 rtype ;
-  uint16 rclass ;
-  uint32 ttl ;
-  uint16 rdlength ;
+  uint16_t rtype ;
+  uint16_t rclass ;
+  uint32_t ttl ;
+  uint16_t rdlength ;
 } ;
 
 typedef int s6dns_message_rr_func_t (s6dns_message_rr_t const *, char const *, unsigned int, unsigned int, unsigned int, void *) ;
@@ -133,8 +132,8 @@ typedef struct s6dns_mpag_s s6dns_mpag_t, *s6dns_mpag_t_ref ;
 struct s6dns_mpag_s
 {
   stralloc sa ;
-  genalloc offsets ; /* array of unsigned int */
-  uint16 rtype ;
+  genalloc offsets ; /* array of size_t */
+  uint16_t rtype ;
 } ;
 #define S6DNS_MPAG_ZERO { .sa = STRALLOC_ZERO, .offsets = GENALLOC_ZERO, .rtype = 0 }
 
@@ -145,7 +144,7 @@ typedef struct s6dns_dpag_s s6dns_dpag_t, *s6dns_dpag_t_ref ;
 struct s6dns_dpag_s
 {
   genalloc ds ; /* array of s6dns_domain_t */
-  uint16 rtype ;
+  uint16_t rtype ;
 } ;
 #define S6DNS_DPAG_ZERO { .ds = GENALLOC_ZERO, .rtype = 0 }
 

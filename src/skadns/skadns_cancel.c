@@ -5,6 +5,7 @@
 #define _BSD_SOURCE
 #endif
 
+#include <stdint.h>
 #include <errno.h>
 #include <skalibs/uint16.h>
 #include <skalibs/error.h>
@@ -13,7 +14,7 @@
 #include <skalibs/skaclient.h>
 #include <s6-dns/skadns.h>
 
-int skadns_cancel (skadns_t *a, uint16 id, tain_t const *deadline, tain_t *stamp)
+int skadns_cancel (skadns_t *a, uint16_t id, tain_t const *deadline, tain_t *stamp)
 {
   char pack[3] = "--q" ;
   char err ;

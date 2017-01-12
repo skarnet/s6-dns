@@ -1,14 +1,15 @@
 /* ISC license. */
 
+#include <sys/types.h>
 #include <skalibs/uint16.h>
 #include <skalibs/bytestr.h>
 #include <s6-dns/s6dns-message.h>
 #include <s6-dns/s6dns-fmt.h>
 
-unsigned int s6dns_fmt_mx (char *s, unsigned int max, s6dns_message_rr_mx_t const *mx)
+size_t s6dns_fmt_mx (char *s, size_t max, s6dns_message_rr_mx_t const *mx)
 {
   char fmt[UINT16_FMT] ;
-  unsigned int len = uint16_fmt(fmt, mx->preference) ;
+  size_t len = uint16_fmt(fmt, mx->preference) ;
   unsigned int r ;
   if (len >= max) return 0 ;
   fmt[len++] = ' ' ;

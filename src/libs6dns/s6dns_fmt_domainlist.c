@@ -1,13 +1,14 @@
 /* ISC license. */
 
+#include <sys/types.h>
 #include <errno.h>
 #include <skalibs/bytestr.h>
 #include <s6-dns/s6dns-domain.h>
 #include <s6-dns/s6dns-fmt.h>
 
-unsigned int s6dns_fmt_domainlist (char *s, unsigned int max, s6dns_domain_t const *list, unsigned int n, char const *delim, unsigned int delimlen)
+size_t s6dns_fmt_domainlist (char *s, size_t max, s6dns_domain_t const *list, unsigned int n, char const *delim, size_t delimlen)
 {
-  unsigned int len = 0 ;
+  size_t len = 0 ;
   register unsigned int i = 0 ;
   for (; i < n ; i++)
   {

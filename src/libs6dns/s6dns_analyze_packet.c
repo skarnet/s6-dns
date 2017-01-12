@@ -1,5 +1,6 @@
 /* ISC license. */
 
+#include <stdint.h>
 #include <errno.h>
 #include <skalibs/error.h>
 #include <skalibs/uint16.h>
@@ -84,7 +85,7 @@ int s6dns_analyze_packet (genwrite_t *gp, char const *packet, unsigned int packe
     s6dns_domain_t d ;
     char buf[257] ;
     unsigned int len ;
-    uint16 qtype ;
+    uint16_t qtype ;
     uint16 qclass ;
     section = s6dns_message_counts_next(&counts) ;
     if (section != 1) break ;

@@ -1,5 +1,6 @@
 /* ISC license. */
 
+#include <sys/types.h>
 #include <errno.h>
 #include <skalibs/error.h>
 #include <skalibs/genwrite.h>
@@ -11,9 +12,9 @@
 int s6dns_analyze_record_domain (genwrite_t *gp, s6dns_message_rr_t const *rr, char const *packet, unsigned int packetlen, unsigned int start)
 {
   s6dns_domain_t d ;
-  char buf[S6DNS_FMT_DOMAIN] ;
+  size_t len ;
   unsigned int pos = start ;
-  register unsigned int len ;
+  char buf[S6DNS_FMT_DOMAIN] ;
   if (!s6dns_message_get_domain(&d, packet, packetlen, &pos)) return 0 ;
   if (rr->rdlength != pos - start) return (errno = EPROTO, 0) ;
   len = s6dns_fmt_domain(buf, 256, &d) ;

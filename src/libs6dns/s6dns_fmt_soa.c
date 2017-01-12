@@ -1,16 +1,17 @@
 /* ISC license. */
 
+#include <sys/types.h>
 #include <errno.h>
 #include <skalibs/uint32.h>
 #include <skalibs/bytestr.h>
 #include <s6-dns/s6dns-message.h>
 #include <s6-dns/s6dns-fmt.h>
 
-unsigned int s6dns_fmt_soa (char *s, unsigned int max, s6dns_message_rr_soa_t const *soa)
+size_t s6dns_fmt_soa (char *s, size_t max, s6dns_message_rr_soa_t const *soa)
 {
+  size_t len = 0 ;
   char fmt[UINT32_FMT] ;
-  unsigned int len = 0 ;
-  register unsigned int r = s6dns_domain_tostring(s + len, max - len, &soa->mname) ;
+  register size_t r = s6dns_domain_tostring(s + len, max - len, &soa->mname) ;
   if (!r) return 0 ;
   len += r ;
   if (len >= max) return (errno = ENAMETOOLONG, 0) ;

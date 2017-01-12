@@ -3,8 +3,8 @@
 #ifndef SKADNS_H
 #define SKADNS_H
 
+#include <stdint.h>
 #include <errno.h>
-#include <skalibs/uint16.h>
 #include <skalibs/tai.h>
 #include <skalibs/genalloc.h>
 #include <skalibs/gensetdyn.h>
@@ -32,7 +32,7 @@ typedef struct skadns_s skadns_t, *skadns_t_ref ;
 struct skadns_s
 {
   skaclient_t connection ;
-  genalloc list ; /* array of uint16 */
+  genalloc list ; /* array of uint16_t */
   gensetdyn q ; /* set of skadnsanswer_t */
   skaclient_buffer_t buffers ;
 } ;
@@ -51,9 +51,9 @@ extern void skadns_end (skadns_t *) ;
                 
  /* Synchronous functions */
  
-extern int skadns_send (skadns_t *, uint16 *, s6dns_domain_t const *, uint16, tain_t const *, tain_t const *, tain_t *) ;
+extern int skadns_send (skadns_t *, uint16_t *, s6dns_domain_t const *, uint16_t, tain_t const *, tain_t const *, tain_t *) ;
 #define skadns_send_g(a, id, d, qtype, limit, deadline) skadns_send(a, id, d, qtype, limit, (deadline), &STAMP)
-extern int skadns_cancel (skadns_t *, uint16, tain_t const *, tain_t *) ;
+extern int skadns_cancel (skadns_t *, uint16_t, tain_t const *, tain_t *) ;
 #define skadns_cancel_g(a, id, deadline) skadns_cancel(a, id, (deadline), &STAMP)
 
 
@@ -61,10 +61,10 @@ extern int skadns_cancel (skadns_t *, uint16, tain_t const *, tain_t *) ;
 
 #define skadns_fd(a) skaclient_fd(&(a)->connection)
 extern int skadns_update (skadns_t *) ;
-#define skadns_list(a) genalloc_s(uint16 const, &(a)->list)
+#define skadns_list(a) genalloc_s(uint16_t const, &(a)->list)
 #define skadns_clearlist(a) ((a)->list.len = 0)
-extern int skadns_packetlen (skadns_t const *, uint16) ;
-extern char const *skadns_packet (skadns_t const *, uint16) ;
+extern int skadns_packetlen (skadns_t const *, uint16_t) ;
+extern char const *skadns_packet (skadns_t const *, uint16_t) ;
 extern int skadns_release (skadns_t *, uint16) ;
 
 #endif

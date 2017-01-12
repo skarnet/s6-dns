@@ -1,5 +1,6 @@
 /* ISC license. */
 
+#include <stdint.h>
 #include <errno.h>
 #include <skalibs/uint16.h>
 #include <skalibs/uint.h>
@@ -45,7 +46,7 @@ int main (int argc, char const *const *argv)
   {
     s6dns_debughook_t dbh = { .post_recv = 0, .pre_send = 0, .post_send = 0 } ;
     s6dns_domain_t d ;
-    uint16 qtype = s6dns_analyze_qtype_parse(argv[0]) ;
+    uint16_t qtype = s6dns_analyze_qtype_parse(argv[0]) ;
     if (!qtype) dieusage() ;
     if (!s6dns_domain_fromstring_noqualify_encode(&d, argv[1], str_len(argv[1])))
       strerr_diefu2sys(100, "encode ", argv[1]) ;

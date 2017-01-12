@@ -1,5 +1,6 @@
 /* ISC license. */
 
+#include <stdint.h>
 #include <skalibs/uint16.h>
 #include <skalibs/uint32.h>
 #include <skalibs/bytestr.h>
@@ -8,7 +9,7 @@
 #include <s6-dns/s6dns-message.h>
 #include <s6-dns/s6dns-analyze.h>
 
-static s6dns_analyze_rtypetable_t const *rtypelookup (uint16 rtype)
+static s6dns_analyze_rtypetable_t const *rtypelookup (uint16_t rtype)
 {
   register s6dns_analyze_rtypetable_t const *wut = s6dns_analyze_rtypetable ;
   while (wut->rtype && wut->rtype != rtype) wut++ ;

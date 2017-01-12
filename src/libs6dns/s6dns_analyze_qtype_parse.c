@@ -1,5 +1,6 @@
 /* ISC license. */
 
+#include <stdint.h>
 #include <skalibs/uint16.h>
 #include <skalibs/bytestr.h>
 #include <s6-dns/s6dns-constants.h>
@@ -9,7 +10,7 @@ typedef struct lookuptable_s lookuptable_t, *lookuptable_t_ref ;
 struct lookuptable_s
 {
   char const *text ;
-  uint16 qtype ;
+  uint16_t qtype ;
 } ;
 
 static lookuptable_t const table[] =
@@ -32,10 +33,10 @@ static lookuptable_t const table[] =
   { 0, 0 }
 } ;
 
-uint16 s6dns_analyze_qtype_parse (char const *s)
+uint16_t s6dns_analyze_qtype_parse (char const *s)
 {
   {
-    uint16 u ;
+    uint16_t u ;
     if (uint160_scan(s, &u)) return u ;
   }
   {

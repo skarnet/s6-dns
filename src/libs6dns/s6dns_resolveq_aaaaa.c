@@ -1,7 +1,7 @@
 /* ISC license. */
 
+#include <sys/types.h>
 #include <errno.h>
-#include <skalibs/uint16.h>
 #include <skalibs/error.h>
 #include <skalibs/stralloc.h>
 #include <skalibs/genalloc.h>
@@ -75,9 +75,9 @@ int s6dns_resolveq_aaaaa_r (genalloc *ips, char const *name, unsigned int len, s
  found:
   s6dns_engine_freen(dtl, n<<1) ;
   {
-    register unsigned int len = data.len >> ((best & 1) ? 2 : 4) ;
-    register unsigned int i = 0 ;
-    register unsigned int base = genalloc_len(ip46_t, ips) ;
+    register size_t len = data.len >> ((best & 1) ? 2 : 4) ;
+    register size_t i = 0 ;
+    register size_t base = genalloc_len(ip46_t, ips) ;
     if (!genalloc_readyplus(ip46_t, ips, len)) return -1 ;
     for (; i < len ; i++)
       ip46_from_ip(genalloc_s(ip46_t, ips) + base + i, data.s + (i << ((best & 1) ? 2 : 4)), !(best & 1)) ;

@@ -1,8 +1,9 @@
 /* ISC license. */
 
+#include <sys/types.h>
+#include <stdint.h>
 #include <errno.h>
 #include <skalibs/uint16.h>
-#include <skalibs/uint32.h>
 #include <skalibs/uint.h>
 #include <skalibs/bytestr.h>
 #include <skalibs/bitarray.h>
@@ -23,7 +24,7 @@ int main (int argc, char const *const *argv)
 {
   tain_t deadline ;
   unsigned int debuglevel = 0 ;
-  uint16 qtype ;
+  uint16_t qtype ;
   genwrite_t *where = &genwrite_stderr ;
   PROG = "s6-dnsq" ;
   {
@@ -60,7 +61,7 @@ int main (int argc, char const *const *argv)
     for (; (i < (unsigned int)(argc - 2)) && (j < S6DNS_MAX_SERVERS) ; i++)
     {
       ip46_t z[S6DNS_MAX_SERVERS] ;
-      unsigned int n ;
+      unsigned int n ; /* XXX: depends on ip46_scanlist API */
       register unsigned int k = 0 ;
       if (!*argv[2+i]) continue ;
       if (!ip46_scanlist(z, S6DNS_MAX_SERVERS - j, argv[2 + i], &n))

@@ -21,8 +21,8 @@ struct s6dns_rci_s
 
 extern s6dns_rci_t const s6dns_rci_zero ;
 extern s6dns_rci_t s6dns_rci_here ;
-extern int s6dns_rci_init (s6dns_rci_t_ref, char const *) ;
-extern void s6dns_rci_free (s6dns_rci_t_ref) ;
+extern int s6dns_rci_init (s6dns_rci_t *, char const *) ;
+extern void s6dns_rci_free (s6dns_rci_t *) ;
 
 #define s6dns_qualify(list, d) s6dns_domain_qualify(list, (d), s6dns_rci_here.rules.s, s6dns_rci_here.rulesnum)
 

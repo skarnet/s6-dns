@@ -1,5 +1,6 @@
 /* ISC license. */
 
+#include <sys/types.h>
 #include <errno.h>
 #include <skalibs/error.h>
 #include <skalibs/strerr2.h>
@@ -12,10 +13,10 @@
 
 #define USAGE "s6-dnsname-filter [ -4 ] [ -6 ] [ -l lines ] [ -c concurrency ] [ -t timeout ] [ -f format ] [ -e errorformat ]"
 
-static unsigned int ipscanner (s6dns_domain_t *d, char const *s)
+static size_t ipscanner (s6dns_domain_t *d, char const *s)
 {
   char ip[16] ;
-  register unsigned int pos ;
+  register size_t pos ;
   if (flag6)
   {
     pos = ip6_scan(s, ip) ;

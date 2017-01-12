@@ -1,11 +1,11 @@
 /* ISC license. */
 
+#include <stdint.h>
 #include <errno.h>
-#include <skalibs/uint16.h>
 #include <skalibs/gensetdyn.h>
 #include <s6-dns/skadns.h>
 
-char const *skadns_packet (skadns_t const *a, uint16 id)
+char const *skadns_packet (skadns_t const *a, uint16_t id)
 {
   register skadnsanswer_t *p = GENSETDYN_P(skadnsanswer_t, &a->q, id) ;
   switch (p->status)

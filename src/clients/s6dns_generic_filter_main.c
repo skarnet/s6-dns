@@ -1,5 +1,7 @@
 /* ISC license. */
 
+#include <sys/types.h>
+#include <stdint.h>
 #include <errno.h>
 #include <skalibs/error.h>
 #include <skalibs/uint16.h>
@@ -25,8 +27,8 @@ typedef struct line_s line_t, *line_t_ref ;
 struct line_s
 {
   stralloc swrd ;
-  unsigned int wpos ;
-  int dpos ;
+  size_t wpos ;
+  ssize_t dpos ;
   char w[2] ;
   unsigned int pending : 1 ;
 } ;
@@ -42,14 +44,14 @@ static void line_recycle (line_t *l)
 int flag4 = 0 ;
 int flag6 = 0 ;
 
-int s6dns_generic_filter_main (int argc, char const *const *argv, char const *const *envp, uint16 qtype, scan_func_t_ref scanner, fmt_func_t_ref formatter, char const *USAGE)
+int s6dns_generic_filter_main (int argc, char const *const *argv, char const *const *envp, uint16_t qtype, scan_func_t_ref scanner, fmt_func_t_ref formatter, char const *USAGE)
 {
   skadns_t a = SKADNS_ZERO ;
   tain_t deadline, tto ;
   char const *normalformat = "%s=%d%w%r" ;
   char const *errorformat = "%s=<%e>%w%r" ;
-  uint16 maxlines = 256 ;
-  uint16 maxconn = 128 ;
+  uint16_t maxlines = 256 ;
+  uint16_t maxconn = 128 ;
   {
     subgetopt_t l = SUBGETOPT_ZERO ;
     unsigned int t = 0 ;
@@ -86,13 +88,13 @@ int s6dns_generic_filter_main (int argc, char const *const *argv, char const *co
 
   {
     iopause_fd x[3] = { { .fd = 0, .events = 0, .revents = 0 }, { .fd = 1, .events = 0, .revents = 0 }, { .fd = skadns_fd(&a), .events = 0, .revents = 0 } } ;
-    uint16 lhead = 0, ltail = 0, numlines = 0, pending = 0 ;
+    uint16_t lhead = 0, ltail = 0, numlines = 0, pending = 0 ;
     line_t storage[maxlines+1] ;
-    uint16 lineindex[maxconn] ;
+    uint16_t lineindex[maxconn] ;
     {
       line_t line_zero = LINE_ZERO ;
       char const *args[4] = { "", "", "", "" } ;
-      uint16 i = 0 ;
+      uint16_t i = 0 ;
       for (; i <= maxlines ; i++) storage[i] = line_zero ;
       if (!string_format(&storage[0].swrd, "sdwr", normalformat, args)
        || !string_format(&storage[0].swrd, "sewr", errorformat, args))
@@ -126,13 +128,13 @@ int s6dns_generic_filter_main (int argc, char const *const *argv, char const *co
       if (x[2].revents)
       {
 	register int j = 0 ;
-        register uint16 const *list ;
+        register uint16_t const *list ;
         int n = skadns_update(&a) ;
         if (n < 0) strerr_diefu1sys(111, "skadns_update") ;
         list = skadns_list(&a) ;
         for (; j < n ; j++)
         {
-          register uint16 i = lineindex[list[j]] ;
+          register uint16_t i = lineindex[list[j]] ;
           register char const *packet = skadns_packet(&a, list[j]) ;
           if (packet)
           {
@@ -185,7 +187,7 @@ int s6dns_generic_filter_main (int argc, char const *const *argv, char const *co
           else
           {
             tain_t sendlimit ;
-            uint16 id ;
+            uint16_t id ;
             line->w[0] = line->swrd.s[line->wpos] ;
             line->swrd.s[line->wpos] = 0 ;
             tain_addsec_g(&sendlimit, 2) ;
@@ -209,7 +211,7 @@ int s6dns_generic_filter_main (int argc, char const *const *argv, char const *co
       for (; ltail != lhead ; ltail = (ltail+1) % (maxlines+1), numlines--)
       {
         char *args[4] ;
-        register line_t_ref line = storage + ltail ;
+        register line_t *line = storage + ltail ;
         if (line->pending) break ;
         args[0] = line->swrd.s ;
         args[1] = line->dpos < 0 ? (char *)s6dns_constants_error_str(-line->dpos) : line->swrd.s + line->dpos ;

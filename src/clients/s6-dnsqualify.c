@@ -1,5 +1,6 @@
 /* ISC license. */
 
+#include <sys/types.h>
 #include <skalibs/bytestr.h>
 #include <skalibs/strerr2.h>
 #include <skalibs/buffer.h>
@@ -22,7 +23,7 @@ int main (int argc, char const *const *argv)
     if (!n) strerr_diefu2sys(111, "qualify ", argv[1]) ;
     {
       char buf[S6DNS_FMT_DOMAINLIST(n)] ;
-      unsigned int len = s6dns_fmt_domainlist(buf, S6DNS_FMT_DOMAINLIST(n), list, n, "\n", 1) ;
+      size_t len = s6dns_fmt_domainlist(buf, S6DNS_FMT_DOMAINLIST(n), list, n, "\n", 1) ;
       if (!len) strerr_diefu1sys(111, "format result") ;
       if (buffer_put(buffer_1, buf, len) < 0) goto err ;
     }

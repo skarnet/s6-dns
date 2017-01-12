@@ -1,5 +1,6 @@
 /* ISC license. */
 
+#include <sys/types.h>
 #include <errno.h>
 #include <skalibs/uint.h>
 #include <skalibs/sgetopt.h>
@@ -17,7 +18,7 @@ int main (int argc, char const *const *argv)
   char ip[16] ;
   unsigned int n ;
   unsigned int i = 0 ;
-  unsigned int what = 0 ;
+  size_t what = 0 ;
   int finite = 0 ;
   PROG = "s6-randomip" ;
   for (;;)
@@ -41,7 +42,7 @@ int main (int argc, char const *const *argv)
   if (!random_init()) strerr_diefu1sys(111, "init random generator") ;
   for (i = 0 ; !finite || (i < n) ; i++)
   {
-    unsigned int len = what ;
+    size_t len = what ;
     if (len > 16)
     {
       unsigned char c = random_char() ;

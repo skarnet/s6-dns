@@ -5,13 +5,13 @@
 #define _BSD_SOURCE
 #endif
 
+#include <stdint.h>
 #include <errno.h>
-#include <skalibs/uint16.h>
 #include <skalibs/alloc.h>
 #include <skalibs/gensetdyn.h>
 #include <s6-dns/skadns.h>
 
-int skadns_release (skadns_t *a, uint16 id)
+int skadns_release (skadns_t *a, uint16_t id)
 {
   register skadnsanswer_t *p = GENSETDYN_P(skadnsanswer_t, &a->q, id) ;
   switch (p->status)

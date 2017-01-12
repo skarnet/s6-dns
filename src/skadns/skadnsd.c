@@ -1,5 +1,6 @@
 /* ISC license. */
 
+#include <stdint.h>
 #include <errno.h>
 #include <signal.h>
 #include <skalibs/uint16.h>
@@ -19,7 +20,7 @@ struct dnsio_s
 {
   unsigned int xindex ;
   s6dns_engine_t dt ;
-  uint16 id ;
+  uint16_t id ;
 } ;
 #define DNSIO_ZERO { .xindex = SKADNS_MAXCONCURRENCY, .dt = S6DNS_ENGINE_ZERO, .id = 0 }
 
@@ -55,7 +56,7 @@ static void answer (char c)
 
 static int parse_protocol (unixmessage_t const *m, void *context)
 {
-  uint16 id ;
+  uint16_t id ;
   if (m->len < 3 || m->nfds) strerr_dief1x(100, "invalid client request") ;
   uint16_unpack_big(m->s, &id) ;
   switch (m->s[2])  /* protocol parsing */
@@ -63,7 +64,7 @@ static int parse_protocol (unixmessage_t const *m, void *context)
     case 'Q' : /* send a query */
     {
       tain_t limit ;
-      uint16 qtype ;
+      uint16_t qtype ;
       if (m->len < 21) strerr_dief1x(100, "invalid client request") ;
       if (sp >= SKADNS_MAXCONCURRENCY)
       {

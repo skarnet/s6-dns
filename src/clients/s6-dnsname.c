@@ -1,5 +1,6 @@
 /* ISC license. */
 
+#include <sys/types.h>
 #include <errno.h>
 #include <skalibs/uint.h>
 #include <skalibs/sgetopt.h>
@@ -20,7 +21,7 @@ int main (int argc, char const *const *argv)
   genalloc ds = GENALLOC_ZERO ; /* array of s6dns_domain_t */
   tain_t deadline ;
   ip46full_t ip = IP46FULL_ZERO ;
-  unsigned int i = 0 ;
+  unsigned int t = 0 ;
   int flagunsort = 0 ;
   int do4 = 0 ;
   int do6 = 0 ;
@@ -34,7 +35,7 @@ int main (int argc, char const *const *argv)
       case '4' : do4 = 1 ; break ;
       case '6' : do6 = 1 ; break ;
       case 'r' : flagunsort = 1 ; break ;
-      case 't' : if (!uint0_scan(subgetopt_here.arg, &i)) dieusage() ; break ;
+      case 't' : if (!uint0_scan(subgetopt_here.arg, &t)) dieusage() ; break ;
       default : dieusage() ;
     }
   }
@@ -53,7 +54,7 @@ int main (int argc, char const *const *argv)
   else if (!ip4_scan(argv[0], ip.ip)) dieusage() ;
   
   tain_now_g() ;
-  if (i) tain_from_millisecs(&deadline, i) ; else deadline = tain_infinite_relative ;
+  if (t) tain_from_millisecs(&deadline, t) ; else deadline = tain_infinite_relative ;
   tain_add_g(&deadline, &deadline) ;
   if (!s6dns_init()) strerr_diefu1sys(111, "s6dns_init") ;
   {
@@ -65,7 +66,7 @@ int main (int argc, char const *const *argv)
   if (flagunsort) random_unsort(ds.s, genalloc_len(s6dns_domain_t, &ds), sizeof(s6dns_domain_t)) ;
   {
     char buf[S6DNS_FMT_DOMAINLIST(genalloc_len(s6dns_domain_t, &ds))] ;
-    unsigned int len = s6dns_fmt_domainlist(buf, S6DNS_FMT_DOMAINLIST(genalloc_len(s6dns_domain_t, &ds)), genalloc_s(s6dns_domain_t, &ds), genalloc_len(s6dns_domain_t, &ds), "\n", 1) ;
+    size_t len = s6dns_fmt_domainlist(buf, S6DNS_FMT_DOMAINLIST(genalloc_len(s6dns_domain_t, &ds)), genalloc_s(s6dns_domain_t, &ds), genalloc_len(s6dns_domain_t, &ds), "\n", 1) ;
     if (!len) strerr_diefu1sys(111, "format result") ;
     if (buffer_put(buffer_1, buf, len) < 0) goto err ;
   }

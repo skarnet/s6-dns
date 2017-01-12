@@ -1,5 +1,6 @@
 /* ISC license. */
 
+#include <sys/types.h>
 #include <errno.h>
 #include <skalibs/uint.h>
 #include <skalibs/sgetopt.h>
@@ -17,7 +18,8 @@ int main (int argc, char const *const *argv)
 {
   stralloc ips = STRALLOC_ZERO ;
   tain_t deadline ;
-  unsigned int i = 0 ;
+  size_t i = 0 ;
+  unsigned int t = 0 ;
   int flagqualify = 0 ;
   int flagunsort = 0 ;
   PROG = "s6-dnsip6" ;
@@ -30,7 +32,7 @@ int main (int argc, char const *const *argv)
     {
       case 'q' : flagqualify = 1 ; break ;
       case 'r' : flagunsort = 1 ; break ;
-      case 't' : if (!uint0_scan(subgetopt_here.arg, &i)) dieusage() ; break ;
+      case 't' : if (!uint0_scan(subgetopt_here.arg, &t)) dieusage() ; break ;
       default : dieusage() ;
     }
   }
@@ -38,7 +40,7 @@ int main (int argc, char const *const *argv)
   if (argc < 1) dieusage() ;
 
   tain_now_g() ;
-  if (i) tain_from_millisecs(&deadline, i) ; else deadline = tain_infinite_relative ;
+  if (t) tain_from_millisecs(&deadline, t) ; else deadline = tain_infinite_relative ;
   tain_add_g(&deadline, &deadline) ;
   if (!s6dns_init()) strerr_diefu1sys(111, "s6dns_init") ;
   {
@@ -51,7 +53,7 @@ int main (int argc, char const *const *argv)
   for (i = 0 ; i < ips.len / 16 ; i++)
   {
     char fmt[IP6_FMT] ;
-    register unsigned int n = ip6_fmt(fmt, ips.s + 16 * i) ;
+    register size_t n = ip6_fmt(fmt, ips.s + 16 * i) ;
     fmt[n++] = '\n' ;
     if (buffer_put(buffer_1small, fmt, n) < (int)n)
       strerr_diefu1sys(111, "write to stdout") ;
