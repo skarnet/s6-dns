@@ -14,6 +14,7 @@
 #include <skalibs/djbunix.h>
 #include <skalibs/ip46.h>
 #include <skalibs/random.h>
+#include <skalibs/lolstdio.h>
 #include <s6-dns/s6dns-constants.h>
 #include <s6-dns/s6dns-message.h>
 #include <s6-dns/s6dns-engine.h>
@@ -32,22 +33,32 @@ static int relevant (char const *q, unsigned int qlen, char const *ans, unsigned
   {
     s6dns_message_header_t h ;
     uint16_t id ;
+    LOLDEBUG("entering relevant()") ;
     s6dns_message_header_unpack(ans, &h) ;
+    LOLDEBUG("  testing answer qr, opcode, z, counts.qd") ;
     if (!h.qr || h.opcode || h.z || (h.counts.qd != 1)) return 0 ;
+    LOLDEBUG("  testing answer rd") ;
     if (h.rd != (q[2] & 1)) return 0 ;
+    LOLDEBUG("  if strict(%d), testing h.aa and query rd", strict) ;
     if (strict && !h.aa && !(q[2] & 1)) return 0 ;
     uint16_unpack_big(q, &id) ;
+    LOLDEBUG("  testing answer id") ;
     if (id != h.id) return 0 ;
   }
   {
     char buf[255] ;
     unsigned int pos = 12 ;
     unsigned int n = s6dns_message_get_domain_internal(buf, 255, ans, anslen, &pos) ;
+    LOLDEBUG("  testing return from s6dns_message_get_domain_internal()") ;
     if (!n) return -1 ;
+    LOLDEBUG("  testing that pos+4 <= anslen") ;
     if (pos + 4 > anslen) return (errno = EPROTO, -1) ;
+    LOLDEBUG("  testing answer domain against query") ;
     if (qdomain_diff(buf, n, q + 12, qlen - 16)) return 0 ;
+    LOLDEBUG("  testing answer qclass and qtype against query" ) ;
     if (byte_diff(q + qlen - 4, 4, ans + pos)) return 0 ;
   }
+  LOLDEBUG("relevant() returns 1") ;
   return 1 ;
 }
 
