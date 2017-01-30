@@ -35,7 +35,7 @@ static int relevant (char const *q, unsigned int qlen, char const *ans, unsigned
     uint16_t id ;
     LOLDEBUG("entering relevant()") ;
     s6dns_message_header_unpack(ans, &h) ;
-    LOLDEBUG("  testing answer qr, opcode, z, counts.qd") ;
+    LOLDEBUG("  answer qr = %u, opcode = %u, z = %u, qd = %u", h.qr, h.opcode, h.z, h.counts.qd) ;
     if (!h.qr || h.opcode || h.z || (h.counts.qd != 1)) return 0 ;
     LOLDEBUG("  testing answer rd") ;
     if (h.rd != (q[2] & 1)) return 0 ;
