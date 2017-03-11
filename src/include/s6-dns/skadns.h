@@ -65,6 +65,6 @@ extern int skadns_update (skadns_t *) ;
 #define skadns_clearlist(a) ((a)->list.len = 0)
 extern int skadns_packetlen (skadns_t const *, uint16_t) ;
 extern char const *skadns_packet (skadns_t const *, uint16_t) ;
-extern int skadns_release (skadns_t *, uint16) ;
+extern int skadns_release (skadns_t *, uint16_t) ;
 
 #endif

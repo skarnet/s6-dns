@@ -3,7 +3,7 @@
 #ifndef S6DNS_DOMAIN_H
 #define S6DNS_DOMAIN_H
 
-#include <sys/types.h>
+#include <string.h>
 #include <skalibs/ip46.h>
 
 typedef struct s6dns_domain_s s6dns_domain_t, *s6dns_domain_t_ref ;

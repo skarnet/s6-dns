@@ -1,18 +1,17 @@
 /* ISC license. */
 
+#include <string.h>
 #include <stdint.h>
 #include <errno.h>
 #include <skalibs/error.h>
-#include <skalibs/uint16.h>
-#include <skalibs/uint.h>
-#include <skalibs/bytestr.h>
+#include <skalibs/types.h>
 #include <skalibs/genwrite.h>
 #include <s6-dns/s6dns-constants.h>
 #include <s6-dns/s6dns-domain.h>
 #include <s6-dns/s6dns-message.h>
 #include <s6-dns/s6dns-analyze.h>
 
-#define add(s) if ((*gp->put)(gp->target, (s), str_len(s)) < 0) return 0
+#define add(s) if ((*gp->put)(gp->target, (s), strlen(s)) < 0) return 0
 #define addfmt(n) if ((*gp->put)(gp->target, fmt, uint_fmt(fmt, (n))) < 0) return 0
 #define addfmt16(n) if ((*gp->put)(gp->target, fmt, uint16_fmt(fmt, (n))) < 0) return 0
 

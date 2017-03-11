@@ -8,10 +8,10 @@ int s6dns_message_get_strings (char *s, unsigned int rdlength, char const *packe
   unsigned int max = rdlength, len = 0 ;
   while (rdlength)
   {
-    register unsigned int start = *pos ;
-    register int r = s6dns_message_get_string_internal(s + len, max - len, packet, packetlen, pos) ;
+    unsigned int start = *pos ;
+    int r = s6dns_message_get_string_internal(s + len, max - len, packet, packetlen, pos) ;
     if (r < 0) return -1 ;
     len += r ; rdlength -= *pos - start ;
   }
-  return (int)len ;
+  return len ;
 }

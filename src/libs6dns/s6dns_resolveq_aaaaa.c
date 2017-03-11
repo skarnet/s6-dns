@@ -20,7 +20,7 @@ int s6dns_resolveq_aaaaa_r (genalloc *ips, char const *name, unsigned int len, s
   unsigned int best = 0 ;
   unsigned int n ;
   int e = 0 ;
-  register unsigned int i = 0 ;
+  unsigned int i = 0 ;
   {
     s6dns_domain_t domains[rci->rulesnum] ;
     n = s6dns_domain_fromstring_qualify_encode(domains, name, len, rci->rules.s, rci->rulesnum) ;
@@ -44,14 +44,14 @@ int s6dns_resolveq_aaaaa_r (genalloc *ips, char const *name, unsigned int len, s
 
   for (;;)
   {
-    register int k = s6dns_resolven_loop(dtl, n << 1, 1, deadline, stamp) ;
+    int k = s6dns_resolven_loop(dtl, n << 1, 1, deadline, stamp) ;
     if (k < 0) goto err ;
     if ((unsigned int)k == best)
     {
       for (;; best++)
       {
         s6dns_message_header_t h ;
-        register int r ;
+        int r ;
         if (best >= n << 1) goto notfound ;
         if (error_isagain(dtl[best].status)) break ;
         if (dtl[best].status) { errno = dtl[best].status ; goto err ; }
@@ -75,9 +75,9 @@ int s6dns_resolveq_aaaaa_r (genalloc *ips, char const *name, unsigned int len, s
  found:
   s6dns_engine_freen(dtl, n<<1) ;
   {
-    register size_t len = data.len >> ((best & 1) ? 2 : 4) ;
-    register size_t i = 0 ;
-    register size_t base = genalloc_len(ip46_t, ips) ;
+    size_t len = data.len >> ((best & 1) ? 2 : 4) ;
+    size_t i = 0 ;
+    size_t base = genalloc_len(ip46_t, ips) ;
     if (!genalloc_readyplus(ip46_t, ips, len)) return -1 ;
     for (; i < len ; i++)
       ip46_from_ip(genalloc_s(ip46_t, ips) + base + i, data.s + (i << ((best & 1) ? 2 : 4)), !(best & 1)) ;

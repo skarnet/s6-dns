@@ -1,6 +1,6 @@
 /* ISC license. */
 
-#include <skalibs/bytestr.h>
+#include <string.h>
 #include <skalibs/fmtscan.h>
 #include <skalibs/strerr2.h>
 #include <skalibs/stralloc.h>
@@ -23,7 +23,7 @@ static int s6dns_message_parse_answer_aaaa1 (s6dns_message_rr_t const *rr, char 
   {
     s6dns_aaaa1_t *data = stuff ;
     if (data->got) return 1 ;
-    byte_copy(data->ip, 16, packet+pos) ;
+    memcpy(data->ip, packet+pos, 16) ;
     data->got = 1 ;
   }
   (void)packetlen ;
@@ -34,7 +34,7 @@ static int ipformatter (stralloc *sa, char const *packet, unsigned int packetlen
 {
   s6dns_aaaa1_t data ;
   s6dns_message_header_t h ;
-  register int r ;
+  int r ;
   data.got = 0 ;
   r = s6dns_message_parse(&h, packet, packetlen, &s6dns_message_parse_answer_aaaa1, &data) ;
   if (r <= 0) return r ;

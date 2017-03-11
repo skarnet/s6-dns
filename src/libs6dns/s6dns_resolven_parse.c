@@ -11,7 +11,7 @@
 int s6dns_resolven_parse_r (s6dns_resolve_t *list, unsigned int n, s6dns_ip46list_t const *servers, s6dns_debughook_t const *dbh, tain_t const *deadline, tain_t *stamp)
 {
   s6dns_engine_t dtl[n] ;
-  register unsigned int i = 0 ;
+  unsigned int i = 0 ;
   for (; i < n ; i++) list[i].status = ECONNABORTED ;
   for (i = 0 ; i < n ; i++)
   {
@@ -33,7 +33,7 @@ int s6dns_resolven_parse_r (s6dns_resolve_t *list, unsigned int n, s6dns_ip46lis
     else
     {
       s6dns_message_header_t h ;
-      register int r = s6dns_message_parse(&h, s6dns_engine_packet(dtl + i), s6dns_engine_packetlen(dtl + i), list[i].parsefunc, list[i].data) ;
+      int r = s6dns_message_parse(&h, s6dns_engine_packet(dtl + i), s6dns_engine_packetlen(dtl + i), list[i].parsefunc, list[i].data) ;
       if (r < 0) goto err ;
       list[i].status = r ? 0 : errno ;
     }

@@ -8,7 +8,7 @@
 #include <sys/types.h>
 #include <stdint.h>
 #include <errno.h>
-#include <skalibs/uint16.h>
+#include <skalibs/types.h>
 #include <skalibs/fmtscan.h>
 #include <skalibs/tai.h>
 #include <skalibs/djbtime.h>
@@ -38,7 +38,7 @@ int s6dns_debug_dumpdt_pre_send (s6dns_engine_t const *dt, void *data)
   if ((*gp->put)(gp->target, len ? "cache" : "server", len ? 5 : 6) < (len ? 5 : 6)) return 0 ;
   if ((*gp->put)(gp->target, " ", 1) < 1) return 0 ;
   len = s6dns_ipfmt(buf, s6dns_ip46list_ip(&dt->servers, dt->curserver), s6dns_ip46list_is6(&dt->servers, dt->curserver)) ;
-  if ((*gp->put)(gp->target, buf, len) < (int)len) return 0 ;
+  if ((*gp->put)(gp->target, buf, len) < (ssize_t)len) return 0 ;
   if ((*gp->put)(gp->target, " with deadline ", 15) < 15) return 0 ;
   {
     localtmn_t l ;
@@ -49,7 +49,7 @@ int s6dns_debug_dumpdt_pre_send (s6dns_engine_t const *dt, void *data)
     }
     else len = localtmn_fmt(buf, &l) ;
   }
-  if ((*gp->put)(gp->target, buf, len) < (int)len) return 0 ;
+  if ((*gp->put)(gp->target, buf, len) < (ssize_t)len) return 0 ;
   if ((*gp->put)(gp->target, ", ", 2) < 2) return 0 ;
   if (dt->flagstrict && (*gp->put)(gp->target, "strict, ", 8) < 8) return 0 ;
   if ((*gp->put)(gp->target, "query id ", 9) < 9) return 0 ;
@@ -58,7 +58,7 @@ int s6dns_debug_dumpdt_pre_send (s6dns_engine_t const *dt, void *data)
     uint16_unpack_big(dt->sa.s + 2, &id) ;
     len = uint16_fmt(buf, id) ;
   }
-  if ((*gp->put)(gp->target, buf, len) < (int)len) return 0 ;
+  if ((*gp->put)(gp->target, buf, len) < (ssize_t)len) return 0 ;
   if ((*gp->put)(gp->target, ":\n", 2) < 2) return 0 ;
   if (!s6dns_analyze_packet(gp, dt->sa.s + 2, dt->querylen - 2, 1)) return 0 ;
   if ((*gp->put)(gp->target, "\n", 1) < 1) return 0 ;

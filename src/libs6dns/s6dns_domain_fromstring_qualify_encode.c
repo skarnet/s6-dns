@@ -1,5 +1,6 @@
 /* ISC license. */
 
+#include <string.h>
 #include <s6-dns/s6dns-domain.h>
 
 unsigned int s6dns_domain_fromstring_qualify_encode (s6dns_domain_t *list, char const *name, size_t len, char const *rules, unsigned int rulesnum)

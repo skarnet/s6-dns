@@ -1,6 +1,7 @@
 /* ISC license. */
 
 #include <sys/types.h>
+#include <string.h>
 #include <errno.h>
 #include <skalibs/error.h>
 #include <skalibs/bytestr.h>
@@ -15,7 +16,7 @@
 
 static size_t readit (char const *file, char *buf, size_t max)
 {
-  register ssize_t r = openreadnclose(file, buf, max - 1) ;
+  ssize_t r = openreadnclose(file, buf, max - 1) ;
   if (r < 0)
   {
     if (errno != ENOENT) return 0 ;
@@ -28,7 +29,7 @@ static size_t readit (char const *file, char *buf, size_t max)
 static inline int s6dns_rci_init_servers (s6dns_rci_t *rci, char const *file, char *tmp, size_t max, size_t *size)
 {
   ip46_t tmplist[S6DNS_MAX_SERVERS] ;
-  unsigned int num = 0 ;
+  size_t num = 0 ;
   char const *x = env_get("DNSCACHEIP") ;
   if (x) ip46_scanlist(tmplist, S6DNS_MAX_SERVERS, x, &num) ;
   if (!num)
@@ -38,10 +39,10 @@ static inline int s6dns_rci_init_servers (s6dns_rci_t *rci, char const *file, ch
     if (!*size) return 0 ;
     while ((i < *size) && (num < S6DNS_MAX_SERVERS))
     {
-      register size_t j = byte_chr(tmp + i, *size - i, '\n') ;
-      if ((i + j < *size) && (j > 13U) && !byte_diff("nameserver", 10, tmp + i))
+      size_t j = byte_chr(tmp + i, *size - i, '\n') ;
+      if ((i + j < *size) && (j > 13U) && !memcmp("nameserver", tmp + i, 10))
       {
-        register size_t k = 0 ;
+        size_t k = 0 ;
         while ((tmp[i+10+k] == ' ') || (tmp[i+10+k] == '\t')) k++ ;
         if (k && ip46_scan(tmp+i+10+k, tmplist + num)) num++ ;
       }
@@ -51,18 +52,18 @@ static inline int s6dns_rci_init_servers (s6dns_rci_t *rci, char const *file, ch
   if (!num)
   {
     num = 1 ;
-    byte_copy(tmplist[0].ip, SKALIBS_IP_SIZE, S6DNS_LOCALHOST_IP) ;
+    memcpy(tmplist[0].ip, S6DNS_LOCALHOST_IP, SKALIBS_IP_SIZE) ;
 #ifdef SKALIBS_IPV6_ENABLED
     tmplist[0].is6 = 1 ;
 #endif
   }
 
   {
-    register unsigned int i = 0 ;
-    byte_zero(&rci->servers, sizeof(s6dns_ip46list_t)) ;
+    unsigned int i = 0 ;
+    memset(&rci->servers, 0, sizeof(s6dns_ip46list_t)) ;
     for (; i < num ; i++)
     {
-      byte_copy(rci->servers.ip + SKALIBS_IP_SIZE * i, SKALIBS_IP_SIZE, tmplist[i].ip) ;
+      memcpy(rci->servers.ip + SKALIBS_IP_SIZE * i, tmplist[i].ip, SKALIBS_IP_SIZE) ;
 #ifdef SKALIBS_IPV6_ENABLED
       if (ip46_is6(tmplist+i)) bitarray_set(rci->servers.is6, i) ;
 #endif
@@ -81,7 +82,7 @@ static inline int stringrules (stralloc *rules, char const *s, unsigned int *num
   while (c)
   {
     c = *s++ ;
-    if (byte_chr(" \t\n\r", 5, c) < 5)
+    if (memchr(" \t\n\r", 5, c))
     {
       if (!crunching)
       {
@@ -126,12 +127,12 @@ static inline int s6dns_rci_init_rules (s6dns_rci_t_ref rci, char const *file, c
     {
       size_t j = byte_chr(tmp + i, *size - i, '\n') ;
       if ((i + j < *size) && (j > 8U)
-       && (!byte_diff("domain", 6, tmp + i) || !byte_diff("search", 6, tmp + i))
+       && (!memcmp("domain", tmp + i, 6) || !memcmp("search", tmp + i, 6))
        && ((tmp[i+6] == ' ') || (tmp[i+6] == '\t') || (tmp[i+6] == '\r')))
       {
         size_t k = 0 ;
         int copying = 0 ;
-        register int notsearching = (tmp[i] != 's') ;
+        int notsearching = (tmp[i] != 's') ;
         if (!stralloc_readyplus(&rci->rules, j)) return 0 ;
         for (; 6 + k < j ; k++)
         {

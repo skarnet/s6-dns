@@ -1,6 +1,6 @@
 /* ISC license. */
 
-#include <sys/types.h>
+#include <string.h>
 #include <s6-dns/s6dns-domain.h>
 
 int s6dns_domain_fromstring_noqualify_encode (s6dns_domain_t *d, char const *name, size_t len)

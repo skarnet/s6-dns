@@ -16,7 +16,7 @@ int s6dns_resolveq_r (char const *name, unsigned int len, uint16_t qtype, s6dns_
   unsigned int best = 0 ;
   unsigned int n ;
   int e = 0 ;
-  register unsigned int i = 0 ;
+  unsigned int i = 0 ;
   {
     s6dns_domain_t domains[rci->rulesnum] ;
     n = s6dns_domain_fromstring_qualify_encode(domains, name, len, rci->rules.s, rci->rulesnum) ;
@@ -47,14 +47,14 @@ int s6dns_resolveq_r (char const *name, unsigned int len, uint16_t qtype, s6dns_
 
   for (;;)
   {
-    register int k = s6dns_resolven_loop(dtl, n, 1, deadline, stamp) ;
+    int k = s6dns_resolven_loop(dtl, n, 1, deadline, stamp) ;
     if (k < 0) goto err ;
     if ((unsigned int)k == best)
     {
       for (;; best++)
       {
         s6dns_message_header_t h ;
-        register int r ;
+        int r ;
         if (best >= n) goto notfound ;
         if (error_isagain(dtl[best].status)) break ;
         if (dtl[best].status) { errno = dtl[best].status ; goto err ; }

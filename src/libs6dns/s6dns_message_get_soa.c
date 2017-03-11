@@ -2,7 +2,7 @@
 
 #include <errno.h>
 #include <skalibs/error.h>
-#include <skalibs/uint32.h>
+#include <skalibs/types.h>
 #include <s6-dns/s6dns-message.h>
 
 int s6dns_message_get_soa (s6dns_message_rr_soa_t *soa, char const *packet, unsigned int packetlen, unsigned int *pos)

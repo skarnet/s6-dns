@@ -12,7 +12,7 @@ int s6dns_message_parse_answer_hinfo (s6dns_message_rr_t const *rr, char const *
   {
     genalloc *data = stuff ;
     s6dns_message_rr_hinfo_t hinfo ;
-    register unsigned int start = pos ;
+    unsigned int start = pos ;
     if (!s6dns_message_get_hinfo(&hinfo, packet, packetlen, &pos)) return 0 ;
     if (rr->rdlength != pos - start) return (errno = EPROTO, 0) ;
     if (!genalloc_append(s6dns_message_rr_hinfo_t, data, &hinfo)) return -1 ;

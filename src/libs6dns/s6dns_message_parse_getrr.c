@@ -2,8 +2,7 @@
 
 #include <errno.h>
 #include <skalibs/error.h>
-#include <skalibs/uint16.h>
-#include <skalibs/uint32.h>
+#include <skalibs/types.h>
 #include <s6-dns/s6dns-message.h>
 
 int s6dns_message_parse_getrr (s6dns_message_rr_t_ref rr, char const *packet, unsigned int packetlen, unsigned int *pos)

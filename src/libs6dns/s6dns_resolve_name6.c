@@ -13,7 +13,7 @@ int s6dns_resolve_name6_r (genalloc *list, char const *ip, s6dns_engine_t *dt, s
 {
   s6dns_dpag_t data ;
   s6dns_domain_t d ;
-  register int r ;
+  int r ;
   s6dns_domain_arpafromip6(&d, ip, 128) ;
   s6dns_domain_encode(&d) ;
   data.ds = *list ;

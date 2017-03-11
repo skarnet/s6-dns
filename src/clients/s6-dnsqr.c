@@ -1,10 +1,9 @@
 /* ISC license. */
 
+#include <string.h>
 #include <stdint.h>
 #include <errno.h>
-#include <skalibs/uint16.h>
-#include <skalibs/uint.h>
-#include <skalibs/bytestr.h>
+#include <skalibs/types.h>
 #include <skalibs/strerr2.h>
 #include <skalibs/sgetopt.h>
 #include <skalibs/buffer.h>
@@ -28,7 +27,7 @@ int main (int argc, char const *const *argv)
     unsigned int t = 0 ;
     for (;;)
     {
-      register int opt = subgetopt_r(argc, argv, "12t:D:", &l) ;
+      int opt = subgetopt_r(argc, argv, "12t:D:", &l) ;
       if (opt == -1) break ;
       switch (opt)
       {
@@ -48,7 +47,7 @@ int main (int argc, char const *const *argv)
     s6dns_domain_t d ;
     uint16_t qtype = s6dns_analyze_qtype_parse(argv[0]) ;
     if (!qtype) dieusage() ;
-    if (!s6dns_domain_fromstring_noqualify_encode(&d, argv[1], str_len(argv[1])))
+    if (!s6dns_domain_fromstring_noqualify_encode(&d, argv[1], strlen(argv[1])))
       strerr_diefu2sys(100, "encode ", argv[1]) ;
     dbh.external = where ;
     if (debuglevel & 1) dbh.post_recv = &s6dns_debug_dumpdt_post_recv ;

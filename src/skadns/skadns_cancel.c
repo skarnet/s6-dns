@@ -1,13 +1,13 @@
 /* ISC license. */
 
-/* OpenBSD sucks */
+/* OpenBSD sucks. In other news, the sky is blue. */
 #ifndef _BSD_SOURCE
 #define _BSD_SOURCE
 #endif
 
 #include <stdint.h>
 #include <errno.h>
-#include <skalibs/uint16.h>
+#include <skalibs/types.h>
 #include <skalibs/error.h>
 #include <skalibs/tai.h>
 #include <skalibs/gensetdyn.h>
@@ -18,7 +18,7 @@ int skadns_cancel (skadns_t *a, uint16_t id, tain_t const *deadline, tain_t *sta
 {
   char pack[3] = "--q" ;
   char err ;
-  register skadnsanswer_t *p = GENSETDYN_P(skadnsanswer_t, &a->q, id) ;
+  skadnsanswer_t *p = GENSETDYN_P(skadnsanswer_t, &a->q, id) ;
   if (!error_isagain(p->status)) return skadns_release(a, id) ;
   uint16_pack_big(pack, id) ;
   if (!skaclient_send(&a->connection, pack, 3, &skaclient_default_cb, &err, deadline, stamp)) return 0 ;

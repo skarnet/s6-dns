@@ -13,7 +13,7 @@ int s6dns_analyze_record_strings (genwrite_t *gp, s6dns_message_rr_t const *rr, 
   stralloc sa = STRALLOC_ZERO ;
   char buf[rr->rdlength] ;
   unsigned int pos = start ;
-  register int r = s6dns_message_get_strings(buf, rr->rdlength, packet, packetlen, &pos) ;
+  int r = s6dns_message_get_strings(buf, rr->rdlength, packet, packetlen, &pos) ;
   if (r < 0) return 0 ;
   if (rr->rdlength != pos - start) return (errno = EPROTO, 0) ;
   if (!string_quote(&sa, buf, r)) return 0 ;

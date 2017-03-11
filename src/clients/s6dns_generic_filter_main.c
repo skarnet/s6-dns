@@ -4,8 +4,7 @@
 #include <stdint.h>
 #include <errno.h>
 #include <skalibs/error.h>
-#include <skalibs/uint16.h>
-#include <skalibs/uint.h>
+#include <skalibs/types.h>
 #include <skalibs/sgetopt.h>
 #include <skalibs/strerr2.h>
 #include <skalibs/env.h>
@@ -57,7 +56,7 @@ int s6dns_generic_filter_main (int argc, char const *const *argv, char const *co
     unsigned int t = 0 ;
     for (;;)
     {
-      register int opt = subgetopt_r(argc, argv, (qtype == S6DNS_T_PTR) ? "46l:c:t:f:e:" : "l:c:t:f:e:", &l) ;
+      int opt = subgetopt_r(argc, argv, (qtype == S6DNS_T_PTR) ? "46l:c:t:f:e:" : "l:c:t:f:e:", &l) ;
       if (opt == -1) break ;
       switch (opt)
       {
@@ -127,18 +126,18 @@ int s6dns_generic_filter_main (int argc, char const *const *argv, char const *co
 
       if (x[2].revents)
       {
-	register int j = 0 ;
-        register uint16_t const *list ;
+	int j = 0 ;
+        uint16_t const *list ;
         int n = skadns_update(&a) ;
         if (n < 0) strerr_diefu1sys(111, "skadns_update") ;
         list = skadns_list(&a) ;
         for (; j < n ; j++)
         {
-          register uint16_t i = lineindex[list[j]] ;
-          register char const *packet = skadns_packet(&a, list[j]) ;
+          uint16_t i = lineindex[list[j]] ;
+          char const *packet = skadns_packet(&a, list[j]) ;
           if (packet)
           {
-            register int r ;
+            int r ;
             r = (*formatter)(&storage[i].swrd, packet, skadns_packetlen(&a, list[j])) ;
             if (r < 0) strerr_diefu1sys(111, "format skadns answer") ;
             if (!r) storage[i].dpos = -errno ;
@@ -159,8 +158,8 @@ int s6dns_generic_filter_main (int argc, char const *const *argv, char const *co
         for (; (numlines < maxlines) && (pending < maxconn) ; lhead = (lhead+1) % (maxlines+1), numlines++)
         {
           s6dns_domain_t d ;
-          register line_t *line = storage + lhead ;
-          register int r = skagetln(buffer_0, &line->swrd, '\n') ;
+          line_t *line = storage + lhead ;
+          int r = skagetln(buffer_0, &line->swrd, '\n') ;
           if (r < 0)
           {
             if (error_isagain(errno)) break ;
@@ -211,7 +210,7 @@ int s6dns_generic_filter_main (int argc, char const *const *argv, char const *co
       for (; ltail != lhead ; ltail = (ltail+1) % (maxlines+1), numlines--)
       {
         char *args[4] ;
-        register line_t *line = storage + ltail ;
+        line_t *line = storage + ltail ;
         if (line->pending) break ;
         args[0] = line->swrd.s ;
         args[1] = line->dpos < 0 ? (char *)s6dns_constants_error_str(-line->dpos) : line->swrd.s + line->dpos ;

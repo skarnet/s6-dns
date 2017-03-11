@@ -18,7 +18,7 @@ struct s6dns_analyze_rtypetable_s
   s6dns_analyze_record_func_t_ref f ;
 } ;
 
-extern uint16 s6dns_analyze_qtype_parse (char const *) ;
+extern uint16_t s6dns_analyze_qtype_parse (char const *) ;
 
 extern s6dns_analyze_rtypetable_t const *s6dns_analyze_rtypetable ;
 

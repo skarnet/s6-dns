@@ -2,7 +2,7 @@
 
 #include <sys/types.h>
 #include <errno.h>
-#include <skalibs/uint.h>
+#include <skalibs/types.h>
 #include <skalibs/sgetopt.h>
 #include <skalibs/strerr2.h>
 #include <skalibs/buffer.h>
@@ -23,7 +23,7 @@ int main (int argc, char const *const *argv)
   PROG = "s6-randomip" ;
   for (;;)
   {
-    register int opt = subgetopt(argc, argv, "46n:") ;
+    int opt = subgetopt(argc, argv, "46n:") ;
     if (opt == -1) break ;
     switch (opt)
     {
@@ -51,7 +51,7 @@ int main (int argc, char const *const *argv)
     random_string(ip, len) ;
     len = (len == 16) ? ip6_fmt(fmt, ip) : ip4_fmt(fmt, ip) ;
     fmt[len++] = '\n' ;
-    if (buffer_put(buffer_1, fmt, len) < (int)len)
+    if (buffer_put(buffer_1, fmt, len) < (ssize_t)len)
       strerr_diefu1sys(111, "write to stdout") ;
   }
   if (!buffer_flush(buffer_1))

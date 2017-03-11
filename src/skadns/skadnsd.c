@@ -1,9 +1,11 @@
 /* ISC license. */
 
+#include <sys/uio.h>
+#include <string.h>
 #include <stdint.h>
 #include <errno.h>
 #include <signal.h>
-#include <skalibs/uint16.h>
+#include <skalibs/types.h>
 #include <skalibs/error.h>
 #include <skalibs/strerr2.h>
 #include <skalibs/sig.h>
@@ -72,7 +74,7 @@ static int parse_protocol (unixmessage_t const *m, void *context)
         break ;
       }
       uint16_unpack_big(m->s + 3, &qtype) ;
-      if (byte_diff(m->s + 5, 12, "\0\0\0\0\0\0\0\0\0\0\0"))
+      if (memcmp(m->s + 5, "\0\0\0\0\0\0\0\0\0\0\0", 12))
         tain_unpack(m->s + 5, &limit) ;
       else tain_add_g(&limit, &tain_infinite_relative) ;
       if (!s6dns_engine_init_g(&a[sp].dt, &s6dns_rci_here.servers, 1, m->s + 17, m->len - 17, qtype, &limit))
@@ -86,7 +88,7 @@ static int parse_protocol (unixmessage_t const *m, void *context)
     }
     case 'q' : /* cancel a query */
     {
-      register unsigned int i = 0 ;
+      unsigned int i = 0 ;
       for (; i < sp ; i++) if (a[i].id == id) break ;
       if (i >= sp)
       {
@@ -122,14 +124,14 @@ int main (void)
   }
   {
     static dnsio_t const zero = DNSIO_ZERO ;
-    register unsigned int i = 0 ;
+    unsigned int i = 0 ;
     for (; i < SKADNS_MAXCONCURRENCY ; i++) a[i] = zero ;
   }
                   
   for (;;)                
   {
     iopause_fd x[3 + sp] ;
-    register int r ;
+    int r ;
     
     x[0].fd = 0 ; x[0].events = IOPAUSE_EXCEPT | IOPAUSE_READ ;
     x[1].fd = 1 ; x[1].events = IOPAUSE_EXCEPT | (unixmessage_sender_isempty(unixmessage_sender_1) ? 0 : IOPAUSE_WRITE) ;
@@ -137,10 +139,10 @@ int main (void)
     x[2].events = IOPAUSE_EXCEPT | (unixmessage_sender_isempty(unixmessage_sender_x) ? 0 : IOPAUSE_WRITE) ;
     {
       tain_t deadline = TAIN_INFINITE ;
-      register unsigned int i = 0 ;
+      unsigned int i = 0 ;
       for (; i < sp ; i++)
       {
-        register unsigned int j = 3 + i ;
+        unsigned int j = 3 + i ;
         s6dns_engine_nextdeadline(&a[i].dt, &deadline) ;
         x[j].fd = a[i].dt.fd ;
         x[j].events = 0 ;
@@ -153,7 +155,7 @@ int main (void)
     if (r < 0) strerr_diefu1sys(111, "iopause") ;
     if (!r) 
     {
-      register unsigned int i = 0 ;
+      unsigned int i = 0 ;
       for (; i < sp ; i++)
         if (s6dns_engine_timeout_g(&a[i].dt)) fail(i--) ;
       continue ;
@@ -167,15 +169,15 @@ int main (void)
         strerr_diefu1sys(111, "flush asyncout") ;
                         
     {
-      register unsigned int i = 0 ;
+      unsigned int i = 0 ;
       for (; i < sp ; i++) if (x[a[i].xindex].revents)
       {
-        register int r = s6dns_engine_event_g(&a[i].dt) ;
+        int r = s6dns_engine_event_g(&a[i].dt) ;
         if (r < 0) fail(i--) ;
         else if (r)
         {
           char pack[3] ;
-          siovec_t v[2] = { { .s = pack, .len = 3 }, { .s = s6dns_engine_packet(&a[i].dt), .len = s6dns_engine_packetlen(&a[i].dt) } } ;
+          struct iovec v[2] = { { .iov_base = pack, .iov_len = 3 }, { .iov_base = s6dns_engine_packet(&a[i].dt), .iov_len = s6dns_engine_packetlen(&a[i].dt) } } ;
           unixmessage_v_t mv = { .v = v, .vlen = 2, .fds = 0, .nfds = 0 } ;
           uint16_pack_big(pack, a[i].id) ;
           pack[2] = 0 ;

@@ -2,7 +2,7 @@
 
 #include <errno.h>
 #include <skalibs/error.h>
-#include <skalibs/uint16.h>
+#include <skalibs/types.h>
 #include <s6-dns/s6dns-domain.h>
 #include <s6-dns/s6dns-message.h>
 

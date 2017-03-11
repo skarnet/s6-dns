@@ -2,7 +2,7 @@
 
 #include <sys/types.h>
 #include <errno.h>
-#include <skalibs/uint.h>
+#include <skalibs/types.h>
 #include <skalibs/sgetopt.h>
 #include <skalibs/strerr2.h>
 #include <skalibs/buffer.h>
@@ -28,7 +28,7 @@ int main (int argc, char const *const *argv)
   PROG = "s6-dnsname" ;
   for (;;)
   {
-    register int opt = subgetopt(argc, argv, "46rt:") ;
+    int opt = subgetopt(argc, argv, "46rt:") ;
     if (opt == -1) break ;
     switch (opt)
     {
@@ -58,7 +58,7 @@ int main (int argc, char const *const *argv)
   tain_add_g(&deadline, &deadline) ;
   if (!s6dns_init()) strerr_diefu1sys(111, "s6dns_init") ;
   {
-    register int r = ip.is6 ? s6dns_resolve_name6_g(&ds, ip.ip, &deadline) : s6dns_resolve_name4_g(&ds, ip.ip, &deadline) ;
+    int r = ip.is6 ? s6dns_resolve_name6_g(&ds, ip.ip, &deadline) : s6dns_resolve_name4_g(&ds, ip.ip, &deadline) ;
     if (r < 0) strerr_diefu2sys((errno == ETIMEDOUT) ? 99 : 111, "resolve ", argv[0]) ;
     if (!r) strerr_diefu4x(2, "resolve ", argv[0], ": ", s6dns_constants_error_str(errno)) ;
   }
@@ -68,9 +68,9 @@ int main (int argc, char const *const *argv)
     char buf[S6DNS_FMT_DOMAINLIST(genalloc_len(s6dns_domain_t, &ds))] ;
     size_t len = s6dns_fmt_domainlist(buf, S6DNS_FMT_DOMAINLIST(genalloc_len(s6dns_domain_t, &ds)), genalloc_s(s6dns_domain_t, &ds), genalloc_len(s6dns_domain_t, &ds), "\n", 1) ;
     if (!len) strerr_diefu1sys(111, "format result") ;
-    if (buffer_put(buffer_1, buf, len) < 0) goto err ;
+    if (buffer_put(buffer_1, buf, len) < (ssize_t)len) goto err ;
   }
-  if (buffer_putflush(buffer_1, "\n", 1) < 0) goto err ;
+  if (buffer_putflush(buffer_1, "\n", 1) < 1) goto err ;
   return 0 ;
  err:
   strerr_diefu1sys(111, "write to stdout") ;

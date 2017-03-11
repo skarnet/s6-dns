@@ -2,7 +2,7 @@
 
 #include <sys/types.h>
 #include <stdint.h>
-#include <skalibs/uint16.h>
+#include <skalibs/types.h>
 #include <skalibs/djbtime.h>
 #include <skalibs/genwrite.h>
 #include <s6-dns/s6dns-engine.h>

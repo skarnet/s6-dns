@@ -12,7 +12,7 @@ int s6dns_message_parse_answer_soa (s6dns_message_rr_t const *rr, char const *pa
   {
     genalloc *data = stuff ;
     s6dns_message_rr_soa_t soa ;
-    register unsigned int start = pos ;
+    unsigned int start = pos ;
     if (!s6dns_message_get_soa(&soa, packet, packetlen, &pos)) return 0 ;
     if (rr->rdlength != pos - start) return (errno = EPROTO, 0) ;
     if (!genalloc_append(s6dns_message_rr_soa_t, data, &soa)) return -1 ;

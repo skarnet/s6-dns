@@ -50,5 +50,5 @@ int s6dns_resolven_loop (s6dns_engine_t *dt, unsigned int n, unsigned int or, ta
       }
     }
   }
-  return or ? (errno = ENOENT, -1) : (int)count ;
+  return or ? (errno = ENOENT, -1) : count ;
 }

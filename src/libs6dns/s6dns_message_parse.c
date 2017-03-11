@@ -28,7 +28,7 @@ int s6dns_message_parse (s6dns_message_header_t *h, char const *packet, unsigned
     if (!s6dns_message_parse_getrr(&rr, packet, packetlen, &pos)) return 0 ;
     if (rr.rclass == S6DNS_C_IN)
     {
-      register int r = (*f)(&rr, packet, packetlen, pos, section, data) ;
+      int r = (*f)(&rr, packet, packetlen, pos, section, data) ;
       if (r < 1) return r ;
     }
     section = s6dns_message_parse_next(&counts, &rr, packet, packetlen, &pos) ;

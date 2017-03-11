@@ -1,11 +1,12 @@
 /* ISC license. */
 
 #include <sys/types.h>
+#include <string.h>
+#include <strings.h>
 #include <stdint.h>
 #include <errno.h>
-#include <skalibs/uint16.h>
+#include <skalibs/types.h>
 #include <skalibs/allreadwrite.h>
-#include <skalibs/bytestr.h>
 #include <skalibs/error.h>
 #include <skalibs/tai.h>
 #include <skalibs/stralloc.h>
@@ -25,7 +26,7 @@
 
 static inline int qdomain_diff (char const *s1, size_t n1, char const *s2, size_t n2)
 {
-  return (n1 < n2) ? -1 : (n1 > n2) ? 1 : case_diffb(s1, n1, s2) ;
+  return (n1 < n2) ? -1 : (n1 > n2) ? 1 : strncasecmp(s1, s2, n1) ;
 }
 
 static int relevant (char const *q, unsigned int qlen, char const *ans, unsigned int anslen, int strict)
@@ -56,7 +57,7 @@ static int relevant (char const *q, unsigned int qlen, char const *ans, unsigned
     LOLDEBUG("  testing answer domain against query") ;
     if (qdomain_diff(buf, n, q + 12, qlen - 16)) return 0 ;
     LOLDEBUG("  testing answer qclass and qtype against query" ) ;
-    if (byte_diff(q + qlen - 4, 4, ans + pos)) return 0 ;
+    if (memcmp(q + qlen - 4, ans + pos, 4)) return 0 ;
   }
   LOLDEBUG("relevant() returns 1") ;
   return 1 ;
@@ -81,7 +82,7 @@ static int relevant (char const *q, unsigned int qlen, char const *ans, unsigned
  
 static int randombind (int fd, int flag)
 {
-  register unsigned int i = 0 ;
+  unsigned int i = 0 ;
   for (; i < 10 ; i++)
     if (socketbind46(fd, S6DNS_ENGINE_LOCAL0, 1025 + random_uint32(64510), flag) >= 0) return 1 ;
   return (socketbind46(fd, S6DNS_ENGINE_LOCAL0, 0, flag) >= 0) ;
@@ -96,14 +97,14 @@ static int thisudp (s6dns_engine_t *dt, tain_t const *stamp)
       dt->curserver = 0 ;
       if (++dt->protostate >= 4) return -2 ;
     }
-    if (byte_diff(s6dns_ip46list_ip(&dt->servers, dt->curserver), SKALIBS_IP_SIZE, S6DNS_ENGINE_LOCAL0)) break ;
+    if (memcmp(s6dns_ip46list_ip(&dt->servers, dt->curserver), S6DNS_ENGINE_LOCAL0, SKALIBS_IP_SIZE)) break ;
   }
   random_string(dt->sa.s + 2, 2) ; /* random query id */
   dt->fd = socketudp46(s6dns_ip46list_is6(&dt->servers, dt->curserver)) ;
   if (dt->fd < 0) return -1 ;
   if (!randombind(dt->fd, s6dns_ip46list_is6(&dt->servers, dt->curserver)))
   {
-    register int e = errno ;
+    int e = errno ;
     fd_close(dt->fd) ; dt->fd = -1 ;
     errno = e ;
     return -1 ;
@@ -111,7 +112,7 @@ static int thisudp (s6dns_engine_t *dt, tain_t const *stamp)
   if ((socketconnect46(dt->fd, s6dns_ip46list_ip(&dt->servers, dt->curserver), 53, s6dns_ip46list_is6(&dt->servers, dt->curserver)) < 0)
    && (errno != EINPROGRESS))
   {
-    register int e = errno ;
+    int e = errno ;
     fd_close(dt->fd) ; dt->fd = -1 ;
     errno = e ;
     return 0 ;
@@ -127,14 +128,14 @@ static int thisudp (s6dns_engine_t *dt, tain_t const *stamp)
 static int thistcp (s6dns_engine_t *dt, tain_t const *stamp)
 {
   for (; dt->curserver < S6DNS_MAX_SERVERS ; dt->curserver++)
-    if (byte_diff(s6dns_ip46list_ip(&dt->servers, dt->curserver), SKALIBS_IP_SIZE, S6DNS_ENGINE_LOCAL0)) break ;
+    if (memcmp(s6dns_ip46list_ip(&dt->servers, dt->curserver), S6DNS_ENGINE_LOCAL0, SKALIBS_IP_SIZE)) break ;
   if (dt->curserver >= S6DNS_MAX_SERVERS) return -2 ;
   random_string(dt->sa.s + 2, 2) ;
   dt->fd = sockettcp46(s6dns_ip46list_is6(&dt->servers, dt->curserver)) ;
   if (dt->fd < 0) return -1 ;
   if (!randombind(dt->fd, s6dns_ip46list_is6(&dt->servers, dt->curserver)))
   {
-    register int e = errno ;
+    int e = errno ;
     fd_close(dt->fd) ; dt->fd = -1 ;
     errno = e ;
     return -1 ;
@@ -142,7 +143,7 @@ static int thistcp (s6dns_engine_t *dt, tain_t const *stamp)
   if ((socketconnect46(dt->fd, s6dns_ip46list_ip(&dt->servers, dt->curserver), 53, s6dns_ip46list_is6(&dt->servers, dt->curserver)) < 0)
    && (errno != EINPROGRESS))
   {
-    register int e = errno ;
+    int e = errno ;
     fd_close(dt->fd) ; dt->fd = -1 ;
     errno = e ;
     return 0 ;
@@ -185,7 +186,7 @@ static void prepare_next (s6dns_engine_t *dt, tain_t const *stamp, int istcp)
 static int s6dns_engine_write_udp (s6dns_engine_t *dt, tain_t const *stamp)
 {
   static unsigned int const s6dns_engine_udp_timeouts[4] = { 1, 3, 11, 45 } ;
-  if (fd_send(dt->fd, dt->sa.s + 2, dt->querylen - 2, 0) < (int)(dt->querylen - 2))
+  if (fd_send(dt->fd, dt->sa.s + 2, dt->querylen - 2, 0) < (ssize_t)(dt->querylen - 2))
     return (prepare_next(dt, stamp, 0), 0) ;
   tain_addsec(&dt->localdeadline, stamp, s6dns_engine_udp_timeouts[dt->protostate]) ;
   dt->flagwriting = 0 ;
@@ -197,7 +198,7 @@ static int s6dns_engine_write_udp (s6dns_engine_t *dt, tain_t const *stamp)
 
 static int s6dns_engine_write_tcp (s6dns_engine_t *dt, tain_t const *stamp)
 {
-  unsigned int r ;
+  size_t r ;
   r = allwrite(dt->fd, dt->sa.s + dt->protostate, dt->querylen - dt->protostate) ;
   dt->protostate += r ;
   if (r) dt->flagconnecting = 0 ;
@@ -220,7 +221,7 @@ static int s6dns_engine_read_udp (s6dns_engine_t *dt, tain_t const *stamp)
 {
   s6dns_message_header_t h ;
   char buf[513] ;
-  register ssize_t r = fd_recv(dt->fd, buf, 513, 0) ;
+  ssize_t r = fd_recv(dt->fd, buf, 513, 0) ;
   if (r < 0) return (prepare_next(dt, stamp, 0), 0) ;
   if ((r > 512) || (r < 12)) return (errno = EAGAIN, 0) ;
   switch (relevant(dt->sa.s + 2, dt->querylen - 2, buf, r, dt->flagstrict))
@@ -249,12 +250,12 @@ static int s6dns_engine_read_udp (s6dns_engine_t *dt, tain_t const *stamp)
   {
     case 0 : case 3 : break ; /* normal operation */
     case 1 : case 4 : case 5 :
-      byte_zero(s6dns_ip46list_ip(&dt->servers, dt->curserver), SKALIBS_IP_SIZE) ; /* do not query it again */
+      memset(s6dns_ip46list_ip(&dt->servers, dt->curserver), 0, SKALIBS_IP_SIZE) ; /* do not query it again */
     default : prepare_next(dt, stamp, 0) ; return 0 ;
   }
   if (!stralloc_copyb(&dt->sa, buf, r))
   {
-    register int e = errno ;
+    int e = errno ;
     fd_close(dt->fd) ; dt->fd = -1 ;
     errno = e ;
     return 0 ;
@@ -267,7 +268,7 @@ static int s6dns_engine_read_udp (s6dns_engine_t *dt, tain_t const *stamp)
 
 static int s6dns_engine_read_tcp (s6dns_engine_t *dt, tain_t const *stamp)
 {
-  register ssize_t r = sanitize_read(mininetstring_read(dt->fd, &dt->sa, &dt->protostate)) ;
+  ssize_t r = sanitize_read(mininetstring_read(dt->fd, &dt->sa, &dt->protostate)) ;
   if (r < 0) return (prepare_next(dt, stamp, 1), 0) ;
   else if (!r) return (errno = EAGAIN, 0) ;
   else if ((dt->sa.len - dt->querylen) < 12)
@@ -292,7 +293,7 @@ static int s6dns_engine_read_tcp (s6dns_engine_t *dt, tain_t const *stamp)
     {
       case 0 : case 3 : break ; /* normal operation */
       case 1 : case 4 : case 5 :
-        byte_zero(s6dns_ip46list_ip(&dt->servers, dt->curserver), SKALIBS_IP_SIZE) ; /* do not query it again */
+        memset(s6dns_ip46list_ip(&dt->servers, dt->curserver), 0, SKALIBS_IP_SIZE) ; /* do not query it again */
       default : goto badanswer ;
     }
     fd_close(dt->fd) ; dt->fd = -1 ;
@@ -310,10 +311,10 @@ void s6dns_engine_recycle (s6dns_engine_t *dt)
 {
   dt->sa.len = 0 ;
   dt->querylen = 0 ;
-  byte_zero(&dt->servers, sizeof(s6dns_ip46list_t)) ;
+  memset(&dt->servers, 0, sizeof(s6dns_ip46list_t)) ;
   if (dt->fd >= 0)
   {
-    register int e = errno ;
+    int e = errno ;
     fd_close(dt->fd) ; dt->fd = -1 ;
     errno = e ;
   }

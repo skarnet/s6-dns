@@ -1,14 +1,14 @@
 /* ISC license. */
 
-#include <sys/types.h>
+#include <string.h>
 #include <errno.h>
 #include <skalibs/bytestr.h>
 #include <s6-dns/s6dns-domain.h>
 
 int s6dns_domain_fromstring (s6dns_domain_t *d, char const *s, size_t len)
 {
-  register size_t j = 1 ;
-  register size_t i = 0 ;
+  size_t j = 1 ;
+  size_t i = 0 ;
   unsigned int lastdot = 0 ;
   d->s[0] = '.' ;
   for (; i < len ; i++)

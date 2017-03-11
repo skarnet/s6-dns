@@ -1,10 +1,10 @@
 /* ISC license. */
 
+#include <sys/uio.h>
+#include <string.h>
 #include <stdint.h>
 #include <errno.h>
-#include <skalibs/uint16.h>
-#include <skalibs/bytestr.h>
-#include <skalibs/siovec.h>
+#include <skalibs/types.h>
 #include <skalibs/tai.h>
 #include <skalibs/stralloc.h>
 #include <skalibs/gensetdyn.h>
@@ -19,14 +19,19 @@ int skadns_send (skadns_t *a, uint16_t *u, s6dns_domain_t const *d, uint16_t qty
   unsigned int i ;
   char tmp[17] = "--Q" ;
   char err ;
-  siovec_t v[2] = { { .s = tmp, .len = 17 }, { .s = (char *)d->s, .len = d->len } } ;
+  struct iovec v[2] = { { .iov_base = tmp, .iov_len = 17 }, { .iov_base = (void *)d->s, .iov_len = d->len } } ;
   if (!gensetdyn_new(&a->q, &i)) return 0 ;
+  if (i > UINT16_MAX)
+  {
+    gensetdyn_delete(&a->q, i) ;
+    return (errno = EMFILE, 0) ;
+  }
   uint16_pack_big(tmp, (uint16_t)i) ;
   uint16_pack_big(tmp + 3, qtype) ;
-  if (limit) tain_pack(tmp + 5, limit) ; else byte_zero(tmp + 5, 12) ;
+  if (limit) tain_pack(tmp + 5, limit) ; else memset(tmp + 5, 0, 12) ;
   if (!skaclient_sendv(&a->connection, v, 2, &skaclient_default_cb, &err, deadline, stamp))
   {
-    register int e = errno ;
+    int e = errno ;
     gensetdyn_delete(&a->q, i) ;
     errno = e ;
     return 0 ;

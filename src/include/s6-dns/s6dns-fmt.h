@@ -4,8 +4,7 @@
 #define S6DNS_FMT_H
 
 #include <sys/types.h>
-#include <skalibs/uint16.h>
-#include <skalibs/uint32.h>
+#include <skalibs/types.h>
 #include <s6-dns/s6dns-domain.h>
 #include <s6-dns/s6dns-message.h>
 

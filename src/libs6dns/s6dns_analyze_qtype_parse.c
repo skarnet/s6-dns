@@ -1,8 +1,8 @@
 /* ISC license. */
 
 #include <stdint.h>
-#include <skalibs/uint16.h>
-#include <skalibs/bytestr.h>
+#include <strings.h>
+#include <skalibs/types.h>
 #include <s6-dns/s6dns-constants.h>
 #include <s6-dns/s6dns-analyze.h>
 
@@ -40,8 +40,8 @@ uint16_t s6dns_analyze_qtype_parse (char const *s)
     if (uint160_scan(s, &u)) return u ;
   }
   {
-    register lookuptable_t const *p = table ;
-    for (; p->text ; p++) if (case_equals(s, p->text)) return p->qtype ;
+    lookuptable_t const *p = table ;
+    for (; p->text ; p++) if (!strcasecmp(s, p->text)) return p->qtype ;
   }
   return 0 ;
 }

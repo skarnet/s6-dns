@@ -1,6 +1,6 @@
 /* ISC license. */
 
-/* OpenBSD sucks */
+/* OpenBSD sucks. More news at 11. */
 #ifndef _BSD_SOURCE
 #define _BSD_SOURCE
 #endif
@@ -13,7 +13,7 @@
 
 int skadns_release (skadns_t *a, uint16_t id)
 {
-  register skadnsanswer_t *p = GENSETDYN_P(skadnsanswer_t, &a->q, id) ;
+  skadnsanswer_t *p = GENSETDYN_P(skadnsanswer_t, &a->q, id) ;
   switch (p->status)
   {
     case 0 :

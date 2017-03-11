@@ -12,7 +12,7 @@ int s6dns_message_parse_answer_mx (s6dns_message_rr_t const *rr, char const *pac
   {
     genalloc *data = stuff ;
     s6dns_message_rr_mx_t mx ;
-    register unsigned int start = pos ;
+    unsigned int start = pos ;
     if (!s6dns_message_get_mx(&mx, packet, packetlen, &pos)) return 0 ;
     if (rr->rdlength != pos - start) return (errno = EPROTO, 0) ;
     if (!genalloc_append(s6dns_message_rr_mx_t, data, &mx)) return -1 ;

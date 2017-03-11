@@ -12,7 +12,7 @@ int s6dns_message_parse_answer_domain (s6dns_message_rr_t const *rr, char const 
   if ((section == 2) && (rr->rtype == data->rtype))
   {
     s6dns_domain_t d ;
-    register unsigned int start = pos ;
+    unsigned int start = pos ;
     if (!s6dns_message_get_domain(&d, packet, packetlen, &pos)) return 0 ;
     if (rr->rdlength != pos - start) return (errno = EPROTO, 0) ;
     if (!genalloc_append(s6dns_domain_t, &data->ds, &d)) return -1 ;

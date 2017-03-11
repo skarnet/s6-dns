@@ -9,7 +9,7 @@
 
 static int skadnsanswer_free (char *p, void *stuff)
 {
-  register skadnsanswer_t *q = (skadnsanswer_t_ref)p ;
+  skadnsanswer_t *q = (skadnsanswer_t_ref)p ;
   alloc_free(&q->data) ;
   (void)stuff ;
   return 1 ;

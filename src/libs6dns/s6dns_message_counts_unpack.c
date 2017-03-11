@@ -1,6 +1,6 @@
 /* ISC license. */
 
-#include <skalibs/uint16.h>
+#include <skalibs/types.h>
 #include <s6-dns/s6dns-message.h>
 
 void s6dns_message_counts_unpack (char const *s, s6dns_message_counts_t *counts)

@@ -16,7 +16,7 @@
 static size_t ipscanner (s6dns_domain_t *d, char const *s)
 {
   char ip[16] ;
-  register size_t pos ;
+  size_t pos ;
   if (flag6)
   {
     pos = ip6_scan(s, ip) ;
@@ -53,7 +53,7 @@ static int s6dns_message_parse_answer_domain1 (s6dns_message_rr_t const *rr, cha
   if ((section == 2) && (rr->rtype == S6DNS_T_PTR))
   {
     s6dns_domain1_t *data = stuff ;
-    register unsigned int start = pos ;
+    unsigned int start = pos ;
     if (data->got) return 1 ;
     if (!s6dns_message_get_domain(&data->d, packet, packetlen, &pos)) return 0 ;
     if (rr->rdlength != pos - start) return (errno = EPROTO, 0) ;
@@ -66,7 +66,7 @@ static int domainformatter (stralloc *sa, char const *packet, unsigned int packe
 {
   s6dns_domain1_t data ;
   s6dns_message_header_t h ;
-  register int r ;
+  int r ;
   data.got = 0 ;
   r = s6dns_message_parse(&h, packet, packetlen, &s6dns_message_parse_answer_domain1, &data) ;
   if (r <= 0) return r ;

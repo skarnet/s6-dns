@@ -1,9 +1,8 @@
 /* ISC license. */
 
-#include <sys/types.h>
+#include <string.h>
 #include <errno.h>
 #include <skalibs/error.h>
-#include <skalibs/bytestr.h>
 #include "s6dns-message-internal.h"
 
 size_t s6dns_message_get_domain_internal (char *out, size_t outmax, char const *s, unsigned int len, unsigned int *pos)
@@ -11,7 +10,7 @@ size_t s6dns_message_get_domain_internal (char *out, size_t outmax, char const *
   size_t w = 0 ; /* writing head */
   unsigned int r = *pos ; /* reading head */
   unsigned int jumps = 0 ;
-  register int hasjumped = 0 ;
+  int hasjumped = 0 ;
   for (;;)
   {
     unsigned char c ;
@@ -23,7 +22,7 @@ size_t s6dns_message_get_domain_internal (char *out, size_t outmax, char const *
       if (out)
       {
         if (w + c > outmax) return (errno = ENAMETOOLONG, 0) ;
-        byte_copy(out + w, c, s + r) ;
+        memcpy(out + w, s + r, c) ;
       }
       w += c ; r += c ; if (!hasjumped) *pos += c ;
       if (c == 1) break ;

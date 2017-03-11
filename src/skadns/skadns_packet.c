@@ -7,7 +7,7 @@
 
 char const *skadns_packet (skadns_t const *a, uint16_t id)
 {
-  register skadnsanswer_t *p = GENSETDYN_P(skadnsanswer_t, &a->q, id) ;
+  skadnsanswer_t *p = GENSETDYN_P(skadnsanswer_t, &a->q, id) ;
   switch (p->status)
   {
     case 0 : return (char const *)p->data ;

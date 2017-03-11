@@ -20,7 +20,7 @@ int s6dns_domain_decode (s6dns_domain_t *d)
   unsigned int pos = 0 ;
   for (;;)
   {
-    register unsigned int r = s6dns_domain_label_decode(d->s + pos, max - pos) ;
+    unsigned int r = s6dns_domain_label_decode(d->s + pos, max - pos) ;
     if (!r) return 0 ;
     pos += r ;
     if (r == 1) break ;

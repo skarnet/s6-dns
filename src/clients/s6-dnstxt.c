@@ -1,9 +1,8 @@
 /* ISC license. */
 
-#include <sys/types.h>
+#include <string.h>
 #include <errno.h>
-#include <skalibs/uint.h>
-#include <skalibs/bytestr.h>
+#include <skalibs/types.h>
 #include <skalibs/sgetopt.h>
 #include <skalibs/strerr2.h>
 #include <skalibs/buffer.h>
@@ -31,7 +30,7 @@ int main (int argc, char const *const *argv)
   PROG = "s6-dnstxt" ;
   for (;;)
   {
-    register int opt = subgetopt(argc, argv, "qrt:") ;
+    int opt = subgetopt(argc, argv, "qrt:") ;
     if (opt == -1) break ;
     switch (opt)
     {
@@ -49,7 +48,7 @@ int main (int argc, char const *const *argv)
   tain_add(&deadline, &deadline, &stamp) ;
   if (!s6dns_init()) strerr_diefu1sys(111, "s6dns_init") ;
   {
-    register int r = s6dns_resolve_txt(&sa, &offsets, argv[0], str_len(argv[0]), flagqualify, &deadline, &stamp) ;
+    int r = s6dns_resolve_txt(&sa, &offsets, argv[0], strlen(argv[0]), flagqualify, &deadline, &stamp) ;
     if (r < 0) strerr_diefu2sys((errno == ETIMEDOUT) ? 99 : 111, "resolve ", argv[0]) ;
     if (!r) strerr_diefu4x(2, "resolve ", argv[0], ": ", s6dns_constants_error_str(errno)) ;
   }

@@ -1,10 +1,8 @@
 /* ISC license. */
 
-#include <sys/types.h>
+#include <string.h>
 #include <errno.h>
-#include <skalibs/uint16.h>
-#include <skalibs/uint.h>
-#include <skalibs/bytestr.h>
+#include <skalibs/types.h>
 #include <skalibs/sgetopt.h>
 #include <skalibs/strerr2.h>
 #include <skalibs/buffer.h>
@@ -27,7 +25,7 @@ int main (int argc, char const *const *argv)
   PROG = "s6-dnsmx" ;
   for (;;)
   {
-    register int opt = subgetopt(argc, argv, "qrt:") ;
+    int opt = subgetopt(argc, argv, "qrt:") ;
     if (opt == -1) break ;
     switch (opt)
     {
@@ -45,7 +43,7 @@ int main (int argc, char const *const *argv)
   tain_add_g(&deadline, &deadline) ;
   if (!s6dns_init()) strerr_diefu1sys(111, "s6dns_init") ;
   {
-    register int r = s6dns_resolve_mx_g(&mxs, argv[0], str_len(argv[0]), flagqualify, &deadline) ;
+    int r = s6dns_resolve_mx_g(&mxs, argv[0], strlen(argv[0]), flagqualify, &deadline) ;
     if (r < 0) strerr_diefu2sys((errno == ETIMEDOUT) ? 99 : 111, "resolve ", argv[0]) ;
     if (!r) strerr_diefu4x(2, "resolve ", argv[0], ": ", s6dns_constants_error_str(errno)) ;
   }
@@ -54,10 +52,10 @@ int main (int argc, char const *const *argv)
   for (i = 0 ; i < genalloc_len(s6dns_message_rr_mx_t, &mxs) ; i++)
   {
     char buf[S6DNS_FMT_MX] ;
-    register size_t len = s6dns_fmt_mx(buf, S6DNS_FMT_MX, genalloc_s(s6dns_message_rr_mx_t, &mxs) + i) ;
+    size_t len = s6dns_fmt_mx(buf, S6DNS_FMT_MX, genalloc_s(s6dns_message_rr_mx_t, &mxs) + i) ;
     if (!len) strerr_diefu1sys(111, "format result") ;
-    if (buffer_put(buffer_1, buf, len) < 0) goto err ;
-    if (buffer_put(buffer_1, "\n", 1) < 0) goto err ;
+    if (buffer_put(buffer_1, buf, len) < (ssize_t)len) goto err ;
+    if (buffer_put(buffer_1, "\n", 1) < 1) goto err ;
   }
   if (!buffer_flush(buffer_1)) goto err ;
   return 0 ;

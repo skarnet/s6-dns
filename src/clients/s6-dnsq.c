@@ -1,11 +1,9 @@
 /* ISC license. */
 
-#include <sys/types.h>
+#include <string.h>
 #include <stdint.h>
 #include <errno.h>
-#include <skalibs/uint16.h>
-#include <skalibs/uint.h>
-#include <skalibs/bytestr.h>
+#include <skalibs/types.h>
 #include <skalibs/bitarray.h>
 #include <skalibs/strerr2.h>
 #include <skalibs/sgetopt.h>
@@ -32,7 +30,7 @@ int main (int argc, char const *const *argv)
     unsigned int t = 0 ;
     for (;;)
     {
-      register int opt = subgetopt_r(argc, argv, "12t:D:", &l) ;
+      int opt = subgetopt_r(argc, argv, "12t:D:", &l) ;
       if (opt == -1) break ;
       switch (opt)
       {
@@ -54,21 +52,21 @@ int main (int argc, char const *const *argv)
     unsigned int i = 0, j = 0 ;
     qtype = s6dns_analyze_qtype_parse(argv[0]) ;
     if (!qtype) dieusage() ;
-    if (!s6dns_domain_fromstring_noqualify_encode(&d, argv[1], str_len(argv[1])))
+    if (!s6dns_domain_fromstring_noqualify_encode(&d, argv[1], strlen(argv[1])))
       strerr_diefu2sys(100, "encode ", argv[1]) ;
     dbh.external = where ;
-    byte_zero(&servers, sizeof(s6dns_ip46list_t)) ;
+    memset(&servers, 0, sizeof(s6dns_ip46list_t)) ;
     for (; (i < (unsigned int)(argc - 2)) && (j < S6DNS_MAX_SERVERS) ; i++)
     {
       ip46_t z[S6DNS_MAX_SERVERS] ;
-      unsigned int n ; /* XXX: depends on ip46_scanlist API */
-      register unsigned int k = 0 ;
+      size_t n ;
+      unsigned int k = 0 ;
       if (!*argv[2+i]) continue ;
       if (!ip46_scanlist(z, S6DNS_MAX_SERVERS - j, argv[2 + i], &n))
         strerr_diefu2sys(100, "make an IP address list out of ", argv[2+i]) ;
       for (; k < n ; k++)
       {
-        byte_copy(s6dns_ip46list_ip(&servers, j + k), SKALIBS_IP_SIZE, z[k].ip) ;
+        memcpy(s6dns_ip46list_ip(&servers, j + k), z[k].ip, SKALIBS_IP_SIZE) ;
 #ifdef SKALIBS_IPV6_ENABLED
         if (ip46_is6(z + k)) bitarray_set(servers.is6, j + k) ;
 #endif
