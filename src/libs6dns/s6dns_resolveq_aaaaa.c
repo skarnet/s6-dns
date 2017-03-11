@@ -13,7 +13,7 @@
 #include <s6-dns/s6dns-rci.h>
 #include <s6-dns/s6dns-resolve.h>
 
-int s6dns_resolveq_aaaaa_r (genalloc *ips, char const *name, unsigned int len, s6dns_rci_t const *rci, s6dns_debughook_t const *dbh, tain_t const *deadline, tain_t *stamp)
+int s6dns_resolveq_aaaaa_r (genalloc *ips, char const *name, size_t len, s6dns_rci_t const *rci, s6dns_debughook_t const *dbh, tain_t const *deadline, tain_t *stamp)
 {
   s6dns_engine_t dtl[rci->rulesnum << 1] ;
   stralloc data = STRALLOC_ZERO ;

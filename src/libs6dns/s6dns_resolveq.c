@@ -10,7 +10,7 @@
 #include <s6-dns/s6dns-rci.h>
 #include <s6-dns/s6dns-resolve.h>
 
-int s6dns_resolveq_r (char const *name, unsigned int len, uint16_t qtype, s6dns_message_rr_func_t_ref parsefunc, void *data, s6dns_rci_t const *rci, s6dns_debughook_t const *dbh, tain_t const *deadline, tain_t *stamp)
+int s6dns_resolveq_r (char const *name, size_t len, uint16_t qtype, s6dns_message_rr_func_t_ref parsefunc, void *data, s6dns_rci_t const *rci, s6dns_debughook_t const *dbh, tain_t const *deadline, tain_t *stamp)
 {
   s6dns_engine_t dtl[rci->rulesnum] ;
   unsigned int best = 0 ;

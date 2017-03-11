@@ -11,7 +11,7 @@
 #include <s6-dns/s6dns-message.h>
 #include <s6-dns/s6dns-resolve.h>
 
-int s6dns_resolvenoq_aaaaa_r (genalloc *ips, char const *name, unsigned int len, s6dns_ip46list_t const *servers, s6dns_debughook_t const *dbh, tain_t const *deadline, tain_t *stamp)
+int s6dns_resolvenoq_aaaaa_r (genalloc *ips, char const *name, size_t len, s6dns_ip46list_t const *servers, s6dns_debughook_t const *dbh, tain_t const *deadline, tain_t *stamp)
 {
   stralloc sa[2] = { STRALLOC_ZERO, STRALLOC_ZERO } ;
   s6dns_resolve_t blob[2] ;

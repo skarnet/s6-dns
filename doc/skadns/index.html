@@ -135,8 +135,8 @@ skadns_end(&amp;a) ;
 
 <pre>
 s6dns_domain_t d ;
-uint16 qtype ;
-uint16 id ;
+uint16_t qtype ;
+uint16_t id ;
 tain_t limit, deadline, stamp ;
 
 skadns_send(&amp;a, &amp;id, &amp;d, qtype, &amp;limit, &amp;deadline, &amp;stamp) ;
@@ -213,8 +213,8 @@ following functions.
 </p>
 
 <pre>
-char const *skadns_packet (skadns_t *a, uint16 id)
-int skadns_packetlen (skadns_t *a, uint16 id)
+char const *skadns_packet (skadns_t *a, uint16_t id)
+int skadns_packetlen (skadns_t *a, uint16_t id)
 </pre>
 
 <p>
@@ -237,7 +237,7 @@ using invalid ids is a programming error and may result in a crash. </li>
 </ul>
 
 <pre>
-int skadns_release (skadns_t *a, uint16 id)
+int skadns_release (skadns_t *a, uint16_t id)
 </pre>
 
 <p>

@@ -117,14 +117,14 @@ Returns 1 on success or 0 on failure.
 <h4> Generic resolution functions </h4>
 
 <p>
-<code> int s6dns_resolve_core_g (s6dns_domain_t const *d, uint16 qtype, tain_t const *deadline) </code> <br />
+<code> int s6dns_resolve_core_g (s6dns_domain_t const *d, uint16_t qtype, tain_t const *deadline) </code> <br />
 Resolves the query on domain *<em>d</em> (in packet form), of type <em>qtype</em>.
 Returns 0 on failure, or 1 on success, in which case
 <tt>s6dns_engine_here</tt> contains the answer.
 </p>
 
 <p>
-<code> int s6dns_resolve_parse_g (s6dns_domain_t const *d, uint16 qtype, s6dns_message_rr_func_t *f, void *data, tain_t const *deadline) </code> <br />
+<code> int s6dns_resolve_parse_g (s6dns_domain_t const *d, uint16_t qtype, s6dns_message_rr_func_t *f, void *data, tain_t const *deadline) </code> <br />
 Resolves the query on domain *<em>d</em> (in packet form), of type <em>qtype</em>,
 then parses the answer with function <em>f</em> and stores the result into <em>data</em>.
 Returns 1 if it succeeds, 0 if no data can be extracted from the answer, or -1 if an
@@ -141,7 +141,7 @@ here as a return code of 0 with errno set to ENOENT.
 </p>
 
 <p>
-<code> int s6dns_resolvenoq_g (char const *name, unsigned int len, uint16 qtype, s6dns_message_rr_func_t *f, void *data, tain_t const *deadline) </code> <br />
+<code> int s6dns_resolvenoq_g (char const *name, size_t len, uint16_t qtype, s6dns_message_rr_func_t *f, void *data, tain_t const *deadline) </code> <br />
 Performs a query of type <em>qtype</em> on name <em>name</em> of length <em>len</em>,
 without qualifying it. Parses the answer with function <em>f</em> and stores the
 result into <em>data</em>. Returns 1 if it succeeds, 0 if no data can be extracted,
@@ -149,7 +149,7 @@ or -1 if an error occurs. Sets errno in the last two cases.
 </p>
 
 <p>
-<code> int s6dns_resolveq_g (char const *name, unsigned int len, uint16 qtype, s6dns_message_rr_func_t *f, void *data, tain_t const *deadline) </code> <br />
+<code> int s6dns_resolveq_g (char const *name, size_t len, uint16_t qtype, s6dns_message_rr_func_t *f, void *data, tain_t const *deadline) </code> <br />
 Performs a query of type <em>qtype</em> on name <em>name</em> of length <em>len</em>,
 qualifying it first. Parses the answer with function <em>f</em> and stores the
 result into <em>data</em>. Returns 1 if it succeeds, 0 if none of the FQDNs can
@@ -157,7 +157,7 @@ get a positive answer, or -1 if an error occurs. Sets errno in the last two case
 </p>
 
 <p>
-<code> int s6dns_resolve_g (char const *name, unsigned int len, uint16 qtype, s6dns_message_rr_func_t *f, void *data, int qualif, tain_t const *deadline) </code> <br />
+<code> int s6dns_resolve_g (char const *name, size_t len, uint16_t qtype, s6dns_message_rr_func_t *f, void *data, int qualif, tain_t const *deadline) </code> <br />
 Performs a query of type <em>qtype</em> on name <em>name</em> of length <em>len</em>.
 Qualifies <em>name</em> first if <em>qualif</em> is nonzero; else, does not
 qualify it. Parses the answer with function <em>f</em> and stores the
@@ -168,7 +168,7 @@ get a positive answer, or -1 if an error occurs. Sets errno in the last two case
 <h4> High-level type-specific functions </h4>
 
 <p>
-<code> int s6dns_resolve_a_g (stralloc *ips, char const *name, unsigned int len, int qualif, tain_t const *deadline) </code> <br />
+<code> int s6dns_resolve_a_g (stralloc *ips, char const *name, size_t len, int qualif, tain_t const *deadline) </code> <br />
 Performs an A query on name <em>name</em> of length <em>len</em>, qualifying it
 iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
 can be obtained from servers, or 1 if it succeeds, in which case the IPs are
@@ -176,7 +176,7 @@ appended to the stralloc *<em>ips</em>, using 4 bytes per answer.
 </p>
 
 <p>
-<code> int s6dns_resolve_aaaa_g (stralloc *ips, char const *name, unsigned int len, int qualif, tain_t const *deadline) </code> <br />
+<code> int s6dns_resolve_aaaa_g (stralloc *ips, char const *name, size_t len, int qualif, tain_t const *deadline) </code> <br />
 Performs an AAAA query on name <em>name</em> of length <em>len</em>, qualifying it
 iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
 can be obtained from servers, or 1 if it succeeds, in which case the IPs are
@@ -184,7 +184,7 @@ appended to the stralloc *<em>ips</em>, using 16 bytes per answer.
 </p>
 
 <p>
-<code> int s6dns_resolve_aaaaa_g (genalloc *ips, char const *name, unsigned int len, int qualif, tain_t const *deadline) </code> <br />
+<code> int s6dns_resolve_aaaaa_g (genalloc *ips, char const *name, size_t len, int qualif, tain_t const *deadline) </code> <br />
 Performs an AAAA query and an A query at the same time on name <em>name</em>
 of length <em>len</em>, qualifying it first iff <em>qualif</em> is nonzero.
 Returns -1 if an error occurs, or 0 if no answer
@@ -196,7 +196,7 @@ indiscriminately.
 </p>
 
 <p>
-<code> int s6dns_resolve_ptr_g (genalloc *ds, char const *name, unsigned int len, int qualif, tain_t const *deadline) </code> <br />
+<code> int s6dns_resolve_ptr_g (genalloc *ds, char const *name, size_t len, int qualif, tain_t const *deadline) </code> <br />
 Performs a PTR query on name <em>name</em> of length <em>len</em>, qualifying it
 iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
 can be obtained from servers, or 1 if it succeeds, in which case the domains are
@@ -228,7 +228,7 @@ depending on which <em>ip</em> is an IPv6 or IPv4 address.
 </p>
 
 <p>
-<code> int s6dns_resolve_ns_g (genalloc *ds, char const *name, unsigned int len, int qualif, tain_t const *deadline) </code> <br />
+<code> int s6dns_resolve_ns_g (genalloc *ds, char const *name, size_t len, int qualif, tain_t const *deadline) </code> <br />
 Performs a NS query on name <em>name</em> of length <em>len</em>, qualifying it
 iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
 can be obtained from servers, or 1 if it succeeds, in which case the domains are
@@ -236,7 +236,7 @@ appended to the genalloc *<em>ds</em>, which contains an array of <tt>s6dns_doma
 </p>
 
 <p>
-<code> int s6dns_resolve_cname_g (genalloc *ds, char const *name, unsigned int len, int qualif, tain_t const *deadline) </code> <br />
+<code> int s6dns_resolve_cname_g (genalloc *ds, char const *name, size_t len, int qualif, tain_t const *deadline) </code> <br />
 Performs a CNAME query on name <em>name</em> of length <em>len</em>, qualifying it
 iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
 can be obtained from servers, or 1 if it succeeds, in which case the domains are
@@ -245,7 +245,7 @@ appended to the genalloc *<em>ds</em>, which contains an array of <tt>s6dns_doma
 
 <p>
 <code> int s6dns_resolve_hinfo_g (genalloc *hinfos, char const *name,
-unsigned int len, int qualif, tain_t const *deadline) </code> <br />
+size_t len, int qualif, tain_t const *deadline) </code> <br />
  Performs an HINFO query on name <em>name</em> of length <em>len</em>, qualifying it
 iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
 can be obtained from servers, or 1 if it succeeds, in which case the domains are
@@ -255,7 +255,7 @@ appended to the genalloc *<em>hinfos</em>, which contains an array of
 
 <p>
 <code> int s6dns_resolve_mx_g (genalloc *mxs, char const *name,
-unsigned int len, int qualif, tain_t const *deadline) </code> <br />
+size_t len, int qualif, tain_t const *deadline) </code> <br />
  Performs an MX query on name <em>name</em> of length <em>len</em>, qualifying it
 iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
 can be obtained from servers, or 1 if it succeeds, in which case the domains are
@@ -265,7 +265,7 @@ appended to the genalloc *<em>mxs</em>, which contains an array of
 
 <p>
 <code> int s6dns_resolve_soa_g (genalloc *soas, char const *name,
-unsigned int len, int qualif, tain_t const *deadline) </code> <br />
+size_t len, int qualif, tain_t const *deadline) </code> <br />
  Performs an SOA query on name <em>name</em> of length <em>len</em>, qualifying it
 iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
 can be obtained from servers, or 1 if it succeeds, in which case the domains are
@@ -275,7 +275,7 @@ appended to the genalloc *<em>soas</em>, which contains an array of
 
 <p>
 <code> int s6dns_resolve_srv_g (genalloc *srvs, char const *name,
-unsigned int len, int qualif, tain_t const *deadline) </code> <br />
+size_t len, int qualif, tain_t const *deadline) </code> <br />
  Performs an SRV query on name <em>name</em> of length <em>len</em>, qualifying it
 iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
 can be obtained from servers, or 1 if it succeeds, in which case the domains are

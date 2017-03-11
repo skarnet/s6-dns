@@ -34,7 +34,7 @@ printable strings.
 <h2> Functions </h2>
 
 <p>
-<code> unsigned int s6dns_fmt_domain (char *s, unsigned int max, s6dns_domain_t const *d) </code> <br />
+<code> size_t s6dns_fmt_domain (char *s, size_t max, s6dns_domain_t const *d) </code> <br />
 Writes into string <em>s</em> the domain contained in *<em>d</em> (in string
 form). Returns the number of bytes written, or 0 in case of failure. If
 the output would be more than <em>max</em> bytes, 0 ENAMETOOLONG is returned.
@@ -43,7 +43,7 @@ This function is actually an alias to <tt>s6dns_domain_tostring</tt>.
 </p>
 
 <p>
-<code> unsigned int s6dns_fmt_domainlist (char *s, unsigned int max, s6dns_domain_t const *list, unsigned int n, char const *delin, unsigned int delimlen) </code> <br />
+<code> size_t s6dns_fmt_domainlist (char *s, size_t max, s6dns_domain_t const *list, unsigned int n, char const *delim, size_t delimlen) </code> <br />
 Writes into string <em>s</em> the list of <em>n</em> domains (in string form)
 pointed to by <em>list</em>. Between each domain (and not after the last one),
 string <em>delim</em> of length <em>delimlen</em> is appended.
@@ -53,7 +53,7 @@ To avoid that, S6DNS_FMT_DOMAINLIST(n) is a suitable number of bytes to prealloc
 </p>
 
 <p>
-<code> unsigned int s6dns_fmt_hinfo (char *s, unsigned int max, s6dns_message_rr_hinfo_t const *p) </code> <br />
+<code> size_t s6dns_fmt_hinfo (char *s, size_t max, s6dns_message_rr_hinfo_t const *p) </code> <br />
 Writes into string <em>s</em> the HINFO contained in *<em>p</em>: cpu, then os,
 separated by a space.
 Returns the number of bytes written, or 0 in case of failure. If
@@ -62,7 +62,7 @@ To avoid that, S6DNS_FMT_HINFO is a suitable number of bytes to preallocate <em>
 </p>
 
 <p>
-<code> unsigned int s6dns_fmt_mx (char *s, unsigned int max, s6dns_message_rr_mx_t const *p) </code> <br />
+<code> size_t s6dns_fmt_mx (char *s, size_t max, s6dns_message_rr_mx_t const *p) </code> <br />
 Writes into string <em>s</em> the MX contained in *<em>p</em>: preference, then
 exchanger name, separated by a space.
 Returns the number of bytes written, or 0 in case of failure. If
@@ -71,7 +71,7 @@ To avoid that, S6DNS_FMT_MX is a suitable number of bytes to preallocate <em>s</
 </p>
 
 <p>
-<code> unsigned int s6dns_fmt_soa (char *s, unsigned int max, s6dns_message_rr_soa_t const *p) </code> <br />
+<code> size_t s6dns_fmt_soa (char *s, size_t max, s6dns_message_rr_soa_t const *p) </code> <br />
 Writes into string <em>s</em> the SOA contained in *<em>p</em>:
 mname, then rname, then serial number, refresh time, retry time, expiration time
 and minimum time, separated by spaces.
@@ -81,7 +81,7 @@ To avoid that, S6DNS_FMT_SOA is a suitable number of bytes to preallocate <em>s<
 </p>
 
 <p>
-<code> unsigned int s6dns_fmt_srv (char *s, unsigned int max, s6dns_message_rr_srv_t const *p) </code> <br />
+<code> size_t s6dns_fmt_srv (char *s, size_t max, s6dns_message_rr_srv_t const *p) </code> <br />
 Writes into string <em>s</em> the SRV contained in *<em>p</em>: priority,
 then weight, then port, then target, separated by spaces.
 Returns the number of bytes written, or 0 in case of failure. If

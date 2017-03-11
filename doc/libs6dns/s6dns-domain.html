@@ -49,7 +49,7 @@ on the stack.
 <h2> Functions </h2>
 
 <p>
-<code> int s6dns_domain_fromstring (s6dns_domain_t *d, char const *s, unsigned int len) </code> <br />
+<code> int s6dns_domain_fromstring (s6dns_domain_t *d, char const *s, size_t len) </code> <br />
 Makes a (string form) domain from string <em>s</em> of length <em>len</em>,
 and stores it into *<em>d</em>. Returns 1 if it succeeds, otherwise it
 returns 0 and sets errno appropriately - most likely ENAMETOOLONG, i.e.
@@ -104,20 +104,20 @@ valid packet form (EPROTO).
 </p>
 
 <p>
-<code> int s6dns_domain_fromstring_noqualify_encode (s6dns_domain_t *d, char const *s, unsigned int len) </code> <br />
+<code> int s6dns_domain_fromstring_noqualify_encode (s6dns_domain_t *d, char const *s, size_t len) </code> <br />
 Higher-level function wrapping some of the above. Makes an encoded, fully qualified
 (without resorting to qualification) domain from string <em>s</em> of
 length <em>len</em>. Returns 1 if it succeeds and 0 if it fails.
 </p>
 
 <p>
-<code> unsigned int s6dns_domain_fromstring_qualify_encode (s6dns_domain_t *list, char const *s, unsigned int len, char const *rules, unsigned int rulesnum) </code> <br />
+<code> unsigned int s6dns_domain_fromstring_qualify_encode (s6dns_domain_t *list, char const *s, size_t len, char const *rules, unsigned int rulesnum) </code> <br />
 Another wrapping function. It makes a list of encoded, fully qualified domains,
 from string <em>s</em> of length <em>len</em> using <em>rulesnum</em> qualification
 rules in <em>rules</em>. It writes at most <em>rulesnum</em> domains into the array
 pointed to by <em>list</em> and returns the number of written domains, or 0 on an
 error.
-</p>
+ </p>
 
 <p>
 <code> void s6dns_domain_arpafromip4 (s6dns_domain_t *d, char const *ip) </code> <br />

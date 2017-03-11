@@ -68,7 +68,7 @@ extern int s6dns_resolve_parse_r (s6dns_domain_t const *, uint16_t, s6dns_messag
 
 #define s6dns_resolvenoq(name, len, qtype, parsefunc, parsedata, deadline, stamp) s6dns_resolvenoq_r(name, len, qtype, parsefunc, parsedata, &s6dns_engine_here, &s6dns_rci_here.servers, &s6dns_debughook_zero, deadline, stamp)
 #define s6dns_resolvenoq_g(name, len, qtype, parsefunc, parsedata, deadline) s6dns_resolvenoq(name, len, qtype, parsefunc, parsedata, (deadline), &STAMP)
-extern int s6dns_resolvenoq_r (char const *, unsigned int, uint16_t, s6dns_message_rr_func_t_ref, void *, s6dns_engine_t *, s6dns_ip46list_t const *, s6dns_debughook_t const *, tain_t const *, tain_t *) ;
+extern int s6dns_resolvenoq_r (char const *, size_t, uint16_t, s6dns_message_rr_func_t_ref, void *, s6dns_engine_t *, s6dns_ip46list_t const *, s6dns_debughook_t const *, tain_t const *, tain_t *) ;
 #define s6dns_resolvenoq_r_g(name, len, qtype, parsefunc, parsedata, dt, servers, dbh, deadline) s6dns_resolvenoq_r(name, len, qtype, parsefunc, parsedata, dt, servers, dbh, (deadline), &STAMP)
 
 
@@ -79,7 +79,7 @@ extern int s6dns_resolvenoq_r (char const *, unsigned int, uint16_t, s6dns_messa
 
 #define s6dns_resolveq(name, len, qtype, parsefunc, parsedata, deadline, stamp) s6dns_resolveq_r(name, len, qtype, parsefunc, parsedata, &s6dns_rci_here, &s6dns_debughook_zero, deadline, stamp)
 #define s6dns_resolveq_g(name, len, qtype, parsefunc, parsedata, deadline) s6dns_resolveq(name, len, qtype, parsefunc, parsedata, (deadline), &STAMP)
-extern int s6dns_resolveq_r (char const *, unsigned int, uint16_t, s6dns_message_rr_func_t_ref, void *, s6dns_rci_t const *, s6dns_debughook_t const *, tain_t const *, tain_t *) ;
+extern int s6dns_resolveq_r (char const *, size_t, uint16_t, s6dns_message_rr_func_t_ref, void *, s6dns_rci_t const *, s6dns_debughook_t const *, tain_t const *, tain_t *) ;
 #define s6dns_resolveq_r_g(name, len, qtype, parsefunc, parsedata, rci, dbh, deadline) s6dns_resolveq_r(name, len, qtype, parsefunc, parsedata, rci, dbh, (deadline), &STAMP)
 
 
@@ -98,12 +98,12 @@ extern int s6dns_resolveq_r (char const *, unsigned int, uint16_t, s6dns_message
 
 #define s6dns_resolvenoq_aaaaa(ips, name, len, deadline, stamp) s6dns_resolvenoq_aaaaa_r(ips, name, len, &s6dns_rci_here.servers, &s6dns_debughook_zero, deadline, stamp)
 #define s6dns_resolvenoq_aaaaa_g(ips, name, len, deadline) s6dns_resolvenoq_aaaaa(ips, name, len, (deadline), &STAMP)
-extern int s6dns_resolvenoq_aaaaa_r(genalloc *, char const *, unsigned int, s6dns_ip46list_t const *, s6dns_debughook_t const *, tain_t const *, tain_t *) ;
+extern int s6dns_resolvenoq_aaaaa_r(genalloc *, char const *, size_t, s6dns_ip46list_t const *, s6dns_debughook_t const *, tain_t const *, tain_t *) ;
 #define s6dns_resolvenoq_aaaaa_r_g(ips, name, len, servers, dbh, deadline) s6dns_resolvenoq_aaaaa_r(ips, name, len, servers, dbh, (deadline), &STAMP)
 
 #define s6dns_resolveq_aaaaa(ips, name, len, deadline, stamp) s6dns_resolveq_aaaaa_r(ips, name, len, &s6dns_rci_here, &s6dns_debughook_zero, deadline, stamp)
 #define s6dns_resolveq_aaaaa_g(ips, name, len, deadline) s6dns_resolveq_aaaaa(ips, name, len, (deadline), &STAMP)
-extern int s6dns_resolveq_aaaaa_r(genalloc *, char const *, unsigned int, s6dns_rci_t const *, s6dns_debughook_t const *, tain_t const *, tain_t *) ;
+extern int s6dns_resolveq_aaaaa_r(genalloc *, char const *, size_t, s6dns_rci_t const *, s6dns_debughook_t const *, tain_t const *, tain_t *) ;
 #define s6dns_resolveq_aaaaa_r_g(ips, name, len, rci, dbh, deadline) s6dns_resolvenoq_aaaaa_r(ips, name, len, rci, dbh, (deadline), &STAMP)
 
 
