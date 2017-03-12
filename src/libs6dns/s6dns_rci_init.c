@@ -82,7 +82,7 @@ static inline int stringrules (stralloc *rules, char const *s, unsigned int *num
   while (c)
   {
     c = *s++ ;
-    if (memchr(" \t\n\r", 5, c))
+    if (memchr(" \t\n\r", c, 5))
     {
       if (!crunching)
       {

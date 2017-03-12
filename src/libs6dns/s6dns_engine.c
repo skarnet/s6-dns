@@ -381,7 +381,7 @@ int s6dns_engine_init_r (s6dns_engine_t *dt, s6dns_ip46list_t const *servers, ui
   h.counts.qd = 1 ;
   uint16_pack_big(dt->sa.s, qlen + 16) ;
   s6dns_message_header_pack(dt->sa.s + 2, &h) ;
-  byte_copy(dt->sa.s + 14, qlen, q) ;
+  memcpy(dt->sa.s + 14, q, qlen) ;
   uint16_pack_big(dt->sa.s + 14 + qlen, qtype) ;
   uint16_pack_big(dt->sa.s + 16 + qlen, S6DNS_C_IN) ;
   if (qlen > 496) dt->flagtcp = 1 ;

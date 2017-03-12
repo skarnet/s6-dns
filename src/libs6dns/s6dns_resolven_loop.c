@@ -18,9 +18,9 @@ int s6dns_resolven_loop (s6dns_engine_t *dt, unsigned int n, unsigned int or, ta
   for (;;)
   {
     tain_t localdeadline = *deadline ; 
-    register int r ;
-    register unsigned int i = 0 ;
-    register unsigned int j = 0 ;
+    int r ;
+    unsigned int i = 0 ;
+    unsigned int j = 0 ;
     for (; i < n ; i++) if (dt[i].status == EAGAIN)
     {
       s6dns_engine_nextdeadline(dt + i, &localdeadline) ;

@@ -5,7 +5,7 @@
 #define _BSD_SOURCE
 #endif
 
-#include <sys/types.h>
+#include <string.h>
 #include <stdint.h>
 #include <errno.h>
 #include <skalibs/types.h>
@@ -45,7 +45,7 @@ int s6dns_debug_dumpdt_pre_send (s6dns_engine_t const *dt, void *data)
     if (!localtmn_from_tain(&l, &dt->localdeadline, 0))
     {
       if (errno != EOVERFLOW) return 0 ;
-      byte_copy(buf, 10, "\"infinite\"") ; len = 10 ;
+      memcpy(buf, "\"infinite\"", 10) ; len = 10 ;
     }
     else len = localtmn_fmt(buf, &l) ;
   }
