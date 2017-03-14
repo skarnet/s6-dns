@@ -2,10 +2,8 @@
 
 #include <string.h>
 #include <stdint.h>
-#include <skalibs/types.h>
-#include <skalibs/genwrite.h>
+#include <skalibs/uint32.h>
 #include <s6-dns/s6dns-domain.h>
-#include <s6-dns/s6dns-message.h>
 #include <s6-dns/s6dns-analyze.h>
 
 static s6dns_analyze_rtypetable_t const *rtypelookup (uint16_t rtype)

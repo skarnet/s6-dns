@@ -2,10 +2,9 @@
 
 #include <sys/types.h>
 #include <stdint.h>
-#include <skalibs/types.h>
-#include <skalibs/djbtime.h>
+#include <skalibs/uint16.h>
 #include <skalibs/genwrite.h>
-#include <s6-dns/s6dns-engine.h>
+#include <skalibs/djbtime.h>
 #include <s6-dns/s6dns-debug.h>
 
 int s6dns_debug_dumpdt_post_send (s6dns_engine_t const *dt, void *data)

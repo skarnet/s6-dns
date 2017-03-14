@@ -1,13 +1,11 @@
 /* ISC license. */
 
-#include <sys/types.h>
 #include <string.h>
 #include <errno.h>
 #include <skalibs/error.h>
 #include <skalibs/bytestr.h>
 #include <skalibs/bitarray.h>
 #include <skalibs/fmtscan.h>
-#include <skalibs/tai.h>
 #include <skalibs/djbunix.h>
 #include <skalibs/stralloc.h>
 #include <skalibs/ip46.h>

@@ -1,6 +1,5 @@
 /* ISC license. */
 
-#include <s6-dns/s6dns-domain.h>
 #include <s6-dns/s6dns-message.h>
 #include "s6dns-message-internal.h"
 

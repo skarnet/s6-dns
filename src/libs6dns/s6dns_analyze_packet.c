@@ -5,7 +5,6 @@
 #include <errno.h>
 #include <skalibs/error.h>
 #include <skalibs/types.h>
-#include <skalibs/genwrite.h>
 #include <s6-dns/s6dns-constants.h>
 #include <s6-dns/s6dns-domain.h>
 #include <s6-dns/s6dns-message.h>

@@ -1,10 +1,8 @@
 /* ISC license. */
 
 #include <stdint.h>
-#include <skalibs/types.h>
+#include <skalibs/uint16.h>
 #include <skalibs/fmtscan.h>
-#include <skalibs/genwrite.h>
-#include <s6-dns/s6dns-message.h>
 #include <s6-dns/s6dns-analyze.h>
 
 int s6dns_analyze_record_unknown (genwrite_t *gp, s6dns_message_rr_t const *rr, char const *packet, unsigned int packetlen, unsigned int pos)

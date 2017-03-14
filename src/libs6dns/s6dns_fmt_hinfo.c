@@ -2,7 +2,6 @@
 
 #include <string.h>
 #include <errno.h>
-#include <s6-dns/s6dns-message.h>
 #include <s6-dns/s6dns-fmt.h>
 
 size_t s6dns_fmt_hinfo (char *s, size_t max, s6dns_message_rr_hinfo_t const *hinfo)

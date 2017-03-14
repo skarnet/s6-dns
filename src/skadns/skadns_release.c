@@ -5,7 +5,6 @@
 #define _BSD_SOURCE
 #endif
 
-#include <stdint.h>
 #include <errno.h>
 #include <skalibs/alloc.h>
 #include <skalibs/gensetdyn.h>

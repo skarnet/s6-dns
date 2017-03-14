@@ -8,15 +8,11 @@
 #include <string.h>
 #include <stdint.h>
 #include <errno.h>
-#include <skalibs/types.h>
-#include <skalibs/fmtscan.h>
-#include <skalibs/tai.h>
-#include <skalibs/djbtime.h>
+#include <skalibs/uint16.h>
 #include <skalibs/genwrite.h>
+#include <skalibs/djbtime.h>
 #include <skalibs/ip46.h>
-#include <s6-dns/s6dns-constants.h>
 #include <s6-dns/s6dns-ip46.h>
-#include <s6-dns/s6dns-engine.h>
 #include <s6-dns/s6dns-analyze.h>
 #include <s6-dns/s6dns-debug.h>
 

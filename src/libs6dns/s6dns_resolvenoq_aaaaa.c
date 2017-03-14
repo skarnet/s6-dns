@@ -1,12 +1,9 @@
 /* ISC license. */
 
-#include <sys/types.h>
 #include <skalibs/stralloc.h>
 #include <skalibs/genalloc.h>
-#include <skalibs/tai.h>
 #include <skalibs/ip46.h>
 #include <s6-dns/s6dns-constants.h>
-#include <s6-dns/s6dns-ip46.h>
 #include <s6-dns/s6dns-domain.h>
 #include <s6-dns/s6dns-message.h>
 #include <s6-dns/s6dns-resolve.h>

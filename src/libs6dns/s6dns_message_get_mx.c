@@ -2,8 +2,7 @@
 
 #include <errno.h>
 #include <skalibs/error.h>
-#include <skalibs/types.h>
-#include <s6-dns/s6dns-domain.h>
+#include <skalibs/uint16.h>
 #include <s6-dns/s6dns-message.h>
 
 int s6dns_message_get_mx (s6dns_message_rr_mx_t *mx, char const *packet, unsigned int packetlen, unsigned int *pos)

@@ -1,8 +1,7 @@
 /* ISC license. */
 
-#include <stdint.h>
 #include <strings.h>
-#include <skalibs/types.h>
+#include <skalibs/uint16.h>
 #include <s6-dns/s6dns-constants.h>
 #include <s6-dns/s6dns-analyze.h>
 

@@ -1,5 +1,7 @@
 /* ISC license. */
 
+#include <s6-dns/s6dns-engine.h>
+#include <s6-dns/s6dns-rci.h>
 #include <s6-dns/s6dns.h>
 
 void s6dns_finish ()

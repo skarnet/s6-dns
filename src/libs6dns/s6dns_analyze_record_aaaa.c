@@ -2,9 +2,7 @@
 
 #include <errno.h>
 #include <skalibs/error.h>
-#include <skalibs/genwrite.h>
 #include <skalibs/fmtscan.h>
-#include <s6-dns/s6dns-message.h>
 #include <s6-dns/s6dns-analyze.h>
 
 int s6dns_analyze_record_aaaa (genwrite_t *gp, s6dns_message_rr_t const *rr, char const *packet, unsigned int packetlen, unsigned int pos)

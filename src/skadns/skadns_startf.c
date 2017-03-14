@@ -1,7 +1,6 @@
 /* ISC license. */
 
 #include <skalibs/environ.h>
-#include <skalibs/tai.h>
 #include <skalibs/skaclient.h>
 #include <s6-dns/skadns.h>
 

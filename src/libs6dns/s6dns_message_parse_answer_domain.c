@@ -3,7 +3,6 @@
 #include <errno.h>
 #include <skalibs/error.h>
 #include <skalibs/genalloc.h>
-#include <s6-dns/s6dns-domain.h>
 #include <s6-dns/s6dns-message.h>
 
 int s6dns_message_parse_answer_domain (s6dns_message_rr_t const *rr, char const *packet, unsigned int packetlen, unsigned int pos, unsigned int section, void *stuff)

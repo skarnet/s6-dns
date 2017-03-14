@@ -1,8 +1,8 @@
 /* ISC license. */
 
 #include <string.h>
-#include <skalibs/types.h>
-#include <s6-dns/s6dns-message.h>
+#include <skalibs/uint16.h>
+#include <s6-dns/s6dns-domain.h>
 #include <s6-dns/s6dns-fmt.h>
 
 size_t s6dns_fmt_mx (char *s, size_t max, s6dns_message_rr_mx_t const *mx)

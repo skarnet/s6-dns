@@ -4,19 +4,16 @@
 #include <string.h>
 #include <stdint.h>
 #include <errno.h>
-#include <skalibs/types.h>
-#include <skalibs/tai.h>
-#include <skalibs/stralloc.h>
+#include <skalibs/uint16.h>
 #include <skalibs/gensetdyn.h>
 #include <skalibs/skaclient.h>
-#include <s6-dns/s6dns-domain.h>
 #include <s6-dns/skadns.h>
 
 static skadnsanswer_t const skadnsanswer_initial = { .status = EAGAIN, .data = 0, .len = 0 } ;
 
 int skadns_send (skadns_t *a, uint16_t *u, s6dns_domain_t const *d, uint16_t qtype, tain_t const *limit, tain_t const *deadline, tain_t *stamp)
 {
-  unsigned int i ;
+  uint32_t i ;
   char tmp[17] = "--Q" ;
   char err ;
   struct iovec v[2] = { { .iov_base = tmp, .iov_len = 17 }, { .iov_base = (void *)d->s, .iov_len = d->len } } ;

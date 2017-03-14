@@ -1,9 +1,6 @@
 /* ISC license. */
 
 #include <errno.h>
-#include <skalibs/tai.h>
-#include <skalibs/iopause.h>
-#include <s6-dns/s6dns-ip46.h>
 #include <s6-dns/s6dns-message.h>
 #include <s6-dns/s6dns-engine.h>
 #include <s6-dns/s6dns-resolve.h>

@@ -5,7 +5,7 @@
 #include <strings.h>
 #include <stdint.h>
 #include <errno.h>
-#include <skalibs/types.h>
+#include <skalibs/uint16.h>
 #include <skalibs/allreadwrite.h>
 #include <skalibs/error.h>
 #include <skalibs/tai.h>

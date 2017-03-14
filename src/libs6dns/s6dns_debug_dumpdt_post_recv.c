@@ -1,7 +1,6 @@
 /* ISC license */
 
 #include <skalibs/genwrite.h>
-#include <s6-dns/s6dns-engine.h>
 #include <s6-dns/s6dns-debug.h>
 
 int s6dns_debug_dumpdt_post_recv (s6dns_engine_t const *dt, void *data)

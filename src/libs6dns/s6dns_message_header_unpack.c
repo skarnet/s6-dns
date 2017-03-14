@@ -1,6 +1,6 @@
 /* ISC license. */
 
-#include <skalibs/types.h>
+#include <skalibs/uint16.h>
 #include <s6-dns/s6dns-message.h>
 
 void s6dns_message_header_unpack (char const *s, s6dns_message_header_t *h)

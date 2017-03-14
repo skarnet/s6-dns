@@ -2,8 +2,8 @@
 
 #include <string.h>
 #include <errno.h>
-#include <skalibs/types.h>
-#include <s6-dns/s6dns-message.h>
+#include <skalibs/uint16.h>
+#include <s6-dns/s6dns-domain.h>
 #include <s6-dns/s6dns-fmt.h>
 
 size_t s6dns_fmt_srv (char *s, size_t max, s6dns_message_rr_srv_t const *srv)

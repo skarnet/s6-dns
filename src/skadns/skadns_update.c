@@ -9,7 +9,7 @@
 #include <stdint.h>
 #include <errno.h>
 #include <skalibs/error.h>
-#include <skalibs/types.h>
+#include <skalibs/uint16.h>
 #include <skalibs/alloc.h>
 #include <skalibs/genalloc.h>
 #include <skalibs/gensetdyn.h>
