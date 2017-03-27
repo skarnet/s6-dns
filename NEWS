@@ -1,0 +1,11 @@
+Changelog for s6-dns.
+
+In 2.2.0.0
+----------
+
+ - Added this NEWS file. :)
+ - Major types overhaul to make them more POSIXly correct:
+compatibility with skalibs-2.5.0.0.
+ - Fixed a long-standing bug that sometimes prevented DNS reply headers
+from being correctly decoded on big-endian machines.
+
