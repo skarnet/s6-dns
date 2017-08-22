@@ -104,17 +104,13 @@ static int thisudp (s6dns_engine_t *dt, tain_t const *stamp)
   if (dt->fd < 0) return -1 ;
   if (!randombind(dt->fd, s6dns_ip46list_is6(&dt->servers, dt->curserver)))
   {
-    int e = errno ;
     fd_close(dt->fd) ; dt->fd = -1 ;
-    errno = e ;
     return -1 ;
   }
   if ((socketconnect46(dt->fd, s6dns_ip46list_ip(&dt->servers, dt->curserver), 53, s6dns_ip46list_is6(&dt->servers, dt->curserver)) < 0)
    && (errno != EINPROGRESS))
   {
-    int e = errno ;
     fd_close(dt->fd) ; dt->fd = -1 ;
-    errno = e ;
     return 0 ;
   }
   tain_add(&dt->localdeadline, stamp, &tain_infinite_relative) ;
@@ -135,17 +131,13 @@ static int thistcp (s6dns_engine_t *dt, tain_t const *stamp)
   if (dt->fd < 0) return -1 ;
   if (!randombind(dt->fd, s6dns_ip46list_is6(&dt->servers, dt->curserver)))
   {
-    int e = errno ;
     fd_close(dt->fd) ; dt->fd = -1 ;
-    errno = e ;
     return -1 ;
   }
   if ((socketconnect46(dt->fd, s6dns_ip46list_ip(&dt->servers, dt->curserver), 53, s6dns_ip46list_is6(&dt->servers, dt->curserver)) < 0)
    && (errno != EINPROGRESS))
   {
-    int e = errno ;
     fd_close(dt->fd) ; dt->fd = -1 ;
-    errno = e ;
     return 0 ;
   }
   tain_addsec(&dt->localdeadline, stamp, 10) ;
@@ -255,9 +247,7 @@ static int s6dns_engine_read_udp (s6dns_engine_t *dt, tain_t const *stamp)
   }
   if (!stralloc_copyb(&dt->sa, buf, r))
   {
-    int e = errno ;
     fd_close(dt->fd) ; dt->fd = -1 ;
-    errno = e ;
     return 0 ;
   }
   dt->querylen = 0 ;
@@ -314,9 +304,7 @@ void s6dns_engine_recycle (s6dns_engine_t *dt)
   memset(&dt->servers, 0, sizeof(s6dns_ip46list_t)) ;
   if (dt->fd >= 0)
   {
-    int e = errno ;
     fd_close(dt->fd) ; dt->fd = -1 ;
-    errno = e ;
   }
   dt->status = ECONNABORTED ;
   dt->flagstrict = dt->flagtcp = dt->flagconnecting = dt->flagreading = dt->flagwriting = 0 ;
