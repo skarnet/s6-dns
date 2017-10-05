@@ -29,7 +29,7 @@ struct s6dns_debughook_s
   s6dns_debughook_func_t_ref post_send ;
   void *external ;
 } ;
-#define S6DNS_DEBUGHOOK_ZERO { 0, 0, 0, 0 }
+#define S6DNS_DEBUGHOOK_ZERO { .post_recv = 0, .pre_send = 0, .post_send = 0, .external = 0 }
 extern s6dns_debughook_t const s6dns_debughook_zero ;
       
 
@@ -56,7 +56,8 @@ struct s6dns_engine_s
   unsigned int flagwriting : 1 ;
 } ;
 
-#define S6DNS_ENGINE_ZERO { \
+#define S6DNS_ENGINE_ZERO \
+{ \
   .sa = STRALLOC_ZERO, \
   .deadline = TAIN_ZERO, \
   .localdeadline = TAIN_ZERO, \
