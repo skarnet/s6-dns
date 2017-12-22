@@ -12,8 +12,8 @@
 #include <skalibs/tai.h>
 #include <skalibs/djbunix.h>
 #include <skalibs/iopause.h>
-#include <skalibs/unixmessage.h>
-#include <skalibs/skaclient.h>
+#include <skalibs/textmessage.h>
+#include <skalibs/textclient.h>
 #include <s6-dns/s6dns.h>
 #include <s6-dns/skadns.h>
 
@@ -40,44 +40,43 @@ static void remove (unsigned int i)
 static void fail (unsigned int i)
 {
   char pack[3] ;
-  unixmessage_t m = { .s = pack, .len = 3, .fds = 0, .nfds = 0 } ;
   uint16_pack_big(pack, a[i].id) ;
   pack[2] = a[i].dt.status ;
   s6dns_engine_recycle(&a[i].dt) ;
   remove(i) ;
-  if (!unixmessage_put(unixmessage_sender_x, &m))
-    strerr_diefu1sys(111, "unixmessage_put") ;
+  if (!textmessage_put(textmessage_sender_x, pack, 3))
+    strerr_diefu1sys(111, "textmessage_put") ;
 }
 
 static void answer (char c)
 {
-  unixmessage_t m = { .s = &c, .len = 1, .fds = 0, .nfds = 0 } ;
-  if (!unixmessage_put(unixmessage_sender_1, &m))
+  if (!textmessage_put(textmessage_sender_1, &c, 1))
     strerr_diefu1sys(111, "unixmessage_put") ;
 }
 
-static int parse_protocol (unixmessage_t const *m, void *context)
+static int parse_protocol (struct iovec const *v, void *context)
 {
+  char const *s = v->iov_base ;
   uint16_t id ;
-  if (m->len < 3 || m->nfds) strerr_dief1x(100, "invalid client request") ;
-  uint16_unpack_big(m->s, &id) ;
-  switch (m->s[2])  /* protocol parsing */
+  if (v->iov_len < 3) strerr_dief1x(100, "invalid client request") ;
+  uint16_unpack_big(s, &id) ;
+  switch (s[2])  /* protocol parsing */
   {
     case 'Q' : /* send a query */
     {
       tain_t limit ;
       uint16_t qtype ;
-      if (m->len < 21) strerr_dief1x(100, "invalid client request") ;
+      if (v->iov_len < 21) strerr_dief1x(100, "invalid client request") ;
       if (sp >= SKADNS_MAXCONCURRENCY)
       {
         answer(ENFILE) ;
         break ;
       }
-      uint16_unpack_big(m->s + 3, &qtype) ;
-      if (memcmp(m->s + 5, "\0\0\0\0\0\0\0\0\0\0\0", 12))
-        tain_unpack(m->s + 5, &limit) ;
+      uint16_unpack_big(s + 3, &qtype) ;
+      if (memcmp(s + 5, "\0\0\0\0\0\0\0\0\0\0\0", 12))
+        tain_unpack(s + 5, &limit) ;
       else tain_add_g(&limit, &tain_infinite_relative) ;
-      if (!s6dns_engine_init_g(&a[sp].dt, &s6dns_rci_here.servers, 1, m->s + 17, m->len - 17, qtype, &limit))
+      if (!s6dns_engine_init_g(&a[sp].dt, &s6dns_rci_here.servers, 1, s + 17, v->iov_len - 17, qtype, &limit))
       {
         answer(errno) ;
         break ;
@@ -119,7 +118,7 @@ int main (void)
   {
     tain_t deadline ;
     tain_addsec_g(&deadline, 2) ;
-    if (!skaclient_server_01x_init_g(SKADNS_BANNER1, SKADNS_BANNER1_LEN, SKADNS_BANNER2, SKADNS_BANNER2_LEN, &deadline))
+    if (!textclient_server_01x_init_g(SKADNS_BANNER1, SKADNS_BANNER1_LEN, SKADNS_BANNER2, SKADNS_BANNER2_LEN, &deadline))
       strerr_diefu1sys(111, "sync with client") ;
   }
   {
@@ -134,9 +133,9 @@ int main (void)
     int r ;
     
     x[0].fd = 0 ; x[0].events = IOPAUSE_EXCEPT | IOPAUSE_READ ;
-    x[1].fd = 1 ; x[1].events = IOPAUSE_EXCEPT | (unixmessage_sender_isempty(unixmessage_sender_1) ? 0 : IOPAUSE_WRITE) ;
-    x[2].fd = unixmessage_sender_fd(unixmessage_sender_x) ;
-    x[2].events = IOPAUSE_EXCEPT | (unixmessage_sender_isempty(unixmessage_sender_x) ? 0 : IOPAUSE_WRITE) ;
+    x[1].fd = 1 ; x[1].events = IOPAUSE_EXCEPT | (textmessage_sender_isempty(textmessage_sender_1) ? 0 : IOPAUSE_WRITE) ;
+    x[2].fd = textmessage_sender_fd(textmessage_sender_x) ;
+    x[2].events = IOPAUSE_EXCEPT | (textmessage_sender_isempty(textmessage_sender_x) ? 0 : IOPAUSE_WRITE) ;
     {
       tain_t deadline = TAIN_INFINITE ;
       unsigned int i = 0 ;
@@ -162,10 +161,10 @@ int main (void)
     }
 
     if (x[1].revents & IOPAUSE_WRITE)
-      if (!unixmessage_sender_flush(unixmessage_sender_1) && !error_isagain(errno))
+      if (!textmessage_sender_flush(textmessage_sender_1) && !error_isagain(errno))
         strerr_diefu1sys(111, "flush stdout") ;
     if (x[2].revents & IOPAUSE_WRITE)
-      if (!unixmessage_sender_flush(unixmessage_sender_x) && !error_isagain(errno))
+      if (!textmessage_sender_flush(textmessage_sender_x) && !error_isagain(errno))
         strerr_diefu1sys(111, "flush asyncout") ;
                         
     {
@@ -178,20 +177,19 @@ int main (void)
         {
           char pack[3] ;
           struct iovec v[2] = { { .iov_base = pack, .iov_len = 3 }, { .iov_base = s6dns_engine_packet(&a[i].dt), .iov_len = s6dns_engine_packetlen(&a[i].dt) } } ;
-          unixmessage_v_t mv = { .v = v, .vlen = 2, .fds = 0, .nfds = 0 } ;
           uint16_pack_big(pack, a[i].id) ;
           pack[2] = 0 ;
-          if (!unixmessage_putv(unixmessage_sender_x, &mv))
-            strerr_diefu1sys(111, "unixmessage_put") ;
+          if (!textmessage_putv(textmessage_sender_x, v, 2))
+            strerr_diefu1sys(111, "textmessage_put") ;
           s6dns_engine_recycle(&a[i].dt) ;
           remove(i--) ;
         }
       }
     }
 
-    if (!unixmessage_receiver_isempty(unixmessage_receiver_0) || x[0].revents & IOPAUSE_READ)
+    if (!textmessage_receiver_isempty(textmessage_receiver_0) || x[0].revents & IOPAUSE_READ)
     {
-      if (unixmessage_handle(unixmessage_receiver_0, &parse_protocol, 0) < 0)
+      if (textmessage_handle(textmessage_receiver_0, &parse_protocol, 0) < 0)
       {
         if (errno == EPIPE) break ; /* normal exit */
         strerr_diefu1sys(111, "handle messages from client") ;

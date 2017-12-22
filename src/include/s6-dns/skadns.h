@@ -8,7 +8,7 @@
 #include <skalibs/tai.h>
 #include <skalibs/genalloc.h>
 #include <skalibs/gensetdyn.h>
-#include <skalibs/skaclient.h>
+#include <skalibs/textclient.h>
 #include <s6-dns/config.h>
 #include <s6-dns/s6dns-domain.h>
 
@@ -31,12 +31,11 @@ struct skadnsanswer_s
 typedef struct skadns_s skadns_t, *skadns_t_ref ;
 struct skadns_s
 {
-  skaclient_t connection ;
+  textclient_t connection ;
   genalloc list ; /* array of uint16_t */
   gensetdyn q ; /* set of skadnsanswer_t */
-  skaclient_buffer_t buffers ;
 } ;
-#define SKADNS_ZERO { .connection = SKACLIENT_ZERO, .list = GENALLOC_ZERO, .q = GENSETDYN_INIT(skadnsanswer_t, 3, 3, 8) }
+#define SKADNS_ZERO { .connection = TEXTCLIENT_ZERO, .list = GENALLOC_ZERO, .q = GENSETDYN_INIT(skadnsanswer_t, 3, 3, 8) }
 extern skadns_t const skadns_zero ;
 
 
@@ -59,7 +58,7 @@ extern int skadns_cancel (skadns_t *, uint16_t, tain_t const *, tain_t *) ;
 
  /* Asynchronous functions */
 
-#define skadns_fd(a) skaclient_fd(&(a)->connection)
+#define skadns_fd(a) textclient_fd(&(a)->connection)
 extern int skadns_update (skadns_t *) ;
 #define skadns_list(a) genalloc_s(uint16_t const, &(a)->list)
 #define skadns_clearlist(a) ((a)->list.len = 0)

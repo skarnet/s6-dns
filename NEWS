@@ -1,5 +1,12 @@
 Changelog for s6-dns.
 
+In 2.3.0.0
+----------
+
+ - skadns now uses the textclient API/ABI instead of the skaclient one.
+The change is invisible, but it's leaner and faster.
+
+
 In 2.2.0.1
 ----------
 
