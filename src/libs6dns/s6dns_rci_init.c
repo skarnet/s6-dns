@@ -2,6 +2,7 @@
 
 #include <string.h>
 #include <errno.h>
+#include <stdlib.h>
 #include <skalibs/error.h>
 #include <skalibs/bytestr.h>
 #include <skalibs/bitarray.h>
@@ -28,7 +29,7 @@ static inline int s6dns_rci_init_servers (s6dns_rci_t *rci, char const *file, ch
 {
   ip46_t tmplist[S6DNS_MAX_SERVERS] ;
   size_t num = 0 ;
-  char const *x = env_get("DNSCACHEIP") ;
+  char const *x = getenv("DNSCACHEIP") ;
   if (x) ip46_scanlist(tmplist, S6DNS_MAX_SERVERS, x, &num) ;
   if (!num)
   {
@@ -108,7 +109,7 @@ static inline int stringrules (stralloc *rules, char const *s, unsigned int *num
 static inline int s6dns_rci_init_rules (s6dns_rci_t_ref rci, char const *file, char *tmp, size_t max, size_t *size)
 {
   unsigned int num = 0 ;
-  char const *x = env_get("DNSQUALIFY") ;
+  char const *x = getenv("DNSQUALIFY") ;
   if (x)
   {
     if (!stringrules(&rci->rules, x, &num)) return 0 ;
