@@ -14,6 +14,7 @@ static s6dns_analyze_rtypetable_t const s6dns_analyze_rtypetable_array[] =
   { 16, "TXT", &s6dns_analyze_record_strings },
   { 28, "AAAA", &s6dns_analyze_record_aaaa },
   { 33, "SRV", &s6dns_analyze_record_srv },
+  { 257, "CAA", &s6dns_analyze_record_caa },
   { 0, "unknown", &s6dns_analyze_record_unknown }
 } ;
 

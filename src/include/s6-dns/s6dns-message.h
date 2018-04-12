@@ -109,6 +109,16 @@ struct s6dns_message_rr_srv_s
 
 extern int s6dns_message_get_srv (s6dns_message_rr_srv_t *, char const *, unsigned int, unsigned int *) ;
 
+typedef struct s6dns_message_rr_caa_s s6dns_message_rr_caa_t, *s6dns_message_rr_caa_t_ref ;
+struct s6dns_message_rr_caa_s
+{
+  uint8_t flags ;
+  char tag[256] ;
+  char value[256] ;
+} ;
+
+extern int s6dns_message_get_caa (s6dns_message_rr_caa_t *, char const *, unsigned int, unsigned int *, uint16_t) ;
+
 
  /* The callback function type: how to parse RRs */
 
@@ -157,6 +167,7 @@ extern s6dns_message_rr_func_t s6dns_message_parse_answer_mx ;
 extern s6dns_message_rr_func_t s6dns_message_parse_answer_hinfo ;
 extern s6dns_message_rr_func_t s6dns_message_parse_answer_soa ;
 extern s6dns_message_rr_func_t s6dns_message_parse_answer_srv ;
+extern s6dns_message_rr_func_t s6dns_message_parse_answer_caa ;
 
 
  /* The actual parsing function */

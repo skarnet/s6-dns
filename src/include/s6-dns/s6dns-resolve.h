@@ -183,15 +183,20 @@ extern int s6dns_resolve_name6_r (genalloc *, char const *, s6dns_engine_t *, s6
 #define s6dns_resolve_hinfo_r(hinfos, name, len, qualif, dt, rci, dbh, deadline, stamp) s6dns_resolve_r(name, len, S6DNS_T_HINFO, &s6dns_message_parse_answer_hinfo, (hinfos), qualif, dt, rci, dbh, deadline, stamp)
 #define s6dns_resolve_hinfo_r_g(hinfos, name, len, qualif, dt, rci, dbh, deadline) s6dns_resolve_hinfo_r(hinfos, name, len, qualif, dt, rci, dbh, (deadline), &STAMP)
 
+#define s6dns_resolve_soa(soas, name, len, qualif, deadline, stamp) s6dns_resolve_soa_r(soas, name, len, qualif, &s6dns_engine_here, &s6dns_rci_here, &s6dns_debughook_zero, deadline, stamp)
+#define s6dns_resolve_soa_g(soas, name, len, qualif, deadline) s6dns_resolve_soa(soas, name, len, qualif, (deadline), &STAMP)
+#define s6dns_resolve_soa_r(soas, name, len, qualif, dt, rci, dbh, deadline, stamp) s6dns_resolve_r(name, len, S6DNS_T_SOA, &s6dns_message_parse_answer_soa, (soas), qualif, dt, rci, dbh, deadline, stamp)
+#define s6dns_resolve_soa_r_g(soas, name, len, qualif, dt, rci, dbh, deadline) s6dns_resolve_soa_r(soas, name, len, qualif, dt, rci, dbh, (deadline), &STAMP)
+
 #define s6dns_resolve_srv(srvs, name, len, qualif, deadline, stamp) s6dns_resolve_srv_r(srvs, name, len, qualif, &s6dns_engine_here, &s6dns_rci_here, &s6dns_debughook_zero, deadline, stamp)
 #define s6dns_resolve_srv_g(srvs, name, len, qualif, deadline) s6dns_resolve_srv(srvs, name, len, qualif, (deadline), &STAMP)
 #define s6dns_resolve_srv_r(srvs, name, len, qualif, dt, rci, dbh, deadline, stamp) s6dns_resolve_r(name, len, S6DNS_T_SRV, &s6dns_message_parse_answer_srv, (srvs), qualif, dt, rci, dbh, deadline, stamp)
 #define s6dns_resolve_srv_r_g(srvs, name, len, qualif, dt, rci, dbh, deadline) s6dns_resolve_srv_r(srvs, name, len, qualif, dt, rci, dbh, (deadline), &STAMP)
 
-#define s6dns_resolve_soa(soas, name, len, qualif, deadline, stamp) s6dns_resolve_soa_r(soas, name, len, qualif, &s6dns_engine_here, &s6dns_rci_here, &s6dns_debughook_zero, deadline, stamp)
-#define s6dns_resolve_soa_g(soas, name, len, qualif, deadline) s6dns_resolve_soa(soas, name, len, qualif, (deadline), &STAMP)
-#define s6dns_resolve_soa_r(soas, name, len, qualif, dt, rci, dbh, deadline, stamp) s6dns_resolve_r(name, len, S6DNS_T_SOA, &s6dns_message_parse_answer_soa, (soas), qualif, dt, rci, dbh, deadline, stamp)
-#define s6dns_resolve_soa_r_g(soas, name, len, qualif, dt, rci, dbh, deadline) s6dns_resolve_soa_r(soas, name, len, qualif, dt, rci, dbh, (deadline), &STAMP)
+#define s6dns_resolve_caa(caas, name, len, qualif, deadline, stamp) s6dns_resolve_caa_r(caas, name, len, qualif, &s6dns_engine_here, &s6dns_rci_here, &s6dns_debughook_zero, deadline, stamp)
+#define s6dns_resolve_caa_g(caas, name, len, qualif, deadline) s6dns_resolve_caa(caas, name, len, qualif, (deadline), &STAMP)
+#define s6dns_resolve_caa_r(caas, name, len, qualif, dt, rci, dbh, deadline, stamp) s6dns_resolve_r(name, len, S6DNS_T_CAA, &s6dns_message_parse_answer_caa, (caas), qualif, dt, rci, dbh, deadline, stamp)
+#define s6dns_resolve_caa_r_g(caas, name, len, qualif, dt, rci, dbh, deadline) s6dns_resolve_caa_r(caas, name, len, qualif, dt, rci, dbh, (deadline), &STAMP)
 
 
  /* Internals for the high-level functions. */

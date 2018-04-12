@@ -28,6 +28,7 @@ extern s6dns_analyze_record_func_t s6dns_analyze_record_hinfo ;
 extern s6dns_analyze_record_func_t s6dns_analyze_record_soa ;
 extern s6dns_analyze_record_func_t s6dns_analyze_record_mx ;
 extern s6dns_analyze_record_func_t s6dns_analyze_record_srv ;
+extern s6dns_analyze_record_func_t s6dns_analyze_record_caa ;
 extern s6dns_analyze_record_func_t s6dns_analyze_record_domain ;
 extern s6dns_analyze_record_func_t s6dns_analyze_record_strings ;
 extern s6dns_analyze_record_func_t s6dns_analyze_record_unknown ;

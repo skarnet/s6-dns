@@ -26,4 +26,7 @@ extern size_t s6dns_fmt_soa (char *, size_t, s6dns_message_rr_soa_t const *) ;
 #define S6DNS_FMT_SRV (S6DNS_FMT_DOMAIN + 3 * UINT16_FMT)
 extern size_t s6dns_fmt_srv (char *, size_t, s6dns_message_rr_srv_t const *) ;
 
+#define S6DNS_FMT_CAA 517
+extern size_t s6dns_fmt_caa (char *, size_t, s6dns_message_rr_caa_t const *) ;
+
 #endif

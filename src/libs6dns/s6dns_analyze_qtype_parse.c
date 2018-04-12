@@ -29,6 +29,7 @@ static lookuptable_t const table[] =
   { "SIG", S6DNS_T_SIG },
   { "KEY", S6DNS_T_KEY },
   { "AXFR", S6DNS_T_AXFR },
+  { "CAA", S6DNS_T_CAA },
   { 0, 0 }
 } ;
 
