@@ -284,6 +284,16 @@ appended to the genalloc *<em>srvs</em>, which contains an array of
 </p>
 
 <p>
+<code> int s6dns_resolve_caa_g (genalloc *caas, char const *name,
+size_t len, int qualif, tain_t const *deadline) </code> <br />
+ Performs a CAA query on name <em>name</em> of length <em>len</em>, qualifying it
+iff <em>qualif</em> is nonzero. Returns -1 if an error occurs, or 0 if no answer
+can be obtained from servers, or 1 if it succeeds, in which case the domains are
+appended to the genalloc *<em>caas</em>, which contains an array of
+<tt>s6dns_message_rr_caa_t</tt>.
+</p>
+
+<p>
 <code> int s6dns_resolve_txt_g (stralloc *sa, genalloc *offsets, char const *name,
 unsigned int len, int qualif, tain_t const *deadline) </code> <br />
  Performs an TXT query on name <em>name</em> of length <em>len</em>, qualifying it

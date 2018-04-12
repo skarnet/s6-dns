@@ -89,5 +89,14 @@ the output would be more than <em>max</em> bytes, 0 ENAMETOOLONG is returned.
 To avoid that, S6DNS_FMT_SRV is a suitable number of bytes to preallocate <em>s</em>.
 </p>
 
+<p>
+<code> size_t s6dns_fmt_caa (char *s, size_t max, s6dns_message_rr_caa_t const *p) </code> <br />
+Writes into string <em>s</em> the CAA contained in *<em>p</em>: flags, then tag,
+then value, separated by spaces.
+Returns the number of bytes written, or 0 in case of failure. If
+the output would be more than <em>max</em> bytes, 0 ENAMETOOLONG is returned.
+To avoid that, S6DNS_FMT_CAA is a suitable number of bytes to preallocate <em>s</em>.
+</p>
+
 </body>
 </html>

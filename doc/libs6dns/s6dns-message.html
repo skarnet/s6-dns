@@ -79,6 +79,7 @@ also provided. The list includes:
  <li> <tt>s6dns_message_rr_mx</tt> for MX RRs </li>
  <li> <tt>s6dns_message_rr_soa</tt> for SOA RRs </li>
  <li> <tt>s6dns_message_rr_srv</tt> for SRV RRs </li>
+ <li> <tt>s6dns_message_rr_caa</tt> for CAA RRs </li>
 </ul>
 
 <h2> Functions </h2>
@@ -167,6 +168,13 @@ Reads a SOA RR and stores it into *<em>p</em>. Returns 1 on success or 0 on fail
 Reads a SRV RR and stores it into *<em>p</em>. Returns 1 on success or 0 on failure.
 </p>
 
+<p>
+<code> int s6dns_message_get_caa (s6dns_message_rr_caa_t *p, char const *packet, unsigned int packetlen, unsigned int *pos, uint16_t rdlength) </code> <br />
+Reads a CAA RR and stores it into *<em>p</em>. Returns 1 on success or 0 on failure.
+<em>rdlength</em> is the length of the RDATA field of the record; this value is
+needed to properly parse a CAA record.
+</p>
+
 <h3> High-level RR-specific parsing functions </h3>
 
 <p>
@@ -231,6 +239,14 @@ Parses SRV RRs located in the answer section of the packet. The
 <em>data</em> argument is interpreted as a pointer to a
 <a href="//skarnet.org/software/skalibs/libstddjb/genalloc.html">genalloc</a>
 containing <tt>s6dns_message_rr_srv_t</tt> structures.
+</p>
+
+<p>
+<code> s6dns_message_func_t s6dns_message_parse_answer_caa </code> <br />
+Parses CAA RRs located in the answer section of the packet. The
+<em>data</em> argument is interpreted as a pointer to a
+<a href="//skarnet.org/software/skalibs/libstddjb/genalloc.html">genalloc</a>
+containing <tt>s6dns_message_rr_caa_t</tt> structures.
 </p>
 
 <h3> High-level packet parsing </h3>
