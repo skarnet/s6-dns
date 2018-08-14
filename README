@@ -5,7 +5,7 @@ s6-dns - a DNS client suite
 Unix systems, as an alternative to the BIND, djbdns, or
 other DNS clients.
 
- See http://skarnet.org/software/s6-dns/ for details.
+ See https://skarnet.org/software/s6-dns/ for details.
 
 
 * Installation
