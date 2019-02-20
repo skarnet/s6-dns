@@ -1,8 +1,10 @@
 /* ISC license. */
 
 #include <errno.h>
-#include <skalibs/error.h>
+
+#include <skalibs/posixishard.h>
 #include <skalibs/bytestr.h>
+
 #include <s6-dns/s6dns-domain.h>
 
 static inline unsigned int s6dns_domain_label_decode (char *s, unsigned int max)

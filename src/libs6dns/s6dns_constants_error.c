@@ -1,7 +1,9 @@
 /* ISC license. */
 
 #include <errno.h>
-#include <skalibs/error.h>
+
+#include <skalibs/posixishard.h>
+
 #include <s6-dns/s6dns-constants.h>
 
 static s6dns_constants_error_message_t const array[] =

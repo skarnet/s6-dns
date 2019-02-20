@@ -2,7 +2,9 @@
 
 #include <sys/types.h>
 #include <errno.h>
-#include <skalibs/error.h>
+
+#include <skalibs/posixishard.h>
+
 #include <s6-dns/s6dns-message.h>
 #include <s6-dns/s6dns-fmt.h>
 #include <s6-dns/s6dns-analyze.h>

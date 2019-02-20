@@ -1,20 +1,20 @@
 /* ISC license. */
 
-/* Hey, OpenBSD, are you aware ECANCELED is POSIX? */
-#ifndef _BSD_SOURCE
-#define _BSD_SOURCE
-#endif
+#include <skalibs/nonposix.h>
 
 #include <sys/uio.h>
 #include <string.h>
 #include <stdint.h>
 #include <errno.h>
+
+#include <skalibs/posixishard.h>
 #include <skalibs/error.h>
 #include <skalibs/uint16.h>
 #include <skalibs/alloc.h>
 #include <skalibs/genalloc.h>
 #include <skalibs/gensetdyn.h>
 #include <skalibs/textclient.h>
+
 #include <s6-dns/skadns.h>
 
 static int msghandler (struct iovec const *v, void *context)

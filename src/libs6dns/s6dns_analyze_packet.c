@@ -3,8 +3,10 @@
 #include <string.h>
 #include <stdint.h>
 #include <errno.h>
-#include <skalibs/error.h>
+
+#include <skalibs/posixishard.h>
 #include <skalibs/types.h>
+
 #include <s6-dns/s6dns-constants.h>
 #include <s6-dns/s6dns-domain.h>
 #include <s6-dns/s6dns-message.h>

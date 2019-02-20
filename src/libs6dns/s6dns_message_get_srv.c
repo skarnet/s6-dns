@@ -1,8 +1,10 @@
 /* ISC license. */
 
 #include <errno.h>
-#include <skalibs/error.h>
+
+#include <skalibs/posixishard.h>
 #include <skalibs/uint16.h>
+
 #include <s6-dns/s6dns-message.h>
 
 int s6dns_message_get_srv (s6dns_message_rr_srv_t *srv, char const *packet, unsigned int packetlen, unsigned int *pos)

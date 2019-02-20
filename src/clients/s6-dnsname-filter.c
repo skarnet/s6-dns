@@ -2,10 +2,12 @@
 
 #include <sys/types.h>
 #include <errno.h>
-#include <skalibs/error.h>
+
+#include <skalibs/posixishard.h>
 #include <skalibs/strerr2.h>
 #include <skalibs/fmtscan.h>
 #include <skalibs/stralloc.h>
+
 #include <s6-dns/s6dns-constants.h>
 #include <s6-dns/s6dns-domain.h>
 #include <s6-dns/s6dns-message.h>

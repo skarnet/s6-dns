@@ -3,7 +3,9 @@
 #include <stdint.h>
 #include <string.h>
 #include <errno.h>
-#include <skalibs/error.h>
+
+#include <skalibs/posixishard.h>
+
 #include <s6-dns/s6dns-message.h>
 
 int s6dns_message_get_caa (s6dns_message_rr_caa_t *caa, char const *packet, unsigned int packetlen, unsigned int *pos, uint16_t rdlength)

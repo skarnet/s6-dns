@@ -2,7 +2,9 @@
 
 #include <string.h>
 #include <errno.h>
-#include <skalibs/error.h>
+
+#include <skalibs/posixishard.h>
+
 #include "s6dns-message-internal.h"
 
 size_t s6dns_message_get_domain_internal (char *out, size_t outmax, char const *s, unsigned int len, unsigned int *pos)

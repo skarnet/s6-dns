@@ -2,7 +2,9 @@
 
 #include <string.h>
 #include <errno.h>
-#include <skalibs/error.h>
+
+#include <skalibs/posixishard.h>
+
 #include "s6dns-message-internal.h"
 
 int s6dns_message_get_string_internal (char *s, size_t max, char const *packet, unsigned int packetlen, unsigned int *pos)
