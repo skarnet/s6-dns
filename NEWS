@@ -1,5 +1,12 @@
 Changelog for s6-dns.
 
+In 2.3.0.2
+----------
+
+ - Adaptation to skalibs-2.8.0.0.
+ - Everything now builds as PIC by default.
+
+
 In 2.3.0.1
 ----------
 
