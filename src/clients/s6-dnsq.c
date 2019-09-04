@@ -75,6 +75,7 @@ int main (int argc, char const *const *argv)
     }
     if (debuglevel & 1) dbh.post_recv = &s6dns_debug_dumpdt_post_recv ;
     if (debuglevel & 2) { dbh.pre_send = &s6dns_debug_dumpdt_pre_send ; dbh.post_send = &s6dns_debug_dumpdt_post_send ; }
+    tain_now_set_stopwatch() ;
     tain_now_g() ;
     tain_add_g(&deadline, &deadline) ;
     if (!s6dns_engine_init_r_g(&s6dns_engine_here, &servers, 0, d.s, d.len, qtype, &dbh, &deadline))

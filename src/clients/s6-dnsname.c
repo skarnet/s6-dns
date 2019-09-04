@@ -52,7 +52,8 @@ int main (int argc, char const *const *argv)
     ip.is6 = 1 ;
   }
   else if (!ip4_scan(argv[0], ip.ip)) dieusage() ;
-  
+
+  tain_now_set_stopwatch() ;  
   tain_now_g() ;
   if (t) tain_from_millisecs(&deadline, t) ; else deadline = tain_infinite_relative ;
   tain_add_g(&deadline, &deadline) ;

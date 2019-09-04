@@ -112,6 +112,7 @@ int main (void)
   if (ndelay_on(0) < 0) strerr_diefu2sys(111, "ndelay_on ", "0") ;
   if (ndelay_on(1) < 0) strerr_diefu2sys(111, "ndelay_on ", "1") ;
   if (sig_ignore(SIGPIPE) < 0) strerr_diefu1sys(111, "ignore SIGPIPE") ;
+  tain_now_set_stopwatch() ;
   tain_now_g() ;
   if (!s6dns_init()) strerr_diefu1sys(111, "s6dns_init") ;
 

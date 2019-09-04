@@ -43,6 +43,7 @@ int main (int argc, char const *const *argv)
   argc -= subgetopt_here.ind ; argv += subgetopt_here.ind ;
   if (argc < 1) dieusage() ;
 
+  tain_now_set_stopwatch() ;
   tain_now(&stamp) ;
   if (t) tain_from_millisecs(&deadline, t) ; else deadline = tain_infinite_relative ;
   tain_add(&deadline, &deadline, &stamp) ;
