@@ -78,8 +78,7 @@ int s6dns_generic_filter_main (int argc, char const *const *argv, char const *co
   if (maxconn > SKADNS_MAXCONCURRENCY) maxconn = SKADNS_MAXCONCURRENCY ;
   if (maxlines < maxconn) maxlines = maxconn ;
 
-  tain_now_set_stopwatch() ;
-  tain_now_g() ;
+  tain_now_set_stopwatch_g() ;
   tain_addsec_g(&deadline, 2) ;
   if (!skadns_startf_g(&a, &deadline))
     strerr_diefu1sys(111, "establish skadns connection") ;

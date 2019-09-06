@@ -53,8 +53,7 @@ int main (int argc, char const *const *argv)
   }
   else if (!ip4_scan(argv[0], ip.ip)) dieusage() ;
 
-  tain_now_set_stopwatch() ;  
-  tain_now_g() ;
+  tain_now_set_stopwatch_g() ;
   if (t) tain_from_millisecs(&deadline, t) ; else deadline = tain_infinite_relative ;
   tain_add_g(&deadline, &deadline) ;
   if (!s6dns_init()) strerr_diefu1sys(111, "s6dns_init") ;

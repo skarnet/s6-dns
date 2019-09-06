@@ -39,8 +39,7 @@ int main (int argc, char const *const *argv)
   argc -= subgetopt_here.ind ; argv += subgetopt_here.ind ;
   if (argc < 3) dieusage() ;
 
-  tain_now_set_stopwatch() ;
-  tain_now_g() ;
+  tain_now_set_stopwatch_g() ;
   if (t) tain_from_millisecs(&deadline, t) ; else deadline = tain_infinite_relative ;
   tain_add_g(&deadline, &deadline) ;
   if (!s6dns_init()) strerr_diefu1sys(111, "s6dns_init") ;

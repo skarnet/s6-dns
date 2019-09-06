@@ -21,7 +21,7 @@ int main (int argc, char const *const *argv)
   stralloc quoted = STRALLOC_ZERO ;
   stralloc sa = STRALLOC_ZERO ;
   genalloc offsets = GENALLOC_ZERO ; /* array of size_t */
-  tain_t deadline, stamp ;
+  tain_t deadline ;
   size_t n ;
   size_t i = 0 ;
   unsigned int t = 0 ;
@@ -42,14 +42,13 @@ int main (int argc, char const *const *argv)
   }
   argc -= subgetopt_here.ind ; argv += subgetopt_here.ind ;
   if (argc < 1) dieusage() ;
-
-  tain_now_set_stopwatch() ;
-  tain_now(&stamp) ;
   if (t) tain_from_millisecs(&deadline, t) ; else deadline = tain_infinite_relative ;
-  tain_add(&deadline, &deadline, &stamp) ;
+
+  tain_now_set_stopwatch_g() ;
+  tain_add_g(&deadline, &deadline) ;
   if (!s6dns_init()) strerr_diefu1sys(111, "s6dns_init") ;
   {
-    int r = s6dns_resolve_txt(&sa, &offsets, argv[0], strlen(argv[0]), flagqualify, &deadline, &stamp) ;
+    int r = s6dns_resolve_txt_g(&sa, &offsets, argv[0], strlen(argv[0]), flagqualify, &deadline) ;
     if (r < 0) strerr_diefu2sys((errno == ETIMEDOUT) ? 99 : 111, "resolve ", argv[0]) ;
     if (!r) strerr_diefu4x(2, "resolve ", argv[0], ": ", s6dns_constants_error_str(errno)) ;
   }
