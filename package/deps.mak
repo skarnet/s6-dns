@@ -136,35 +136,35 @@ src/skadns/skadns_update.o src/skadns/skadns_update.lo: src/skadns/skadns_update
 src/skadns/skadns_zero.o src/skadns/skadns_zero.lo: src/skadns/skadns_zero.c src/include/s6-dns/skadns.h
 src/skadns/skadnsd.o src/skadns/skadnsd.lo: src/skadns/skadnsd.c src/include/s6-dns/s6dns.h src/include/s6-dns/skadns.h
 
-s6-dnsip4: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
+s6-dnsip4: EXTRA_LIBS := ${SOCKET_LIB} ${SYSCLOCK_LIB}
 s6-dnsip4: src/clients/s6-dnsip4.o ${LIBS6DNS} -lskarnet
-s6-dnsip4-filter: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB} ${SPAWN_LIB}
+s6-dnsip4-filter: EXTRA_LIBS := ${SOCKET_LIB} ${SYSCLOCK_LIB} ${SPAWN_LIB}
 s6-dnsip4-filter: src/clients/s6-dnsip4-filter.o src/clients/s6dns_generic_filter_main.o src/clients/s6dns_namescanner.o ${LIBSKADNS} ${LIBS6DNS} -lskarnet
-s6-dnsip6: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
+s6-dnsip6: EXTRA_LIBS := ${SOCKET_LIB} ${SYSCLOCK_LIB}
 s6-dnsip6: src/clients/s6-dnsip6.o ${LIBS6DNS} -lskarnet
-s6-dnsip6-filter: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB} ${SPAWN_LIB}
+s6-dnsip6-filter: EXTRA_LIBS := ${SOCKET_LIB} ${SYSCLOCK_LIB} ${SPAWN_LIB}
 s6-dnsip6-filter: src/clients/s6-dnsip6-filter.o src/clients/s6dns_generic_filter_main.o src/clients/s6dns_namescanner.o ${LIBSKADNS} ${LIBS6DNS} -lskarnet
-s6-dnsmx: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
+s6-dnsmx: EXTRA_LIBS := ${SOCKET_LIB} ${SYSCLOCK_LIB}
 s6-dnsmx: src/clients/s6-dnsmx.o ${LIBS6DNS} -lskarnet
-s6-dnsname: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
+s6-dnsname: EXTRA_LIBS := ${SOCKET_LIB} ${SYSCLOCK_LIB}
 s6-dnsname: src/clients/s6-dnsname.o ${LIBS6DNS} -lskarnet
-s6-dnsname-filter: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB} ${SPAWN_LIB}
+s6-dnsname-filter: EXTRA_LIBS := ${SOCKET_LIB} ${SYSCLOCK_LIB} ${SPAWN_LIB}
 s6-dnsname-filter: src/clients/s6-dnsname-filter.o src/clients/s6dns_generic_filter_main.o ${LIBSKADNS} ${LIBS6DNS} -lskarnet
-s6-dnsns: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
+s6-dnsns: EXTRA_LIBS := ${SOCKET_LIB} ${SYSCLOCK_LIB}
 s6-dnsns: src/clients/s6-dnsns.o ${LIBS6DNS} -lskarnet
-s6-dnsq: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
+s6-dnsq: EXTRA_LIBS := ${SOCKET_LIB} ${SYSCLOCK_LIB}
 s6-dnsq: src/clients/s6-dnsq.o ${LIBS6DNS} -lskarnet
-s6-dnsqr: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
+s6-dnsqr: EXTRA_LIBS := ${SOCKET_LIB} ${SYSCLOCK_LIB}
 s6-dnsqr: src/clients/s6-dnsqr.o ${LIBS6DNS} -lskarnet
 s6-dnsqualify: EXTRA_LIBS :=
 s6-dnsqualify: src/clients/s6-dnsqualify.o ${LIBS6DNS} -lskarnet
-s6-dnssoa: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
+s6-dnssoa: EXTRA_LIBS := ${SOCKET_LIB} ${SYSCLOCK_LIB}
 s6-dnssoa: src/clients/s6-dnssoa.o ${LIBS6DNS} -lskarnet
-s6-dnssrv: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
+s6-dnssrv: EXTRA_LIBS := ${SOCKET_LIB} ${SYSCLOCK_LIB}
 s6-dnssrv: src/clients/s6-dnssrv.o ${LIBS6DNS} -lskarnet
-s6-dnstxt: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
+s6-dnstxt: EXTRA_LIBS := ${SOCKET_LIB} ${SYSCLOCK_LIB}
 s6-dnstxt: src/clients/s6-dnstxt.o ${LIBS6DNS} -lskarnet
-s6-randomip: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
+s6-randomip: EXTRA_LIBS := ${SOCKET_LIB} ${SYSCLOCK_LIB}
 s6-randomip: src/clients/s6-randomip.o -lskarnet
 ifeq ($(strip $(STATIC_LIBS_ARE_PIC)),)
 libs6dns.a.xyzzy: src/libs6dns/s6dns_constants_error.o src/libs6dns/s6dns_constants_error_str.o src/libs6dns/s6dns_debughook_zero.o src/libs6dns/s6dns_domain_arpafromip4.o src/libs6dns/s6dns_domain_arpafromip6.o src/libs6dns/s6dns_domain_decode.o src/libs6dns/s6dns_domain_encode.o src/libs6dns/s6dns_domain_encodelist.o src/libs6dns/s6dns_domain_fromstring.o src/libs6dns/s6dns_domain_fromstring_noqualify_encode.o src/libs6dns/s6dns_domain_fromstring_qualify_encode.o src/libs6dns/s6dns_domain_noqualify.o src/libs6dns/s6dns_domain_qualify.o src/libs6dns/s6dns_domain_tostring.o src/libs6dns/s6dns_engine.o src/libs6dns/s6dns_engine_free.o src/libs6dns/s6dns_engine_freen.o src/libs6dns/s6dns_engine_here.o src/libs6dns/s6dns_engine_nextdeadline.o src/libs6dns/s6dns_engine_zero.o src/libs6dns/s6dns_fmt_domainlist.o src/libs6dns/s6dns_fmt_hinfo.o src/libs6dns/s6dns_fmt_mx.o src/libs6dns/s6dns_fmt_soa.o src/libs6dns/s6dns_fmt_srv.o src/libs6dns/s6dns_fmt_caa.o src/libs6dns/s6dns_message_counts_next.o src/libs6dns/s6dns_message_counts_pack.o src/libs6dns/s6dns_message_counts_unpack.o src/libs6dns/s6dns_message_counts_zero.o src/libs6dns/s6dns_message_get_domain.o src/libs6dns/s6dns_message_get_domain_internal.o src/libs6dns/s6dns_message_get_hinfo.o src/libs6dns/s6dns_message_get_string.o src/libs6dns/s6dns_message_get_string_internal.o src/libs6dns/s6dns_message_get_strings.o src/libs6dns/s6dns_message_get_mx.o src/libs6dns/s6dns_message_get_soa.o src/libs6dns/s6dns_message_get_srv.o src/libs6dns/s6dns_message_get_caa.o src/libs6dns/s6dns_message_header_pack.o src/libs6dns/s6dns_message_header_unpack.o src/libs6dns/s6dns_message_header_zero.o src/libs6dns/s6dns_message_parse_answer_aaaa.o src/libs6dns/s6dns_message_parse_answer_a.o src/libs6dns/s6dns_message_parse_answer_domain.o src/libs6dns/s6dns_message_parse_answer_hinfo.o src/libs6dns/s6dns_message_parse_answer_mx.o src/libs6dns/s6dns_message_parse_answer_soa.o src/libs6dns/s6dns_message_parse_answer_srv.o src/libs6dns/s6dns_message_parse_answer_caa.o src/libs6dns/s6dns_message_parse_answer_strings.o src/libs6dns/s6dns_message_parse.o src/libs6dns/s6dns_message_parse_getrr.o src/libs6dns/s6dns_message_parse_init.o src/libs6dns/s6dns_message_parse_next.o src/libs6dns/s6dns_message_parse_skipqd.o src/libs6dns/s6dns_rci_free.o src/libs6dns/s6dns_rci_here.o src/libs6dns/s6dns_rci_init.o src/libs6dns/s6dns_rci_zero.o src/libs6dns/s6dns_resolve_core.o src/libs6dns/s6dns_resolve_parse.o src/libs6dns/s6dns_resolven_loop.o src/libs6dns/s6dns_resolven_parse.o src/libs6dns/s6dns_resolve_dpag.o src/libs6dns/s6dns_resolve_mpag.o src/libs6dns/s6dns_resolve_name4.o src/libs6dns/s6dns_resolve_name6.o src/libs6dns/s6dns_resolvenoq.o src/libs6dns/s6dns_resolveq.o src/libs6dns/s6dns_resolvenoq_aaaaa.o src/libs6dns/s6dns_resolveq_aaaaa.o src/libs6dns/s6dns_analyze_packet.o src/libs6dns/s6dns_analyze_qtype_parse.o src/libs6dns/s6dns_analyze_record.o src/libs6dns/s6dns_analyze_record_a.o src/libs6dns/s6dns_analyze_record_aaaa.o src/libs6dns/s6dns_analyze_record_hinfo.o src/libs6dns/s6dns_analyze_record_mx.o src/libs6dns/s6dns_analyze_record_soa.o src/libs6dns/s6dns_analyze_record_srv.o src/libs6dns/s6dns_analyze_record_caa.o src/libs6dns/s6dns_analyze_record_domain.o src/libs6dns/s6dns_analyze_record_strings.o src/libs6dns/s6dns_analyze_record_unknown.o src/libs6dns/s6dns_analyze_rtypetable.o src/libs6dns/s6dns_debug_dumpdt_stdout.o src/libs6dns/s6dns_debug_dumpdt_stderr.o src/libs6dns/s6dns_debug_dumpdt_post_recv.o src/libs6dns/s6dns_debug_dumpdt_pre_send.o src/libs6dns/s6dns_debug_dumpdt_post_send.o src/libs6dns/s6dns_init.o src/libs6dns/s6dns_finish.o
@@ -180,5 +180,5 @@ libskadns.a.xyzzy: src/skadns/skadns_cancel.lo src/skadns/skadns_end.lo src/skad
 endif
 libskadns.so.xyzzy: EXTRA_LIBS := -lskarnet
 libskadns.so.xyzzy: src/skadns/skadns_cancel.lo src/skadns/skadns_end.lo src/skadns/skadns_packet.lo src/skadns/skadns_packetlen.lo src/skadns/skadns_release.lo src/skadns/skadns_send.lo src/skadns/skadns_start.lo src/skadns/skadns_startf.lo src/skadns/skadns_update.lo src/skadns/skadns_zero.lo
-skadnsd: EXTRA_LIBS := ${SOCKET_LIB} ${TAINNOW_LIB}
+skadnsd: EXTRA_LIBS := ${SOCKET_LIB} ${SYSCLOCK_LIB}
 skadnsd: src/skadns/skadnsd.o ${LIBS6DNS} -lskarnet
