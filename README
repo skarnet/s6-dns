@@ -3,7 +3,8 @@ s6-dns - a DNS client suite
 
  s6-dns is a suite of DNS client programs and libraries for
 Unix systems, as an alternative to the BIND, djbdns, or
-other DNS clients.
+other DNS clients. It also comes with a clean, easy-to-use
+library to perform asynchronous DNS requests.
 
  See https://skarnet.org/software/s6-dns/ for details.
 
