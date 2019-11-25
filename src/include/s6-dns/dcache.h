@@ -49,5 +49,4 @@ extern void dcache_free (dcache_t *) ;
 extern int dcache_save (dcache_t const *, char const *) ;
 extern int dcache_load (dcache_t *, uint64_t, char const *) ;
 
-
 #endif
