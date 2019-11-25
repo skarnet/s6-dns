@@ -80,7 +80,7 @@ static inline int dcache_add_node (dcache_t *z, dcache_node_t const *node)
 
 static inline int dcache_add_unbounded (dcache_t *z, char const *key, uint16_t keylen, char const *data, uint16_t datalen, tain_t const *expire, tain_t const *stamp)
 {
-  uint32_t len = keylen + datalen ;
+  uint32_t len = (uint32_t)keylen + (uint32_t)datalen ;
   dcache_node_t y = { .key = { .s = alloc(len) } } ;
   if (!y.key.s) return 0 ;
   memcpy(y.key.s, key, keylen) ;
