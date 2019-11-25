@@ -18,4 +18,4 @@ s6-dnsqr
 
 LIBEXEC_TARGETS :=
 
-LIB_DEFS := S6DNS=s6dns SKADNS=skadns
+LIB_DEFS := S6DNS=s6dns SKADNS=skadns DCACHE=dcache

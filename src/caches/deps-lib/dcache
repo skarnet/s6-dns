@@ -1,0 +1,6 @@
+dcache_add.o
+dcache_free.o
+dcache_init.o
+dcache_load.o
+dcache_save.o
+dcache_search.o
