@@ -1,5 +1,12 @@
 Changelog for s6-dns.
 
+In 2.3.2.0
+----------
+
+ - Bugfixes.
+ - New caching library to build a DNS cache over.
+
+
 In 2.3.1.1
 ----------
 

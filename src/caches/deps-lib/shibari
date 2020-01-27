@@ -1,0 +1,4 @@
+shibari_whitelist_add6.o
+shibari_whitelist_ip4_match.o
+shibari_whitelist_ip6_match.o
+shibari_whitelist_read.o
