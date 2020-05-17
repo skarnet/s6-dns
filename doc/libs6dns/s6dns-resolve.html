@@ -191,7 +191,7 @@ Returns -1 if an error occurs, or 0 if no answer
 can be obtained from servers, or a positive number if it succeeds: 1 if IPv4 addresses
 were found, 2 if IPv6 addresses were found, and 3 if both were found.
 The IPs are appended to the genalloc *<em>ips</em>, which contains an array of
-<tt>ip46_t</tt>, the skalibs structure used to store IPv4 and IPv6 addresses
+<tt>ip46full_t</tt>, the skalibs structure used to store IPv4 and IPv6 addresses
 indiscriminately.
 </p>
 
@@ -222,7 +222,7 @@ appended to the genalloc *<em>ds</em>, which contains an array of <tt>s6dns_doma
 </p>
 
 <p>
-<code> int s6dns_resolve_name46_g (genalloc *ds, ip46_t const *ip, tain_t const *deadline) </code> <br />
+<code> int s6dns_resolve_name46_g (genalloc *ds, ip46full_t const *ip, tain_t const *deadline) </code> <br />
 Calls <tt>s6dns_resolve_name6_g()</tt> or <tt>s6dns_resolve_name4_g()</tt>
 depending on which <em>ip</em> is an IPv6 or IPv4 address.
 </p>

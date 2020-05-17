@@ -24,6 +24,7 @@ src/caches/shibari_whitelist_add6.o src/caches/shibari_whitelist_add6.lo: src/ca
 src/caches/shibari_whitelist_ip4_match.o src/caches/shibari_whitelist_ip4_match.lo: src/caches/shibari_whitelist_ip4_match.c src/caches/shibari-internal.h
 src/caches/shibari_whitelist_ip6_match.o src/caches/shibari_whitelist_ip6_match.lo: src/caches/shibari_whitelist_ip6_match.c src/caches/shibari-internal.h
 src/caches/shibari_whitelist_read.o src/caches/shibari_whitelist_read.lo: src/caches/shibari_whitelist_read.c src/caches/shibari-internal.h
+src/clients/s6-dnsip.o src/clients/s6-dnsip.lo: src/clients/s6-dnsip.c src/include/s6-dns/s6dns.h
 src/clients/s6-dnsip4-filter.o src/clients/s6-dnsip4-filter.lo: src/clients/s6-dnsip4-filter.c src/include/s6-dns/s6dns-constants.h src/include/s6-dns/s6dns-message.h src/clients/s6dns-generic-filter.h
 src/clients/s6-dnsip4.o src/clients/s6-dnsip4.lo: src/clients/s6-dnsip4.c src/include/s6-dns/s6dns.h
 src/clients/s6-dnsip6-filter.o src/clients/s6-dnsip6-filter.lo: src/clients/s6-dnsip6-filter.c src/include/s6-dns/s6dns-constants.h src/include/s6-dns/s6dns-message.h src/clients/s6dns-generic-filter.h
@@ -163,6 +164,8 @@ libshibari.so.xyzzy: EXTRA_LIBS :=
 libshibari.so.xyzzy: src/caches/shibari_whitelist_add6.lo src/caches/shibari_whitelist_ip4_match.lo src/caches/shibari_whitelist_ip6_match.lo src/caches/shibari_whitelist_read.lo
 shibari: EXTRA_LIBS := -lskarnet ${SOCKET_LIB} ${SYSCLOCK_LIB}
 shibari: src/caches/shibari.o libshibari.a.xyzzy ${LIBDCACHE} ${LIBS6DNS}
+s6-dnsip: EXTRA_LIBS := -lskarnet ${SOCKET_LIB} ${SYSCLOCK_LIB}
+s6-dnsip: src/clients/s6-dnsip.o ${LIBS6DNS}
 s6-dnsip4: EXTRA_LIBS := -lskarnet ${SOCKET_LIB} ${SYSCLOCK_LIB}
 s6-dnsip4: src/clients/s6-dnsip4.o ${LIBS6DNS}
 s6-dnsip4-filter: EXTRA_LIBS := -lskarnet ${SOCKET_LIB} ${SYSCLOCK_LIB} ${SPAWN_LIB}

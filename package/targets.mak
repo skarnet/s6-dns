@@ -2,6 +2,7 @@ BIN_TARGETS := \
 skadnsd \
 s6-randomip \
 s6-dnsqualify \
+s6-dnsip \
 s6-dnsip4 \
 s6-dnsip6 \
 s6-dnsmx \

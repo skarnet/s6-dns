@@ -1,5 +1,12 @@
 Changelog for s6-dns.
 
+In 2.3.3.0
+----------
+
+ - Bugfixes.
+ - New binary: s6-dnsip, returning both v4 and v6 addresses.
+
+
 In 2.3.2.0
 ----------
 

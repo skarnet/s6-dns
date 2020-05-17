@@ -1,15 +1,19 @@
 /* ISC license. */
 
 #include <errno.h>
+
 #include <skalibs/error.h>
 #include <skalibs/stralloc.h>
 #include <skalibs/genalloc.h>
 #include <skalibs/ip46.h>
+
 #include <s6-dns/s6dns-constants.h>
 #include <s6-dns/s6dns-domain.h>
 #include <s6-dns/s6dns-message.h>
 #include <s6-dns/s6dns-engine.h>
 #include <s6-dns/s6dns-resolve.h>
+
+#define d_ip46full_from_ip(i, s, h) ((h) ? ip46full_from_ip6(i, s) : ip46full_from_ip4(i, s))
 
 int s6dns_resolveq_aaaaa_r (genalloc *ips, char const *name, size_t len, s6dns_rci_t const *rci, s6dns_debughook_t const *dbh, tain_t const *deadline, tain_t *stamp)
 {
@@ -75,11 +79,11 @@ int s6dns_resolveq_aaaaa_r (genalloc *ips, char const *name, size_t len, s6dns_r
   {
     size_t len = data.len >> ((best & 1) ? 2 : 4) ;
     size_t i = 0 ;
-    size_t base = genalloc_len(ip46_t, ips) ;
-    if (!genalloc_readyplus(ip46_t, ips, len)) return -1 ;
+    size_t base = genalloc_len(ip46full_t, ips) ;
+    if (!genalloc_readyplus(ip46full_t, ips, len)) return -1 ;
     for (; i < len ; i++)
-      ip46_from_ip(genalloc_s(ip46_t, ips) + base + i, data.s + (i << ((best & 1) ? 2 : 4)), !(best & 1)) ;
-    genalloc_setlen(ip46_t, ips, base + len) ;
+      d_ip46full_from_ip(genalloc_s(ip46full_t, ips) + base + i, data.s + (i << ((best & 1) ? 2 : 4)), !(best & 1)) ;
+    genalloc_setlen(ip46full_t, ips, base + len) ;
   }
   stralloc_free(&data) ;
   return 1 ;

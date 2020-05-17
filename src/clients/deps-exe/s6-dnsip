@@ -1,0 +1,4 @@
+${LIBS6DNS}
+-lskarnet
+${SOCKET_LIB}
+${SYSCLOCK_LIB}

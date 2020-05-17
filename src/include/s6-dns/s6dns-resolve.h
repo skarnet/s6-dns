@@ -155,7 +155,7 @@ extern int s6dns_resolve_name6_r (genalloc *, char const *, s6dns_engine_t *, s6
 
 #define s6dns_resolve_name46(ds, i, deadline, stamp) s6dns_resolve_name46_r(ds, i, &s6dns_engine_here, &s6dns_rci_here.servers, &s6dns_debughook_zero, deadline, stamp)
 #define s6dns_resolve_name46_g(ds, i, deadline) s6dns_resolve_name46(ds, i, (deadline), &STAMP)
-#define s6dns_resolve_name46_r(ds, i, dt, servers, dbh, deadline, stamp) (ip46_is6(i) ? s6dns_resolve_name6_r(ds, (i)->ip, dt, servers, dbh, deadline, stamp) : s6dns_resolve_name4_r(ds, (i)->ip, dt, servers, dbh, deadline, stamp))
+#define s6dns_resolve_name46_r(ds, i, dt, servers, dbh, deadline, stamp) (ip46full_is6(i) ? s6dns_resolve_name6_r(ds, (i)->ip, dt, servers, dbh, deadline, stamp) : s6dns_resolve_name4_r(ds, (i)->ip, dt, servers, dbh, deadline, stamp))
 #define s6dns_resolve_name46_r_g(ds, i, dt, servers, dbh, deadline) s6dns_resolve_name46_r(ds, i, dt, servers, dbh, (deadline), &STAMP)
 
 #define s6dns_resolve_txt(sa, offsets, name, len, qualif, deadline, stamp) s6dns_resolve_txt_r(sa, offsets, name, len, qualif, &s6dns_engine_here, &s6dns_rci_here, &s6dns_debughook_zero, deadline, stamp)

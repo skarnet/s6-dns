@@ -26,7 +26,7 @@ int s6dns_resolvenoq_aaaaa_r (genalloc *ips, char const *name, size_t len, s6dns
   blob[1].data = &sa[1] ;
   if (!s6dns_resolven_parse_r(blob, 2, servers, dbh, deadline, stamp)) return -1 ;
   if (blob[0].status && blob[1].status) return (errno = blob[1].status, 0) ;
-  if (!genalloc_readyplus(ip46_t, ips, (sa[0].len >> 4) + (sa[1].len >> 2)))
+  if (!genalloc_readyplus(ip46full_t, ips, (sa[0].len >> 4) + (sa[1].len >> 2)))
   {
     stralloc_free(&sa[0]) ;
     stralloc_free(&sa[1]) ;
@@ -34,13 +34,15 @@ int s6dns_resolvenoq_aaaaa_r (genalloc *ips, char const *name, size_t len, s6dns
   }
   {
     int e = (!!sa[0].len << 1) | !!sa[1].len ;
-    size_t n = genalloc_len(ip46_t, ips) ;
+    size_t n = genalloc_len(ip46full_t, ips) ;
     size_t i = 0 ;
     for (; i < (sa[0].len >> 4) ; i++)
-      ip46_from_ip6(genalloc_s(ip46_t, ips) + n++, sa[0].s + (i << 4)) ;
+      ip46full_from_ip6(genalloc_s(ip46full_t, ips) + n + i, sa[0].s + (i << 4)) ;
+    n += i ;
     for (i = 0 ; i < (sa[1].len >> 2) ; i++)
-      ip46_from_ip4(genalloc_s(ip46_t, ips) + n++, sa[1].s + (i << 2)) ;
-    genalloc_setlen(ip46_t, ips, n) ;
+      ip46full_from_ip4(genalloc_s(ip46full_t, ips) + n + i, sa[1].s + (i << 2)) ;
+    n += i ;
+    genalloc_setlen(ip46full_t, ips, n) ;
     stralloc_free(&sa[0]) ;
     stralloc_free(&sa[1]) ;
     return e ;

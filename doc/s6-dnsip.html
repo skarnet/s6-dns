@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>s6-dns: the s6-dnsip program</title>
+    <meta name="Description" content="s6-dns: the s6-dnsip program" />
+    <meta name="Keywords" content="s6-dns client s6-dnsip dnsip s6-dnsip6 s6-dnsip4 domain name ip address ipv6 ipv4" />
+    <!-- <link rel="stylesheet" type="text/css" href="//skarnet.org/default.css" /> -->
+  </head>
+<body>
+
+<p>
+<a href="index.html">s6-dns</a><br />
+<a href="//skarnet.org/software/">Software</a><br />
+<a href="//skarnet.org/">skarnet.org</a>
+</p>
+
+<h1> The s6-dnsip program </h1>
+
+<p>
+  s6-dnsip finds both the IPv6 and IPv4 addresses associated to a domain name.
+</p>
+
+<h2> Interface </h2>
+
+<pre>
+     s6-dnsip [ -q ] [ -r ] [ -t <em>timeout</em> ] <em>domain</em>
+</pre>
+
+<ul>
+ <li> s6-dnsip makes both an A and an AAAA query for the name <em>domain</em>,
+in parallel. It waits for the results and prints the obtained addresses,
+one per line, then exits 0. </li>
+ <li> If the domain exists but no relevant field has been found, it exits 1. </li>
+ <li> If the DNS answered but no answer is available, it prints a relevant
+error message and exits 2. </li>
+ <li> By default, s6-dnsip looks for DNS cache addresses in the
+<tt>/etc/resolv.conf</tt> file. If the DNSCACHEIP environment variable is set
+and contains a list of IP (v4 or v6) addresses, separated by commas,
+semicolons, spaces, tabs, newlines or carriage returns, then this list
+is used instead. </li>
+</ul>
+
+<h2> Options </h2>
+
+<ul>
+ <li> <tt>-q</tt>&nbsp;: qualify. Qualifies <em>domain</em> before resolution,
+according to suffixes found in <tt>/etc/resolv.conf</tt>. If the DNSQUALIFY
+environment variable is set and contains a list of suffixes separated by spaces,
+tabs, newlines or carriage returns, then this list is used instead. By
+default, no qualification is used: if <em>domain</em> is not a FQDN, a dot
+is just appended to it. </li>
+ <li> <tt>-r</tt>&nbsp;: random. By default, the program does not sort the
+result, but prints them in the order received from the DNS. With this
+option, it performs a random permutation on the results before printing
+them. </li>
+ <li> <tt>-t</tt>&nbsp;<em>timeout</em>&nbsp;: if the resolution takes more
+than <em>timeout</em> milliseconds, then it exits 99 right away with an error
+message. By default, <em>timeout</em> is 0, which means no timeout. </li>
+</ul>
+
+<h2> Notes </h2>
+
+<p>
+Even if the underlying skalibs has been compiled without IPv6 support,
+or IPv6 DNS transport is unavailable for any reason, s6-dnsip will still
+return IPv6 addresses if the AAAA query has a positive result.
+</p>
+
+</body>
+</html>
