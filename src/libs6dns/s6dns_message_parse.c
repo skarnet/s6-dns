@@ -10,6 +10,7 @@ int s6dns_message_parse (s6dns_message_header_t *h, char const *packet, unsigned
   s6dns_message_counts_t counts ;
   unsigned int pos ;
   unsigned int section ;
+  int gotans ;
   if (!s6dns_message_parse_init(h, &counts, packet, packetlen, &pos)) return 0 ;
   switch (h->rcode)
   {
@@ -21,6 +22,7 @@ int s6dns_message_parse (s6dns_message_header_t *h, char const *packet, unsigned
     case 5 : return (errno = ECONNREFUSED, 0) ;
     default: return (errno = EIO, 0) ;
   }
+  gotans = !!counts.an ;
   section = s6dns_message_parse_skipqd(&counts, packet, packetlen, &pos) ;
   while (section)
   {
@@ -33,5 +35,5 @@ int s6dns_message_parse (s6dns_message_header_t *h, char const *packet, unsigned
     }
     section = s6dns_message_parse_next(&counts, &rr, packet, packetlen, &pos) ;
   }
-  return 1 ;
+  return 1 + gotans ;
 }

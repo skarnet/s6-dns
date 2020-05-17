@@ -257,7 +257,8 @@ containing <tt>s6dns_message_rr_caa_t</tt> structures.
 It stores the packet header into *<em>h</em>. Then, for every RR in the answer,
 authority or additional section of the packet, it calls <em>f</em> with the
 relevant parameters. <em>data</em> is the extra pointer given to <em>f</em> to
-store information. The function returns 1 if the parsing succeeds. Otherwise it
+store information. If the parsing succeeds, the function returns 2 if the packet
+contains an answer section and 1 if it does not. Otherwise, it
 returns -1 if there is a local error unrelated to the packet, or 0 if no
 appropriate answer can be decoded from the packet. errno then contains one
 of the following values:

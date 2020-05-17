@@ -13,7 +13,19 @@
 #include <s6-dns/s6dns-engine.h>
 #include <s6-dns/s6dns-resolve.h>
 
-#define d_ip46full_from_ip(i, s, h) ((h) ? ip46full_from_ip6(i, s) : ip46full_from_ip4(i, s))
+static int addit (genalloc *ips, char const *s, size_t len, int is6)
+{
+  size_t base = genalloc_len(ip46full_t, ips) ;
+  size_t n = len >> (is6 ? 4 : 2) ;
+  ip46full_t *p ;
+  if (!genalloc_readyplus(ip46full_t, ips, n)) return 0 ;
+  p = genalloc_s(ip46full_t, ips) + base ;
+  for (size_t i = 0 ; i < n ; i++)
+    if (is6) ip46full_from_ip6(p + i, s + (i << 4)) ;
+    else ip46full_from_ip4(p + i, s + (i << 2)) ;
+  genalloc_setlen(ip46full_t, ips, base + n) ;
+  return 1 ;
+}
 
 int s6dns_resolveq_aaaaa_r (genalloc *ips, char const *name, size_t len, s6dns_rci_t const *rci, s6dns_debughook_t const *dbh, tain_t const *deadline, tain_t *stamp)
 {
@@ -22,6 +34,8 @@ int s6dns_resolveq_aaaaa_r (genalloc *ips, char const *name, size_t len, s6dns_r
   unsigned int best = 0 ;
   unsigned int n ;
   int e = 0 ;
+  int ans = 0 ;
+  int pinned = 0 ;
   unsigned int i = 0 ;
   {
     s6dns_domain_t domains[rci->rulesnum] ;
@@ -54,12 +68,19 @@ int s6dns_resolveq_aaaaa_r (genalloc *ips, char const *name, size_t len, s6dns_r
       {
         s6dns_message_header_t h ;
         int r ;
+        if (pinned && !(best & 1)) goto end ;
         if (best >= n << 1) goto notfound ;
         if (error_isagain(dtl[best].status)) break ;
         if (dtl[best].status) { errno = dtl[best].status ; goto err ; }
         r = s6dns_message_parse(&h, s6dns_engine_packet(dtl + best), s6dns_engine_packetlen(dtl + best), (best & 1) ? &s6dns_message_parse_answer_a : s6dns_message_parse_answer_aaaa, &data) ;
         if (r < 0) goto err ;
-        else if (r) goto found ;
+        else if (r)
+        {
+          if (!addit(ips, data.s, data.len, !(best & 1))) goto err ;
+          if (r > 1) ans |= 1 + !(best & 1) ;
+          data.len = 0 ;
+          pinned = 1 ;
+        }
         else switch (errno)
         {
           case EBUSY :
@@ -74,25 +95,14 @@ int s6dns_resolveq_aaaaa_r (genalloc *ips, char const *name, size_t len, s6dns_r
     }
   }
 
- found:
-  s6dns_engine_freen(dtl, n<<1) ;
-  {
-    size_t len = data.len >> ((best & 1) ? 2 : 4) ;
-    size_t i = 0 ;
-    size_t base = genalloc_len(ip46full_t, ips) ;
-    if (!genalloc_readyplus(ip46full_t, ips, len)) return -1 ;
-    for (; i < len ; i++)
-      d_ip46full_from_ip(genalloc_s(ip46full_t, ips) + base + i, data.s + (i << ((best & 1) ? 2 : 4)), !(best & 1)) ;
-    genalloc_setlen(ip46full_t, ips, base + len) ;
-  }
-  stralloc_free(&data) ;
-  return 1 ;
-
  notfound:
-  s6dns_engine_freen(dtl, n<<1) ;
-  return (errno = e, 0) ;
-
+  errno = e ;
+  ans = 0 ;
+  goto end ;
  err:
+  ans = -1 ;
+ end:
+  stralloc_free(&data) ;
   s6dns_engine_freen(dtl, n<<1) ;
-  return -1 ;
+  return ans ;
 }
