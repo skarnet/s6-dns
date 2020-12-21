@@ -4,8 +4,10 @@
 #define S6DNS_MESSAGE_H
 
 #include <stdint.h>
+
 #include <skalibs/stralloc.h>
 #include <skalibs/genalloc.h>
+
 #include <s6-dns/s6dns-domain.h>
 
 
@@ -181,5 +183,10 @@ extern int s6dns_message_parse_init (s6dns_message_header_t *, s6dns_message_cou
 extern unsigned int s6dns_message_parse_skipqd (s6dns_message_counts_t *, char const *, unsigned int, unsigned int *) ;
 extern int s6dns_message_parse_getrr (s6dns_message_rr_t_ref, char const *, unsigned int, unsigned int *) ;
 extern unsigned int s6dns_message_parse_next (s6dns_message_counts_t *, s6dns_message_rr_t const *, char const *, unsigned int, unsigned int *) ;
+
+
+ /* For when you want to write a cache */
+
+extern int s6dns_message_parse_question (s6dns_domain_t *, uint16_t *, char const *, unsigned int, unsigned int *) ;
 
 #endif
