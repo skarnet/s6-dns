@@ -1,6 +1,7 @@
 /* ISC license. */
 
 #include <stdint.h>
+#include <unistd.h>
 #include <stdio.h>
 
 #include <skalibs/posixplz.h>
@@ -57,7 +58,7 @@ int dcache_save (dcache_t const *z, char const *file)
   fd = open_excl(sa.s) ;
   if (fd == -1) goto err0 ;
   buffer_init(&b, &buffer_write, fd, buf, N) ;
-  if (!dcache_save_to_buffer(z, &b)) goto err2 ;
+  if (!dcache_save_to_buffer(z, &b) || fsync(fd) < 0) goto err2 ;
   fd_close(fd) ;
   if (rename(sa.s, file) == -1) goto err1 ;
   stralloc_free(&sa) ;

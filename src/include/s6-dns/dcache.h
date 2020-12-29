@@ -44,6 +44,8 @@ extern void dcache_init (dcache_t *, uint64_t) ;
 extern dcache_node_t *dcache_search (dcache_t *, char const *, uint16_t) ;
 extern int dcache_add (dcache_t *, uint64_t, char const *, uint16_t, char const *, uint16_t, tain_t const *, tain_t const *) ;
 #define dcache_add_g(d, max, key, keylen, data, datalen, expire) dcache_add(d, max, key, keylen, data, datalen, (expire), &STAMP)
+extern void dcache_clean_expired (dcache_t *, tain_t const *) ;
+#define dcache_clean_expired_g(d) dcache_clean_expired((d), &STAMP)
 extern void dcache_free (dcache_t *) ;
 
 extern int dcache_save (dcache_t const *, char const *) ;

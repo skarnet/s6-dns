@@ -12,9 +12,7 @@
 #include <skalibs/avltree.h>
 
 #include <s6-dns/dcache.h>
-
-#define DNODE(z, i) GENSETDYN_P(dcache_node_t, &(z)->storage, i)
-#define DCACHE_NODE_OVERHEAD (32 + sizeof(dcache_node_t) + 3 * sizeof(avlnode))
+#include "dcache-internal.h"
 
 static void uniquify (avltree const *tree, tain_t *stamp)
 {
@@ -24,17 +22,6 @@ static void uniquify (avltree const *tree, tain_t *stamp)
     tain_add(stamp, stamp, &nano) ;
 }
 
-static void dcache_delete (dcache_t *z, uint32_t i)
-{
-  dcache_node_t *y = DNODE(z, i) ;
-  avltree_delete(&z->by_expire, &y->expire) ;
-  avltree_delete(&z->by_entry, &y->entry) ;
-  avltree_delete(&z->by_key, &y->key) ;
-  alloc_free(y->key.s) ;
-  z->size -= DCACHE_NODE_OVERHEAD + y->key.len + y->datalen ;
-  gensetdyn_delete(&z->storage, i) ;
-}
-
 static inline void dcache_gc_by_entry (dcache_t *z, uint64_t max)
 {
   while (z->size > max)
@@ -42,17 +29,6 @@ static inline void dcache_gc_by_entry (dcache_t *z, uint64_t max)
     uint32_t oldest ;
     if (!avltree_min(&z->by_entry, &oldest)) break ;
     dcache_delete(z, oldest) ;
-  }
-}
-
-static inline void dcache_gc_by_expire (dcache_t *z, tain_t const *stamp)
-{
-  for (;;)
-  {
-    uint32_t i ;
-    if (!avltree_min(&z->by_expire, &i)) break ;
-    if (tain_less(stamp, &DNODE(z, i)->expire)) break ;
-    dcache_delete(z, i) ;
   }
 }
 
@@ -104,7 +80,7 @@ int dcache_add (dcache_t *z, uint64_t max, char const *key, uint16_t keylen, cha
 {
   uint64_t size = DCACHE_NODE_OVERHEAD + keylen + datalen ;
   if (size > max) return (errno = EINVAL, 0) ;
-  if (z->size > max - size) dcache_gc_by_expire(z, stamp) ;
+  if (z->size > max - size) dcache_clean_expired(z, stamp) ;
   if (z->size > max - size) dcache_gc_by_entry(z, max - size) ;
   return dcache_add_unbounded(z, key, keylen, data, datalen, expire, stamp) ;
 }

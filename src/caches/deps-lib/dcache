@@ -1,4 +1,6 @@
 dcache_add.o
+dcache_clean_expired.o
+dcache_delete.o
 dcache_free.o
 dcache_init.o
 dcache_load.o
