@@ -1,5 +1,11 @@
 Changelog for s6-dns.
 
+In 2.3.4.0
+----------
+
+ - New function: s6dns_message_parse_question().
+
+
 In 2.3.3.0
 ----------
 
