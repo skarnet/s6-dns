@@ -5,9 +5,9 @@
 
 #include <skalibs/posixishard.h>
 
-#include "s6dns-message-internal.h"
+#include <s6-dns/s6dns-message.h>
 
-size_t s6dns_message_get_domain_internal (char *out, size_t outmax, char const *s, unsigned int len, unsigned int *pos)
+size_t s6dns_message_get_domain_nodecode (char *out, size_t outmax, char const *s, unsigned int len, unsigned int *pos)
 {
   size_t w = 0 ; /* writing head */
   unsigned int r = *pos ; /* reading head */

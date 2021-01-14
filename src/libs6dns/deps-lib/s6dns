@@ -29,7 +29,7 @@ s6dns_message_counts_pack.o
 s6dns_message_counts_unpack.o
 s6dns_message_counts_zero.o
 s6dns_message_get_domain.o
-s6dns_message_get_domain_internal.o
+s6dns_message_get_domain_nodecode.o
 s6dns_message_get_hinfo.o
 s6dns_message_get_string.o
 s6dns_message_get_string_internal.o

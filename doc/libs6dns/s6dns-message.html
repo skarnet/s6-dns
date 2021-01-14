@@ -134,9 +134,14 @@ the series of character-strings.
 </p>
 
 <p>
-<code> unsigned int s6dns_message_get_domain (s6dns_domain_t *d, char const *packet, unsigned int packetlen, unsigned int *pos) </code> <br />
-Reads a domain and stores it, in string form, into *<em>d</em>.
-Returns 1 on success and 0 on failure, and sets errno:
+<code> size_t s6dns_message_get_domain_nodecode (char *out, size_t outmax, char const *packet, unsigned int packetlen, unsigned int *pos) </code> <br />
+Reads a domain and stores it, in packet form, into *<em>out</em>, which is a character
+array that must have been preallocated by the user; <em>outmax</em> is the maximum
+number of characters that can be stored in <em>out</em>. As a special
+case, <em>out</em> can be NULL, in which case nothing will be written, but
+the domain will still be parsed and <em>pos</em> will still be updated.
+The function returns the number of characters written to <em>out</em>
+(or that would have been). If 0, it denotes a failure, and errno is set:
 </p>
 
 <ul>
@@ -145,7 +150,15 @@ Returns 1 on success and 0 on failure, and sets errno:
 misused. </li>
  <li> EPROTONOSUPPORT: the domain encoding uses an extension that the function
 does not recognize. </li>
+ <li> ENAMETOOLONG: the domain cannot be stored in <em>outmax</em> characters. </li>
 </ul>
+
+<p>
+<code> unsigned int s6dns_message_get_domain (s6dns_domain_t *d, char const *packet, unsigned int packetlen, unsigned int *pos) </code> <br />
+Reads a domain and stores it, in string form, into *<em>d</em>.
+Returns 1 on success and 0 on failure, and sets errno just like the
+function above.
+</p>
 
 <p>
 <code> int s6dns_message_get_hinfo (s6dns_message_rr_hinfo_t *p, char const *packet, unsigned int packetlen, unsigned int *pos) </code> <br />

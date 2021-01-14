@@ -67,6 +67,7 @@ extern void s6dns_message_header_unpack (char const *, s6dns_message_header_t *)
 extern int s6dns_message_get_string (s6dns_domain_t *, char const *, unsigned int, unsigned int *) ;
 extern int s6dns_message_get_strings (char *, unsigned int, char const *, unsigned int, unsigned int *) ;
 extern int s6dns_message_get_domain (s6dns_domain_t *, char const *, unsigned int, unsigned int *) ;
+extern size_t s6dns_message_get_domain_nodecode (char *, size_t, char const *, unsigned int, unsigned int *) ;
 
 typedef struct s6dns_message_rr_hinfo_s s6dns_message_rr_hinfo_t, *s6dns_message_rr_hinfo_t_ref ;
 struct s6dns_message_rr_hinfo_s

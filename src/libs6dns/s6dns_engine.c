@@ -20,7 +20,6 @@
 #include <s6-dns/s6dns-constants.h>
 #include <s6-dns/s6dns-message.h>
 #include <s6-dns/s6dns-engine.h>
-#include "s6dns-message-internal.h"
 
 
  /* Utility functions */
@@ -45,7 +44,7 @@ static int relevant (char const *q, unsigned int qlen, char const *ans, unsigned
   {
     char buf[255] ;
     unsigned int pos = 12 ;
-    unsigned int n = s6dns_message_get_domain_internal(buf, 255, ans, anslen, &pos) ;
+    size_t n = s6dns_message_get_domain_nodecode(buf, 255, ans, anslen, &pos) ;
     if (!n) return -1 ;
     if (pos + 4 > anslen) return (errno = EPROTO, -1) ;
     if (qdomain_diff(buf, n, q + 12, qlen - 16)) return 0 ;

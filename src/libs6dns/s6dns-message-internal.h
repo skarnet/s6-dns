@@ -8,6 +8,5 @@
  /* Low-level packet parsing */
 
 extern int s6dns_message_get_string_internal (char *, size_t, char const *, unsigned int, unsigned int *) ;
-extern size_t s6dns_message_get_domain_internal (char *, size_t, char const *, unsigned int, unsigned int *) ;
 
 #endif

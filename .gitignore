@@ -6,6 +6,9 @@
 /libs6dns.so.xyzzy
 /libskadns.a.xyzzy
 /libskadns.so.xyzzy
+/libdcache.a.xyzzy
+/libdcache.so.xyzzy
+/s6-dnsip
 /s6-dnsip4
 /s6-dnsip4-filter
 /s6-dnsip6

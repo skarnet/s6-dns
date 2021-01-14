@@ -1,5 +1,12 @@
 Changelog for s6-dns.
 
+In 2.3.5.0
+----------
+
+ - s6dns_message_get_domain_internal() is now public under the
+name s6dns_message_get_domain_nodecode().
+
+
 In 2.3.4.0
 ----------
 
