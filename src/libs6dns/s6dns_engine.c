@@ -272,12 +272,11 @@ static int s6dns_engine_read_udp (s6dns_engine_t *dt, tain_t const *stamp)
       memset(s6dns_ip46list_ip(&dt->servers, dt->curserver), 0, SKALIBS_IP_SIZE) ; /* do not query it again */
     default : prepare_next(dt, stamp, 0) ; return 0 ;
   }
-  if (!stralloc_copyb(&dt->sa, buf, r))
+  if (!stralloc_catb(&dt->sa, buf, r))
   {
     fd_close(dt->fd) ; dt->fd = -1 ;
     return 0 ;
   }
-  dt->querylen = 0 ;
   fd_close(dt->fd) ; dt->fd = -1 ;
   dt->flagreading = 0 ;
   return 1 ;
