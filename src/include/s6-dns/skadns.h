@@ -12,7 +12,7 @@
 #include <s6-dns/config.h>
 #include <s6-dns/s6dns-domain.h>
 
-#define SKADNSD_PROG S6_DNS_BINPREFIX "skadnsd"
+#define SKADNSD_PROG S6_DNS_EXTBINPREFIX "skadnsd"
 #define SKADNS_BANNER1 "skadns v1.0 (b)\n"
 #define SKADNS_BANNER1_LEN (sizeof SKADNS_BANNER1 - 1)
 #define SKADNS_BANNER2 "skadns v1.0 (a)\n"
