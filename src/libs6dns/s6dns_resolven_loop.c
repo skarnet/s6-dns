@@ -15,7 +15,8 @@ int s6dns_resolven_loop (s6dns_engine_t *dt, unsigned int n, unsigned int or, ta
 {
   iopause_fd x[n] ;
   unsigned int count = 0 ;
-  for (;;)
+  unsigned int got = 0 ;
+  while (got < n)
   {
     tain_t localdeadline = *deadline ; 
     int r ;
@@ -34,19 +35,23 @@ int s6dns_resolven_loop (s6dns_engine_t *dt, unsigned int n, unsigned int or, ta
     else if (!r)
     {
       if (tain_less(deadline, stamp)) return (errno = ETIMEDOUT, -1) ;
-      for (i = 0 ; i < n ; i++) if (dt[i].status == EAGAIN)
-        if (s6dns_engine_timeout(dt + i, stamp) && (or >= 2)) return i ;
+      for (i = 0 ; i < n ; i++) if (dt[i].status == EAGAIN && s6dns_engine_timeout(dt + i, stamp))
+      {
+        got++ ;
+        if (or >= 2) return i ;
+      }
     }
     else
     {
       for (i = 0 ; i < n ; i++) if (dt[i].status == EAGAIN)
       {
         r = s6dns_engine_event(dt + i, stamp) ;
-        if (or)
+        if (r)
         {
-          if (r && ((r > 0) || (or >= 2))) return i ;
+          got++ ;
+          if (r > 0) count++ ;
+          if (or && (r > 0 || or >= 2)) return i ;
         }
-        else if (r > 0) count++ ;
       }
     }
   }

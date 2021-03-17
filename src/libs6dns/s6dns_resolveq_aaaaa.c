@@ -71,7 +71,8 @@ int s6dns_resolveq_aaaaa_r (genalloc *ips, char const *name, size_t len, s6dns_r
         if (pinned && !(best & 1)) goto end ;
         if (best >= n << 1) goto notfound ;
         if (error_isagain(dtl[best].status)) break ;
-        if (dtl[best].status) { errno = dtl[best].status ; goto err ; }
+        errno = dtl[best].status ;
+        if (errno) goto err ;
         r = s6dns_message_parse(&h, s6dns_engine_packet(dtl + best), s6dns_engine_packetlen(dtl + best), (best & 1) ? &s6dns_message_parse_answer_a : s6dns_message_parse_answer_aaaa, &data) ;
         if (r < 0) goto err ;
         else if (r)
@@ -81,16 +82,19 @@ int s6dns_resolveq_aaaaa_r (genalloc *ips, char const *name, size_t len, s6dns_r
           data.len = 0 ;
           pinned = 1 ;
         }
-        else switch (errno)
+        else
         {
-          case EBUSY :
-          case ENOENT :
-          case ECONNREFUSED :
-          case EIO :
-            break ;
-          default : goto err ;
+          switch (errno)
+          {
+            case EBUSY :
+            case ENOENT :
+            case ECONNREFUSED :
+            case EIO :
+              break ;
+            default : goto err ;
+          }
+          if (!best) e = errno ;
         }
-        if (!best) e = errno ;
       }
     }
   }

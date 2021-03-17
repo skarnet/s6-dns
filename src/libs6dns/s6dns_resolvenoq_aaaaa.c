@@ -1,8 +1,11 @@
 /* ISC license. */
 
+#include <errno.h>
+
 #include <skalibs/stralloc.h>
 #include <skalibs/genalloc.h>
 #include <skalibs/ip46.h>
+
 #include <s6-dns/s6dns-constants.h>
 #include <s6-dns/s6dns-domain.h>
 #include <s6-dns/s6dns-message.h>
@@ -25,7 +28,11 @@ int s6dns_resolvenoq_aaaaa_r (genalloc *ips, char const *name, size_t len, s6dns
   blob[1].parsefunc = &s6dns_message_parse_answer_a ;
   blob[1].data = &sa[1] ;
   if (!s6dns_resolven_parse_r(blob, 2, servers, dbh, deadline, stamp)) return -1 ;
-  if (blob[0].status && blob[1].status) return (errno = blob[1].status, 0) ;
+  if (!sa[0].len && !sa[1].len)
+  {
+    errno = blob[1].status ? blob[1].status : blob[0].status ;
+    return 0 ;
+  }
   if (!genalloc_readyplus(ip46full_t, ips, (sa[0].len >> 4) + (sa[1].len >> 2)))
   {
     stralloc_free(&sa[0]) ;
