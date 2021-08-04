@@ -27,7 +27,7 @@ static size_t readit (char const *file, char *buf, size_t max)
 
 static inline int s6dns_rci_init_servers (s6dns_rci_t *rci, char const *file, char *tmp, size_t max, size_t *size)
 {
-  ip46_t tmplist[S6DNS_MAX_SERVERS] ;
+  ip46 tmplist[S6DNS_MAX_SERVERS] ;
   size_t num = 0 ;
   char const *x = getenv("DNSCACHEIP") ;
   if (x) ip46_scanlist(tmplist, S6DNS_MAX_SERVERS, x, &num) ;

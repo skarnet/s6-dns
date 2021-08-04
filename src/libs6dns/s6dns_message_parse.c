@@ -5,7 +5,7 @@
 #include <s6-dns/s6dns-constants.h>
 #include <s6-dns/s6dns-message.h>
 
-int s6dns_message_parse (s6dns_message_header_t *h, char const *packet, unsigned int packetlen, s6dns_message_rr_func_t_ref f, void *data)
+int s6dns_message_parse (s6dns_message_header_t *h, char const *packet, unsigned int packetlen, s6dns_message_rr_func_ref f, void *data)
 {
   s6dns_message_counts_t counts ;
   unsigned int pos ;

@@ -8,7 +8,7 @@
 #include <s6-dns/dcache.h>
 #include "dcache-internal.h"
 
-void dcache_clean_expired (dcache_t *z, tain_t const *stamp)
+void dcache_clean_expired (dcache_t *z, tain const *stamp)
 {
   for (;;)
   {

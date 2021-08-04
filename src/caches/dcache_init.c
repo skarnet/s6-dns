@@ -22,8 +22,8 @@ static int key_cmp (void const *a, void const *b, void *x)
 
 static int tain_cmp (void const *a, void const *b, void *x)
 {
-  tain_t const *ta = a ;
-  tain_t const *tb = b ;
+  tain const *ta = a ;
+  tain const *tb = b ;
   (void)x ;
   return tain_less(ta, tb) ? -1 : tain_less(tb, ta) ;
 }

@@ -24,7 +24,7 @@
 
 int s6dns_debug_dumpdt_pre_send (s6dns_engine_t const *dt, void *data)
 {
-  genwrite_t *gp = data ;
+  genwrite *gp = data ;
   size_t len ;
   char buf[LOCALTMN_FMT] ;
   if ((*gp->put)(gp->target, "Preparing to send via ", 22) < 22) return 0 ;
@@ -37,7 +37,7 @@ int s6dns_debug_dumpdt_pre_send (s6dns_engine_t const *dt, void *data)
   if ((*gp->put)(gp->target, buf, len) < (ssize_t)len) return 0 ;
   if ((*gp->put)(gp->target, " with deadline ", 15) < 15) return 0 ;
   {
-    localtmn_t l ;
+    localtmn l ;
     if (!localtmn_from_tain(&l, &dt->localdeadline, 0))
     {
       if (errno != EOVERFLOW) return 0 ;

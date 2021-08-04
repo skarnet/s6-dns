@@ -31,7 +31,7 @@ struct skadnsanswer_s
 typedef struct skadns_s skadns_t, *skadns_t_ref ;
 struct skadns_s
 {
-  textclient_t connection ;
+  textclient connection ;
   genalloc list ; /* array of uint16_t */
   gensetdyn q ; /* set of skadnsanswer_t */
 } ;
@@ -41,18 +41,18 @@ extern skadns_t const skadns_zero ;
 
  /* Starting and ending a session */
 
-extern int skadns_start (skadns_t *, char const *, tain_t const *, tain_t *) ;
+extern int skadns_start (skadns_t *, char const *, tain const *, tain *) ;
 #define skadns_start_g(a, path, deadline) skadns_start(a, path, (deadline), &STAMP)
-extern int skadns_startf (skadns_t *, tain_t const *, tain_t *) ;
+extern int skadns_startf (skadns_t *, tain const *, tain *) ;
 #define skadns_startf_g(a, deadline) skadns_startf(a, (deadline), &STAMP)
 extern void skadns_end (skadns_t *) ;
 
                 
  /* Synchronous functions */
  
-extern int skadns_send (skadns_t *, uint16_t *, s6dns_domain_t const *, uint16_t, tain_t const *, tain_t const *, tain_t *) ;
+extern int skadns_send (skadns_t *, uint16_t *, s6dns_domain_t const *, uint16_t, tain const *, tain const *, tain *) ;
 #define skadns_send_g(a, id, d, qtype, limit, deadline) skadns_send(a, id, d, qtype, limit, (deadline), &STAMP)
-extern int skadns_cancel (skadns_t *, uint16_t, tain_t const *, tain_t *) ;
+extern int skadns_cancel (skadns_t *, uint16_t, tain const *, tain *) ;
 #define skadns_cancel_g(a, id, deadline) skadns_cancel(a, id, (deadline), &STAMP)
 
 

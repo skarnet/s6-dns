@@ -21,7 +21,7 @@ int main (int argc, char const *const *argv)
   stralloc quoted = STRALLOC_ZERO ;
   stralloc sa = STRALLOC_ZERO ;
   genalloc offsets = GENALLOC_ZERO ; /* array of size_t */
-  tain_t deadline ;
+  tain deadline ;
   size_t n ;
   size_t i = 0 ;
   unsigned int t = 0 ;
@@ -30,7 +30,7 @@ int main (int argc, char const *const *argv)
   PROG = "s6-dnstxt" ;
   for (;;)
   {
-    int opt = subgetopt(argc, argv, "qrt:") ;
+    int opt = lgetopt(argc, argv, "qrt:") ;
     if (opt == -1) break ;
     switch (opt)
     {

@@ -31,7 +31,7 @@ int shibari_whitelist_read (char const *path, genalloc *ip4, genalloc *ip6)
   {
     direntry *d ;
     size_t pos ;
-    ip46_t ip ;
+    ip46 ip ;
     uint16_t mask ;
     errno = 0 ;
     d = readdir(dir) ;

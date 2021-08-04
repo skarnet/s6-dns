@@ -9,7 +9,7 @@
 #include <s6-dns/s6dns-fmt.h>
 #include <s6-dns/s6dns-analyze.h>
 
-int s6dns_analyze_record_srv (genwrite_t *gp, s6dns_message_rr_t const *rr, char const *packet, unsigned int packetlen, unsigned int start)
+int s6dns_analyze_record_srv (genwrite *gp, s6dns_message_rr_t const *rr, char const *packet, unsigned int packetlen, unsigned int start)
 {
   s6dns_message_rr_srv_t srv ;
   size_t len ;

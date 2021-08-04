@@ -14,9 +14,9 @@
 #include <s6-dns/dcache.h>
 #include "dcache-internal.h"
 
-static void uniquify (avltree const *tree, tain_t *stamp)
+static void uniquify (avltree const *tree, tain *stamp)
 {
-  static tain_t const nano = { .sec = TAI_ZERO, .nano = 1 } ;
+  static tain const nano = { .sec = TAI_ZERO, .nano = 1 } ;
   uint32_t dummy ;
   while (avltree_search(tree, stamp, &dummy))
     tain_add(stamp, stamp, &nano) ;
@@ -54,7 +54,7 @@ static inline int dcache_add_node (dcache_t *z, dcache_node_t const *node)
   return 0 ;
 }
 
-static inline int dcache_add_unbounded (dcache_t *z, char const *key, uint16_t keylen, char const *data, uint16_t datalen, tain_t const *expire, tain_t const *stamp)
+static inline int dcache_add_unbounded (dcache_t *z, char const *key, uint16_t keylen, char const *data, uint16_t datalen, tain const *expire, tain const *stamp)
 {
   uint32_t len = (uint32_t)keylen + (uint32_t)datalen ;
   dcache_node_t y = { .key = { .s = alloc(len) } } ;
@@ -76,7 +76,7 @@ static inline int dcache_add_unbounded (dcache_t *z, char const *key, uint16_t k
 }
 
 
-int dcache_add (dcache_t *z, uint64_t max, char const *key, uint16_t keylen, char const *data, uint16_t datalen, tain_t const *expire, tain_t const *stamp)
+int dcache_add (dcache_t *z, uint64_t max, char const *key, uint16_t keylen, char const *data, uint16_t datalen, tain const *expire, tain const *stamp)
 {
   uint64_t size = DCACHE_NODE_OVERHEAD + keylen + datalen ;
   if (size > max) return (errno = EINVAL, 0) ;

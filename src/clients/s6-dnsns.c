@@ -18,14 +18,14 @@
 int main (int argc, char const *const *argv)
 {
   genalloc ds = GENALLOC_ZERO ; /* array of s6dns_domain_t */
-  tain_t deadline ;
+  tain deadline ;
   unsigned int t = 0 ;
   int flagqualify = 0 ;
   int flagunsort = 0 ;
   PROG = "s6-dnsns" ;
   for (;;)
   {
-    int opt = subgetopt(argc, argv, "qrt:") ;
+    int opt = lgetopt(argc, argv, "qrt:") ;
     if (opt == -1) break ;
     switch (opt)
     {

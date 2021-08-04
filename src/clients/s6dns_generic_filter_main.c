@@ -43,16 +43,16 @@ static void line_recycle (line_t *l)
 int flag4 = 0 ;
 int flag6 = 0 ;
 
-int s6dns_generic_filter_main (int argc, char const *const *argv, char const *const *envp, uint16_t qtype, scan_func_t_ref scanner, fmt_func_t_ref formatter, char const *USAGE)
+int s6dns_generic_filter_main (int argc, char const *const *argv, char const *const *envp, uint16_t qtype, scan_func_ref scanner, fmt_func_ref formatter, char const *USAGE)
 {
   skadns_t a = SKADNS_ZERO ;
-  tain_t deadline, tto ;
+  tain deadline, tto ;
   char const *normalformat = "%s=%d%w%r" ;
   char const *errorformat = "%s=<%e>%w%r" ;
   uint16_t maxlines = 256 ;
   uint16_t maxconn = 128 ;
   {
-    subgetopt_t l = SUBGETOPT_ZERO ;
+    subgetopt l = SUBGETOPT_ZERO ;
     unsigned int t = 0 ;
     for (;;)
     {
@@ -185,7 +185,7 @@ int s6dns_generic_filter_main (int argc, char const *const *argv, char const *co
           }
           else
           {
-            tain_t sendlimit ;
+            tain sendlimit ;
             uint16_t id ;
             line->w[0] = line->swrd.s[line->wpos] ;
             line->swrd.s[line->wpos] = 0 ;

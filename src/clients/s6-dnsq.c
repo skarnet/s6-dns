@@ -20,13 +20,13 @@
 
 int main (int argc, char const *const *argv)
 {
-  tain_t deadline ;
+  tain deadline ;
   unsigned int debuglevel = 0 ;
   uint16_t qtype ;
-  genwrite_t *where = &genwrite_stderr ;
+  genwrite *where = &genwrite_stderr ;
   PROG = "s6-dnsq" ;
   {
-    subgetopt_t l = SUBGETOPT_ZERO ;
+    subgetopt l = SUBGETOPT_ZERO ;
     unsigned int t = 0 ;
     for (;;)
     {
@@ -58,7 +58,7 @@ int main (int argc, char const *const *argv)
     memset(&servers, 0, sizeof(s6dns_ip46list_t)) ;
     for (; (i < (unsigned int)(argc - 2)) && (j < S6DNS_MAX_SERVERS) ; i++)
     {
-      ip46_t z[S6DNS_MAX_SERVERS] ;
+      ip46 z[S6DNS_MAX_SERVERS] ;
       size_t n ;
       unsigned int k = 0 ;
       if (!*argv[2+i]) continue ;

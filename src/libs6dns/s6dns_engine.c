@@ -115,7 +115,7 @@ static int randombind (int fd, int flag)
   return (socketbind46(fd, S6DNS_ENGINE_LOCAL0, 0, flag) >= 0) ;
 }
 
-static int thisudp (s6dns_engine_t *dt, tain_t const *stamp)
+static int thisudp (s6dns_engine_t *dt, tain const *stamp)
 {
   for (;; dt->curserver++)
   {
@@ -148,7 +148,7 @@ static int thisudp (s6dns_engine_t *dt, tain_t const *stamp)
   return 1 ;
 }
 
-static int thistcp (s6dns_engine_t *dt, tain_t const *stamp)
+static int thistcp (s6dns_engine_t *dt, tain const *stamp)
 {
   for (; dt->curserver < S6DNS_MAX_SERVERS ; dt->curserver++)
     if (memcmp(s6dns_ip46list_ip(&dt->servers, dt->curserver), S6DNS_ENGINE_LOCAL0, SKALIBS_IP_SIZE)) break ;
@@ -179,7 +179,7 @@ static int thistcp (s6dns_engine_t *dt, tain_t const *stamp)
 
  /* all the rest is transport-agnostic */
 
-static int s6dns_engine_prepare (s6dns_engine_t *dt, tain_t const *stamp, int istcp)
+static int s6dns_engine_prepare (s6dns_engine_t *dt, tain const *stamp, int istcp)
 {
   for (;; dt->curserver++)
     switch (istcp ? thistcp(dt, stamp) : thisudp(dt, stamp))
@@ -192,7 +192,7 @@ static int s6dns_engine_prepare (s6dns_engine_t *dt, tain_t const *stamp, int is
     }
 }
 
-static void prepare_next (s6dns_engine_t *dt, tain_t const *stamp, int istcp)
+static void prepare_next (s6dns_engine_t *dt, tain const *stamp, int istcp)
 {
   if (!error_isagain(errno))
   {
@@ -202,7 +202,7 @@ static void prepare_next (s6dns_engine_t *dt, tain_t const *stamp, int istcp)
   }
 }
 
-static int s6dns_engine_write_udp (s6dns_engine_t *dt, tain_t const *stamp)
+static int s6dns_engine_write_udp (s6dns_engine_t *dt, tain const *stamp)
 {
   static unsigned int const s6dns_engine_udp_timeouts[4] = { 1, 3, 11, 45 } ;
   if (fd_send(dt->fd, dt->sa.s + 2, dt->querylen - 2, 0) < (ssize_t)(dt->querylen - 2))
@@ -215,7 +215,7 @@ static int s6dns_engine_write_udp (s6dns_engine_t *dt, tain_t const *stamp)
   return (errno = EAGAIN, 1) ;
 }
 
-static int s6dns_engine_write_tcp (s6dns_engine_t *dt, tain_t const *stamp)
+static int s6dns_engine_write_tcp (s6dns_engine_t *dt, tain const *stamp)
 {
   size_t r ;
   r = allwrite(dt->fd, dt->sa.s + dt->protostate, dt->querylen - dt->protostate) ;
@@ -236,7 +236,7 @@ static int s6dns_engine_write_tcp (s6dns_engine_t *dt, tain_t const *stamp)
   return (errno = EAGAIN, 1) ;
 }
 
-static int s6dns_engine_read_udp (s6dns_engine_t *dt, tain_t const *stamp)
+static int s6dns_engine_read_udp (s6dns_engine_t *dt, tain const *stamp)
 {
   s6dns_message_header_t h ;
   char buf[513] ;
@@ -282,7 +282,7 @@ static int s6dns_engine_read_udp (s6dns_engine_t *dt, tain_t const *stamp)
   return 1 ;
 }
 
-static int s6dns_engine_read_tcp (s6dns_engine_t *dt, tain_t const *stamp)
+static int s6dns_engine_read_tcp (s6dns_engine_t *dt, tain const *stamp)
 {
   ssize_t r = sanitize_read(s6dns_mininetstring_read(dt->fd, &dt->sa, &dt->protostate)) ;
   if (r < 0) return (prepare_next(dt, stamp, 1), 0) ;
@@ -336,7 +336,7 @@ void s6dns_engine_recycle (s6dns_engine_t *dt)
   dt->flagstrict = dt->flagtcp = dt->flagconnecting = dt->flagreading = dt->flagwriting = 0 ;
 }
 
-int s6dns_engine_timeout (s6dns_engine_t *dt, tain_t const *stamp)
+int s6dns_engine_timeout (s6dns_engine_t *dt, tain const *stamp)
 {
   if (!error_isagain(dt->status)) return (errno = EINVAL, -1) ;
   else if (tain_less(&dt->deadline, stamp)) goto yes ;
@@ -358,7 +358,7 @@ int s6dns_engine_timeout (s6dns_engine_t *dt, tain_t const *stamp)
   return 1 ;
 }
 
-int s6dns_engine_event (s6dns_engine_t *dt, tain_t const *stamp)
+int s6dns_engine_event (s6dns_engine_t *dt, tain const *stamp)
 {
   if (!error_isagain(dt->status)) return (errno = EINVAL, -1) ;
   if (dt->flagwriting)
@@ -378,7 +378,7 @@ int s6dns_engine_event (s6dns_engine_t *dt, tain_t const *stamp)
   return -1 ;
 }
 
-int s6dns_engine_init_r (s6dns_engine_t *dt, s6dns_ip46list_t const *servers, uint32_t options, char const *q, unsigned int qlen, uint16_t qtype, s6dns_debughook_t const *dbh, tain_t const *deadline, tain_t const *stamp)
+int s6dns_engine_init_r (s6dns_engine_t *dt, s6dns_ip46list_t const *servers, uint32_t options, char const *q, unsigned int qlen, uint16_t qtype, s6dns_debughook_t const *dbh, tain const *deadline, tain const *stamp)
 {
   s6dns_message_header_t h = S6DNS_MESSAGE_HEADER_ZERO ;
   if (!stralloc_ready(&dt->sa, qlen + 18)) return 0 ;

@@ -12,7 +12,7 @@
 #include <skalibs/textclient.h>
 #include <s6-dns/skadns.h>
 
-int skadns_cancel (skadns_t *a, uint16_t id, tain_t const *deadline, tain_t *stamp)
+int skadns_cancel (skadns_t *a, uint16_t id, tain const *deadline, tain *stamp)
 {
   int e = errno ;
   char pack[3] = "--q" ;

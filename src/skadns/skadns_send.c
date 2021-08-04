@@ -10,7 +10,7 @@
 #include <s6-dns/skadns.h>
 
 
-int skadns_send (skadns_t *a, uint16_t *u, s6dns_domain_t const *d, uint16_t qtype, tain_t const *limit, tain_t const *deadline, tain_t *stamp)
+int skadns_send (skadns_t *a, uint16_t *u, s6dns_domain_t const *d, uint16_t qtype, tain const *limit, tain const *deadline, tain *stamp)
 {
   static skadnsanswer_t const skadnsanswer_initial = { .status = EAGAIN, .data = 0, .len = 0 } ;
   uint32_t i ;

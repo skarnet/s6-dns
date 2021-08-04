@@ -9,7 +9,7 @@
 
 int s6dns_debug_dumpdt_post_send (s6dns_engine_t const *dt, void *data)
 {
-  genwrite_t *gp = data ;
+  genwrite *gp = data ;
   size_t len ;
   char buf[LOCALTMN_FMT] ;
   if ((*gp->put)(gp->target, "Sent query ", 11) < 11) return 0 ;
@@ -21,7 +21,7 @@ int s6dns_debug_dumpdt_post_send (s6dns_engine_t const *dt, void *data)
   if ((*gp->put)(gp->target, buf, len) < (ssize_t)len) return 0 ;
   if ((*gp->put)(gp->target, " - next recv deadline is ", 25) < 25) return 0 ;
   {
-    localtmn_t l ;
+    localtmn l ;
     if (!localtmn_from_tain(&l, &dt->localdeadline, 0)) return 0 ;
     len = localtmn_fmt(buf, &l) ;
   }

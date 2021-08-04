@@ -18,12 +18,12 @@
 
 int main (int argc, char const *const *argv)
 {
-  tain_t deadline ;
+  tain deadline ;
   unsigned int debuglevel = 0 ;
-  genwrite_t *where = &genwrite_stderr ;
+  genwrite *where = &genwrite_stderr ;
   PROG = "s6-dnsqr" ;
   {
-    subgetopt_t l = SUBGETOPT_ZERO ;
+    subgetopt l = SUBGETOPT_ZERO ;
     unsigned int t = 0 ;
     for (;;)
     {

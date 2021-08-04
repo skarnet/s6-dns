@@ -19,8 +19,8 @@
 int main (int argc, char const *const *argv)
 {
   genalloc ds = GENALLOC_ZERO ; /* array of s6dns_domain_t */
-  tain_t deadline ;
-  ip46full_t ip = IP46FULL_ZERO ;
+  tain deadline ;
+  ip46full ip = IP46FULL_ZERO ;
   unsigned int t = 0 ;
   int flagunsort = 0 ;
   int do4 = 0 ;
@@ -28,7 +28,7 @@ int main (int argc, char const *const *argv)
   PROG = "s6-dnsname" ;
   for (;;)
   {
-    int opt = subgetopt(argc, argv, "46rt:") ;
+    int opt = lgetopt(argc, argv, "46rt:") ;
     if (opt == -1) break ;
     switch (opt)
     {

@@ -13,7 +13,7 @@ static s6dns_analyze_rtypetable_t const *rtypelookup (uint16_t rtype)
   return wut ;
 }
 
-int s6dns_analyze_record (genwrite_t *gp, s6dns_message_rr_t const *rr, char const *packet, unsigned int packetlen, unsigned int pos)
+int s6dns_analyze_record (genwrite *gp, s6dns_message_rr_t const *rr, char const *packet, unsigned int packetlen, unsigned int pos)
 {
   s6dns_analyze_rtypetable_t const *wut = rtypelookup(rr->rtype) ;
   {

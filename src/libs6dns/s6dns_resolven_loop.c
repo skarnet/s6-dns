@@ -11,14 +11,14 @@
     It resolves n dts at the same time.
  */
 
-int s6dns_resolven_loop (s6dns_engine_t *dt, unsigned int n, unsigned int or, tain_t const *deadline, tain_t *stamp)
+int s6dns_resolven_loop (s6dns_engine_t *dt, unsigned int n, unsigned int or, tain const *deadline, tain *stamp)
 {
   iopause_fd x[n] ;
   unsigned int count = 0 ;
   unsigned int got = 0 ;
   while (got < n)
   {
-    tain_t localdeadline = *deadline ; 
+    tain localdeadline = *deadline ; 
     int r ;
     unsigned int i = 0 ;
     unsigned int j = 0 ;

@@ -15,19 +15,19 @@
 
 static int addit (genalloc *ips, char const *s, size_t len, int is6)
 {
-  size_t base = genalloc_len(ip46full_t, ips) ;
+  size_t base = genalloc_len(ip46full, ips) ;
   size_t n = len >> (is6 ? 4 : 2) ;
-  ip46full_t *p ;
-  if (!genalloc_readyplus(ip46full_t, ips, n)) return 0 ;
-  p = genalloc_s(ip46full_t, ips) + base ;
+  ip46full *p ;
+  if (!genalloc_readyplus(ip46full, ips, n)) return 0 ;
+  p = genalloc_s(ip46full, ips) + base ;
   for (size_t i = 0 ; i < n ; i++)
     if (is6) ip46full_from_ip6(p + i, s + (i << 4)) ;
     else ip46full_from_ip4(p + i, s + (i << 2)) ;
-  genalloc_setlen(ip46full_t, ips, base + n) ;
+  genalloc_setlen(ip46full, ips, base + n) ;
   return 1 ;
 }
 
-int s6dns_resolveq_aaaaa_r (genalloc *ips, char const *name, size_t len, s6dns_rci_t const *rci, s6dns_debughook_t const *dbh, tain_t const *deadline, tain_t *stamp)
+int s6dns_resolveq_aaaaa_r (genalloc *ips, char const *name, size_t len, s6dns_rci_t const *rci, s6dns_debughook_t const *dbh, tain const *deadline, tain *stamp)
 {
   s6dns_engine_t dtl[rci->rulesnum << 1] ;
   stralloc data = STRALLOC_ZERO ;

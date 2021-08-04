@@ -5,7 +5,7 @@
 #include <skalibs/fmtscan.h>
 #include <s6-dns/s6dns-analyze.h>
 
-int s6dns_analyze_record_unknown (genwrite_t *gp, s6dns_message_rr_t const *rr, char const *packet, unsigned int packetlen, unsigned int pos)
+int s6dns_analyze_record_unknown (genwrite *gp, s6dns_message_rr_t const *rr, char const *packet, unsigned int packetlen, unsigned int pos)
 {
   char fmt[UINT16_FMT] ;
   if ((*gp->put)(gp->target, "rtype ", 6) < 0) return 0 ;

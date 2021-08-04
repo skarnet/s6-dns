@@ -17,7 +17,7 @@
 int main (int argc, char const *const *argv)
 {
   stralloc ips = STRALLOC_ZERO ;
-  tain_t deadline ;
+  tain deadline ;
   size_t i = 0 ;
   unsigned int t = 0 ;
   int flagqualify = 0 ;
@@ -26,7 +26,7 @@ int main (int argc, char const *const *argv)
 
   for (;;)
   {
-    int opt = subgetopt(argc, argv, "qrt:") ;
+    int opt = lgetopt(argc, argv, "qrt:") ;
     if (opt == -1) break ;
     switch (opt)
     {

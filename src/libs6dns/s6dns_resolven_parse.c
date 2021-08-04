@@ -5,7 +5,7 @@
 #include <s6-dns/s6dns-engine.h>
 #include <s6-dns/s6dns-resolve.h>
 
-int s6dns_resolven_parse_r (s6dns_resolve_t *list, unsigned int n, s6dns_ip46list_t const *servers, s6dns_debughook_t const *dbh, tain_t const *deadline, tain_t *stamp)
+int s6dns_resolven_parse_r (s6dns_resolve_t *list, unsigned int n, s6dns_ip46list_t const *servers, s6dns_debughook_t const *dbh, tain const *deadline, tain *stamp)
 {
   s6dns_engine_t dtl[n] ;
   unsigned int i = 0 ;

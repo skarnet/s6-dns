@@ -64,7 +64,7 @@ static int parse_protocol (struct iovec const *v, void *context)
   {
     case 'Q' : /* send a query */
     {
-      tain_t limit ;
+      tain limit ;
       uint16_t qtype ;
       if (v->iov_len < 21) strerr_dief1x(100, "invalid client request") ;
       if (sp >= SKADNS_MAXCONCURRENCY)
@@ -116,7 +116,7 @@ int main (void)
   if (!s6dns_init()) strerr_diefu1sys(111, "s6dns_init") ;
 
   {
-    tain_t deadline ;
+    tain deadline ;
     tain_addsec_g(&deadline, 2) ;
     if (!textclient_server_01x_init_g(SKADNS_BANNER1, SKADNS_BANNER1_LEN, SKADNS_BANNER2, SKADNS_BANNER2_LEN, &deadline))
       strerr_diefu1sys(111, "sync with client") ;
@@ -137,7 +137,7 @@ int main (void)
     x[2].fd = textmessage_sender_fd(textmessage_sender_x) ;
     x[2].events = IOPAUSE_EXCEPT | (textmessage_sender_isempty(textmessage_sender_x) ? 0 : IOPAUSE_WRITE) ;
     {
-      tain_t deadline = TAIN_INFINITE ;
+      tain deadline = TAIN_INFINITE ;
       unsigned int i = 0 ;
       for (; i < sp ; i++)
       {

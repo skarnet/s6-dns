@@ -16,7 +16,7 @@
 #define addfmt(n) if ((*gp->put)(gp->target, fmt, uint_fmt(fmt, (n))) < 0) return 0
 #define addfmt16(n) if ((*gp->put)(gp->target, fmt, uint16_fmt(fmt, (n))) < 0) return 0
 
-int s6dns_analyze_packet (genwrite_t *gp, char const *packet, unsigned int packetlen, int rec)
+int s6dns_analyze_packet (genwrite *gp, char const *packet, unsigned int packetlen, int rec)
 {
   s6dns_message_header_t h ;
   s6dns_message_counts_t counts ;

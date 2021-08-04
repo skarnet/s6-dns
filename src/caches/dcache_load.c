@@ -15,8 +15,8 @@
 
 static inline int dcache_load_node (dcache_t *z, uint64_t max, buffer *b)
 {
-  tain_t entry = { .nano = 0 } ;
-  tain_t expire = { .nano = 0 } ;
+  tain entry = { .nano = 0 } ;
+  tain expire = { .nano = 0 } ;
   uint16_t keylen ;
   uint16_t datalen ;
   char pack[TAI_PACK * 2 + 4] ;

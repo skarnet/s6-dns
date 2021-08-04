@@ -11,7 +11,7 @@
 #include <s6-dns/s6dns-message.h>
 #include <s6-dns/s6dns-resolve.h>
 
-int s6dns_resolvenoq_aaaaa_r (genalloc *ips, char const *name, size_t len, s6dns_ip46list_t const *servers, s6dns_debughook_t const *dbh, tain_t const *deadline, tain_t *stamp)
+int s6dns_resolvenoq_aaaaa_r (genalloc *ips, char const *name, size_t len, s6dns_ip46list_t const *servers, s6dns_debughook_t const *dbh, tain const *deadline, tain *stamp)
 {
   stralloc sa[2] = { STRALLOC_ZERO, STRALLOC_ZERO } ;
   s6dns_resolve_t blob[2] ;
@@ -33,7 +33,7 @@ int s6dns_resolvenoq_aaaaa_r (genalloc *ips, char const *name, size_t len, s6dns
     errno = blob[1].status ? blob[1].status : blob[0].status ;
     return 0 ;
   }
-  if (!genalloc_readyplus(ip46full_t, ips, (sa[0].len >> 4) + (sa[1].len >> 2)))
+  if (!genalloc_readyplus(ip46full, ips, (sa[0].len >> 4) + (sa[1].len >> 2)))
   {
     stralloc_free(&sa[0]) ;
     stralloc_free(&sa[1]) ;
@@ -41,15 +41,15 @@ int s6dns_resolvenoq_aaaaa_r (genalloc *ips, char const *name, size_t len, s6dns
   }
   {
     int e = (!!sa[0].len << 1) | !!sa[1].len ;
-    size_t n = genalloc_len(ip46full_t, ips) ;
+    size_t n = genalloc_len(ip46full, ips) ;
     size_t i = 0 ;
     for (; i < (sa[0].len >> 4) ; i++)
-      ip46full_from_ip6(genalloc_s(ip46full_t, ips) + n + i, sa[0].s + (i << 4)) ;
+      ip46full_from_ip6(genalloc_s(ip46full, ips) + n + i, sa[0].s + (i << 4)) ;
     n += i ;
     for (i = 0 ; i < (sa[1].len >> 2) ; i++)
-      ip46full_from_ip4(genalloc_s(ip46full_t, ips) + n + i, sa[1].s + (i << 2)) ;
+      ip46full_from_ip4(genalloc_s(ip46full, ips) + n + i, sa[1].s + (i << 2)) ;
     n += i ;
-    genalloc_setlen(ip46full_t, ips, n) ;
+    genalloc_setlen(ip46full, ips, n) ;
     stralloc_free(&sa[0]) ;
     stralloc_free(&sa[1]) ;
     return e ;

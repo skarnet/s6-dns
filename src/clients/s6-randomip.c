@@ -23,7 +23,7 @@ int main (int argc, char const *const *argv)
   PROG = "s6-randomip" ;
   for (;;)
   {
-    int opt = subgetopt(argc, argv, "46n:") ;
+    int opt = lgetopt(argc, argv, "46n:") ;
     if (opt == -1) break ;
     switch (opt)
     {

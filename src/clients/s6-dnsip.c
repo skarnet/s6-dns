@@ -18,8 +18,8 @@
 
 int main (int argc, char const *const *argv)
 {
-  genalloc ips = GENALLOC_ZERO ;  /* ip46full_t */
-  tain_t deadline ;
+  genalloc ips = GENALLOC_ZERO ;  /* ip46full */
+  tain deadline ;
   size_t i = 0 ;
   unsigned int t = 0 ;
   int flagqualify = 0 ;
@@ -28,7 +28,7 @@ int main (int argc, char const *const *argv)
 
   for (;;)
   {
-    int opt = subgetopt(argc, argv, "qrt:") ;
+    int opt = lgetopt(argc, argv, "qrt:") ;
     if (opt == -1) break ;
     switch (opt)
     {
@@ -50,13 +50,13 @@ int main (int argc, char const *const *argv)
     if (r < 0) strerr_diefu2sys((errno == ETIMEDOUT) ? 99 : 111, "resolve ", argv[0]) ;
     if (!r && errno) strerr_diefu4x(2, "resolve ", argv[0], ": ", s6dns_constants_error_str(errno)) ;
   }
-  if (!genalloc_len(ip46full_t, &ips)) return 1 ;
+  if (!genalloc_len(ip46full, &ips)) return 1 ;
 
-  if (flagunsort) random_unsort(ips.s, genalloc_len(ip46full_t, &ips), sizeof(ip46full_t)) ;
-  for (i = 0 ; i < genalloc_len(ip46full_t, &ips) ; i++)
+  if (flagunsort) random_unsort(ips.s, genalloc_len(ip46full, &ips), sizeof(ip46full)) ;
+  for (i = 0 ; i < genalloc_len(ip46full, &ips) ; i++)
   {
     char fmt[IP6_FMT] ;
-    size_t n = ip46full_fmt(fmt, genalloc_s(ip46full_t, &ips) + i) ;
+    size_t n = ip46full_fmt(fmt, genalloc_s(ip46full, &ips) + i) ;
     fmt[n++] = '\n' ;
     if (buffer_put(buffer_1small, fmt, n) < (ssize_t)n)
       strerr_diefu1sys(111, "write to stdout") ;

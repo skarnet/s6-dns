@@ -18,7 +18,7 @@
 int main (int argc, char const *const *argv)
 {
   genalloc srvs = GENALLOC_ZERO ; /* array of s6dns_message_rr_srv_t */
-  tain_t deadline ;
+  tain deadline ;
   size_t i = 0 ;
   unsigned int t = 0 ;
   int flagqualify = 0 ;
@@ -26,7 +26,7 @@ int main (int argc, char const *const *argv)
   PROG = "s6-dnssrv" ;
   for (;;)
   {
-    int opt = subgetopt(argc, argv, "qt:") ;
+    int opt = lgetopt(argc, argv, "qt:") ;
     if (opt == -1) break ;
     switch (opt)
     {

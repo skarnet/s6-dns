@@ -135,8 +135,8 @@ struct s6dns_message_rr_s
   uint16_t rdlength ;
 } ;
 
-typedef int s6dns_message_rr_func_t (s6dns_message_rr_t const *, char const *, unsigned int, unsigned int, unsigned int, void *) ;
-typedef s6dns_message_rr_func_t *s6dns_message_rr_func_t_ref ;
+typedef int s6dns_message_rr_func (s6dns_message_rr_t const *, char const *, unsigned int, unsigned int, unsigned int, void *) ;
+typedef s6dns_message_rr_func *s6dns_message_rr_func_ref ;
 
 
  /* mpag: structure to encode several variable-length results */
@@ -162,20 +162,20 @@ struct s6dns_dpag_s
 #define S6DNS_DPAG_ZERO { .ds = GENALLOC_ZERO, .rtype = 0 }
 
 
-extern s6dns_message_rr_func_t s6dns_message_parse_answer_strings ;
-extern s6dns_message_rr_func_t s6dns_message_parse_answer_domain ;
-extern s6dns_message_rr_func_t s6dns_message_parse_answer_a ;
-extern s6dns_message_rr_func_t s6dns_message_parse_answer_aaaa ;
-extern s6dns_message_rr_func_t s6dns_message_parse_answer_mx ;
-extern s6dns_message_rr_func_t s6dns_message_parse_answer_hinfo ;
-extern s6dns_message_rr_func_t s6dns_message_parse_answer_soa ;
-extern s6dns_message_rr_func_t s6dns_message_parse_answer_srv ;
-extern s6dns_message_rr_func_t s6dns_message_parse_answer_caa ;
+extern s6dns_message_rr_func s6dns_message_parse_answer_strings ;
+extern s6dns_message_rr_func s6dns_message_parse_answer_domain ;
+extern s6dns_message_rr_func s6dns_message_parse_answer_a ;
+extern s6dns_message_rr_func s6dns_message_parse_answer_aaaa ;
+extern s6dns_message_rr_func s6dns_message_parse_answer_mx ;
+extern s6dns_message_rr_func s6dns_message_parse_answer_hinfo ;
+extern s6dns_message_rr_func s6dns_message_parse_answer_soa ;
+extern s6dns_message_rr_func s6dns_message_parse_answer_srv ;
+extern s6dns_message_rr_func s6dns_message_parse_answer_caa ;
 
 
  /* The actual parsing function */
 
-extern int s6dns_message_parse (s6dns_message_header_t_ref, char const *, unsigned int, s6dns_message_rr_func_t_ref, void *) ;
+extern int s6dns_message_parse (s6dns_message_header_t_ref, char const *, unsigned int, s6dns_message_rr_func_ref, void *) ;
 
 
  /* Internals of this function, for lower level access */
