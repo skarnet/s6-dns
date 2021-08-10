@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <errno.h>
 #include <signal.h>
+
 #include <skalibs/types.h>
 #include <skalibs/error.h>
 #include <skalibs/strerr2.h>
@@ -14,10 +15,11 @@
 #include <skalibs/iopause.h>
 #include <skalibs/textmessage.h>
 #include <skalibs/textclient.h>
+
 #include <s6-dns/s6dns.h>
 #include <s6-dns/skadns.h>
 
-typedef struct dnsio_s dnsio_t, *dnsio_t_ref ;
+typedef struct dnsio_s dnsio, *dnsio_ref ;
 struct dnsio_s
 {
   unsigned int xindex ;
@@ -26,12 +28,12 @@ struct dnsio_s
 } ;
 #define DNSIO_ZERO { .xindex = SKADNS_MAXCONCURRENCY, .dt = S6DNS_ENGINE_ZERO, .id = 0 }
 
-static dnsio_t a[SKADNS_MAXCONCURRENCY] ;
+static dnsio a[SKADNS_MAXCONCURRENCY] ;
 static unsigned int sp = 0 ;
 
 static void remove (unsigned int i)
 {
-  dnsio_t tmp ;
+  dnsio tmp ;
   tmp = a[sp-1] ;
   a[--sp] = a[i] ;
   a[i] = tmp ;
@@ -111,7 +113,7 @@ int main (void)
 
   if (ndelay_on(0) < 0) strerr_diefu2sys(111, "ndelay_on ", "0") ;
   if (ndelay_on(1) < 0) strerr_diefu2sys(111, "ndelay_on ", "1") ;
-  if (sig_ignore(SIGPIPE) < 0) strerr_diefu1sys(111, "ignore SIGPIPE") ;
+  if (!sig_ignore(SIGPIPE)) strerr_diefu1sys(111, "ignore SIGPIPE") ;
   tain_now_set_stopwatch_g() ;
   if (!s6dns_init()) strerr_diefu1sys(111, "s6dns_init") ;
 
@@ -122,7 +124,7 @@ int main (void)
       strerr_diefu1sys(111, "sync with client") ;
   }
   {
-    static dnsio_t const zero = DNSIO_ZERO ;
+    static dnsio const zero = DNSIO_ZERO ;
     unsigned int i = 0 ;
     for (; i < SKADNS_MAXCONCURRENCY ; i++) a[i] = zero ;
   }
