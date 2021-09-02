@@ -40,7 +40,7 @@ static int msghandler (struct iovec const *v, void *context)
     memcpy(p->data, s+3, v->iov_len-3) ;
     p->len = v->iov_len-3 ;
   }
-  p->status = s[2] ;
+  p->status = (unsigned char)s[2] ;
   genalloc_append(uint16_t, &a->list, &id) ;
   return 1 ;
 }
