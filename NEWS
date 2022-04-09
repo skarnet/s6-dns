@@ -1,5 +1,11 @@
 Changelog for s6-dns.
 
+In 2.3.5.4
+----------
+
+ - Adaptation to skalibs-2.12.0.0.
+
+
 In 2.3.5.3
 ----------
 

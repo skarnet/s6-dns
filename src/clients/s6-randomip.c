@@ -2,6 +2,7 @@
 
 #include <sys/types.h>
 #include <errno.h>
+
 #include <skalibs/types.h>
 #include <skalibs/sgetopt.h>
 #include <skalibs/strerr2.h>
@@ -39,16 +40,16 @@ int main (int argc, char const *const *argv)
   argc -= subgetopt_here.ind ; argv += subgetopt_here.ind ;
   if (!what) what = 1 ;
   what = 1 << (1 << what) ; 
-  if (!random_init()) strerr_diefu1sys(111, "init random generator") ;
   for (i = 0 ; !finite || (i < n) ; i++)
   {
     size_t len = what ;
     if (len > 16)
     {
-      unsigned char c = random_char() ;
+      char c ;
+      random_buf(&c, 1) ;
       len = (c & 1) ? 16 : 4 ;
     }
-    random_string(ip, len) ;
+    random_buf(ip, len) ;
     len = (len == 16) ? ip6_fmt(fmt, ip) : ip4_fmt(fmt, ip) ;
     fmt[len++] = '\n' ;
     if (buffer_put(buffer_1, fmt, len) < (ssize_t)len)

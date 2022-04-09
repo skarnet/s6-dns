@@ -126,7 +126,7 @@ static int thisudp (s6dns_engine_t *dt, tain const *stamp)
     }
     if (memcmp(s6dns_ip46list_ip(&dt->servers, dt->curserver), S6DNS_ENGINE_LOCAL0, SKALIBS_IP_SIZE)) break ;
   }
-  random_string(dt->sa.s + 2, 2) ; /* random query id */
+  random_buf(dt->sa.s + 2, 2) ; /* random query id */
   dt->fd = socketudp46(s6dns_ip46list_is6(&dt->servers, dt->curserver)) ;
   if (dt->fd < 0) return -1 ;
   if (!randombind(dt->fd, s6dns_ip46list_is6(&dt->servers, dt->curserver)))
@@ -153,7 +153,7 @@ static int thistcp (s6dns_engine_t *dt, tain const *stamp)
   for (; dt->curserver < S6DNS_MAX_SERVERS ; dt->curserver++)
     if (memcmp(s6dns_ip46list_ip(&dt->servers, dt->curserver), S6DNS_ENGINE_LOCAL0, SKALIBS_IP_SIZE)) break ;
   if (dt->curserver >= S6DNS_MAX_SERVERS) return -2 ;
-  random_string(dt->sa.s + 2, 2) ;
+  random_buf(dt->sa.s + 2, 2) ;
   dt->fd = sockettcp46(s6dns_ip46list_is6(&dt->servers, dt->curserver)) ;
   if (dt->fd < 0) return -1 ;
   if (!randombind(dt->fd, s6dns_ip46list_is6(&dt->servers, dt->curserver)))
