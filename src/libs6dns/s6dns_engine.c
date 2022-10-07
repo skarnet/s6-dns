@@ -84,7 +84,9 @@ static int s6dns_mininetstring_read (int fd, stralloc *sa, uint32_t *w)
     *w &= ~(1U << 30) ;
   }
   {
-    size_t r = allread(fd, sa->s + sa->len, *w) ;
+    size_t r ;
+    errno = EPIPE ;
+    r = allread(fd, sa->s + sa->len, *w) ;
     sa->len += r ; *w -= r ;
   }
   return *w ? -1 : 1 ;
