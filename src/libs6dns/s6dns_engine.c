@@ -36,8 +36,7 @@ static int relevant (char const *q, unsigned int qlen, char const *ans, unsigned
     uint16_t id ;
     s6dns_message_header_unpack(ans, &h) ;
     if (!h.qr || h.opcode || h.z || (h.counts.qd != 1)) return 0 ;
-    if (h.rd != (q[2] & 1)) return 0 ;
-    if (strict && !h.aa && !(q[2] & 1)) return 0 ;
+    if (strict && ((!h.aa && !(q[2] & 1)) || h.rd != (q[2] & 1))) return 0 ;
     uint16_unpack_big(q, &id) ;
     if (id != h.id) return 0 ;
   }
