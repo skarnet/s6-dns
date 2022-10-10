@@ -53,7 +53,7 @@ static void fail (unsigned int i)
 static void answer (char c)
 {
   if (!textmessage_put(textmessage_sender_1, &c, 1))
-    strerr_diefu1sys(111, "unixmessage_put") ;
+    strerr_diefu1sys(111, "textmessage_put") ;
 }
 
 static int parse_protocol (struct iovec const *v, void *context)
