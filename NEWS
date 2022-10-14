@@ -1,5 +1,12 @@
 Changelog for s6-dns.
 
+In 2.3.5.5
+----------
+
+ - Bugfixes.
+ - Workarounds for broken DNS caches.
+
+
 In 2.3.5.4
 ----------
 
