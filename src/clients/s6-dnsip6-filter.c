@@ -2,7 +2,7 @@
 
 #include <string.h>
 #include <skalibs/fmtscan.h>
-#include <skalibs/strerr2.h>
+#include <skalibs/strerr.h>
 #include <skalibs/stralloc.h>
 #include <s6-dns/s6dns-constants.h>
 #include <s6-dns/s6dns-message.h>

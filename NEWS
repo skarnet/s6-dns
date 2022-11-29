@@ -4,6 +4,7 @@ In 2.3.5.5
 ----------
 
  - Bugfixes.
+ - Adaptation to skalibs-2.13.0.0.
  - Workarounds for broken DNS caches.
 
 

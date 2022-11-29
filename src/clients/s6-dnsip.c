@@ -5,7 +5,7 @@
 
 #include <skalibs/types.h>
 #include <skalibs/sgetopt.h>
-#include <skalibs/strerr2.h>
+#include <skalibs/strerr.h>
 #include <skalibs/ip46.h>
 #include <skalibs/genalloc.h>
 #include <skalibs/buffer.h>

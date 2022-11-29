@@ -1,7 +1,7 @@
 /* ISC license. */
 
 #include <skalibs/sgetopt.h>
-#include <skalibs/strerr2.h>
+#include <skalibs/strerr.h>
 
 #include <s6-dns/s6dns.h>
 

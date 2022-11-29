@@ -4,7 +4,7 @@
 #include <errno.h>
 
 #include <skalibs/posixishard.h>
-#include <skalibs/strerr2.h>
+#include <skalibs/strerr.h>
 #include <skalibs/fmtscan.h>
 #include <skalibs/stralloc.h>
 
