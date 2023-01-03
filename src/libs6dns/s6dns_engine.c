@@ -56,8 +56,8 @@ static int s6dns_mininetstring_read (int fd, stralloc *sa, uint32_t *w)
 {
   if (!*w)
   {
-    char pack[2] ;
-    switch (fd_read(fd, pack, 2))
+    unsigned char pack[2] ;
+    switch (fd_read(fd, (char *)pack, 2))
     {
       case -1 : return -1 ;
       case 0 : return 0 ;
@@ -83,9 +83,7 @@ static int s6dns_mininetstring_read (int fd, stralloc *sa, uint32_t *w)
     *w &= ~(1U << 30) ;
   }
   {
-    size_t r ;
-    errno = EPIPE ;
-    r = allread(fd, sa->s + sa->len, *w) ;
+    size_t r = allread(fd, sa->s + sa->len, *w) ;
     sa->len += r ; *w -= r ;
   }
   return *w ? -1 : 1 ;
@@ -218,8 +216,7 @@ static int s6dns_engine_write_udp (s6dns_engine_t *dt, tain const *stamp)
 
 static int s6dns_engine_write_tcp (s6dns_engine_t *dt, tain const *stamp)
 {
-  size_t r ;
-  r = allwrite(dt->fd, dt->sa.s + dt->protostate, dt->querylen - dt->protostate) ;
+  size_t r = allwrite(dt->fd, dt->sa.s + dt->protostate, dt->querylen - dt->protostate) ;
   dt->protostate += r ;
   if (r) dt->flagconnecting = 0 ;
   if (dt->protostate < dt->sa.len)
