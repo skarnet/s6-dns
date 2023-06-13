@@ -1,14 +1,15 @@
 /* ISC license. */
 
 #include <stdint.h>
+#include <string.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <stdio.h>
 
 #include <skalibs/posixplz.h>
 #include <skalibs/uint16.h>
 #include <skalibs/uint64.h>
 #include <skalibs/buffer.h>
-#include <skalibs/stralloc.h>
 #include <skalibs/tai.h>
 #include <skalibs/djbunix.h>
 #include <skalibs/skamisc.h>
@@ -16,9 +17,9 @@
 
 #include <s6-dns/dcache.h>
 
-static int write_node_iter (char *data, void *aux)
+static int write_node_iter (void *data, void *aux)
 {
-  dcache_node_t *y = (dcache_node_t *)data ;
+  dcache_node_t *y = data ;
   buffer *b = aux ;
   char pack[TAI_PACK * 2 + 4] ;
   tai_pack(pack, tain_secp(&y->entry)) ;
@@ -49,26 +50,24 @@ static inline int dcache_save_to_buffer (dcache_t const *z, buffer *b)
 
 int dcache_save (dcache_t const *z, char const *file)
 {
-  stralloc sa = STRALLOC_ZERO ;
+  size_t len = strlen(file) ;
   int fd ;
   buffer b ;
   char buf[N] ;
-  if (!stralloc_cats(&sa, file)) return 0 ;
-  if (!sauniquename(&sa) || !stralloc_0(&sa)) goto err0 ;
-  fd = open_excl(sa.s) ;
-  if (fd == -1) goto err0 ;
+  char tmp[len + 20] ;
+  memcpy(tmp, file, len) ;
+  memcpy(tmp + len, ":dcache_save:XXXXXX", 20) ;
+  fd = mkstemp(tmp) ;
+  if (fd == -1) return 0 ;
   buffer_init(&b, &buffer_write, fd, buf, N) ;
   if (!dcache_save_to_buffer(z, &b) || fsync(fd) < 0) goto err2 ;
   fd_close(fd) ;
-  if (rename(sa.s, file) == -1) goto err1 ;
-  stralloc_free(&sa) ;
+  if (rename(tmp, file) == -1) goto err1 ;
   return 1 ;
 
  err2:
   fd_close(fd) ;
  err1:
-  unlink_void(sa.s) ;
- err0:
-  stralloc_free(&sa) ;
+  unlink_void(tmp) ;
   return 0 ;
 }

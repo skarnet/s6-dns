@@ -7,9 +7,9 @@
 #include <skalibs/textclient.h>
 #include <s6-dns/skadns.h>
 
-static int skadnsanswer_free (char *p, void *stuff)
+static int skadnsanswer_free (void *p, void *stuff)
 {
-  skadnsanswer_t *q = (skadnsanswer_t_ref)p ;
+  skadnsanswer_t *q = p ;
   alloc_free(q->data) ;
   (void)stuff ;
   return 1 ;
