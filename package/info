@@ -1,4 +1,4 @@
 package=s6-dns
-version=2.3.5.5
+version=2.3.5.6
 category=web
 package_macro_name=S6_DNS
