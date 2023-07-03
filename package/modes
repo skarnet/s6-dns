@@ -14,3 +14,4 @@ s6-dnsip6-filter	0755
 s6-dnsname-filter	0755
 s6-dnsq			0755
 s6-dnsqr		0755
+s6-dns-hosts-compile	0755

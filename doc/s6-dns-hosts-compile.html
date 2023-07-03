@@ -1,0 +1,75 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>s6-dns: the s6-dns-hosts-compile program</title>
+    <meta name="Description" content="s6-dns: the s6-dns-hosts-compile program" />
+    <meta name="Keywords" content="s6-dns s6-dns-hosts-compile /etc/hosts /etc/hosts.cdb hosts file cdb" />
+    <!-- <link rel="stylesheet" type="text/css" href="//skarnet.org/default.css" /> -->
+  </head>
+<body>
+
+<p>
+<a href="index.html">s6-dns</a><br />
+<a href="//skarnet.org/software/">Software</a><br />
+<a href="//skarnet.org/">skarnet.org</a>
+</p>
+
+<h1> The s6-dns-hosts-compile program </h1>
+
+<p>
+  s6-dns-hosts-compile compiles the system's <tt>/etc/hosts</tt> file into a
+CDB file for more efficient later use by s6-dns programs that may use the
+data contained in the hosts file.
+</p>
+
+<h2> Interface </h2>
+
+<pre>
+     s6-dns-hosts-compile [ -i <em>ifile</em> ] [ -o <em>ofile</em> ]
+</pre>
+
+<ul>
+ <li> s6-randomip reads the <tt>/etc/hosts</tt> file, which must follow the
+<a href="https://man7.org/linux/man-pages/man5/hosts.5.html">traditional hosts format</a>. </li>
+ <li> It outputs a CDB database in the <tt>/etc/hosts.cdb</tt> file. </li>
+ <li> It exits 0. </li>
+</ul>
+
+<h2> Options </h2>
+
+<ul>
+ <li> <tt>-i</tt>&nbsp;<em>ifile</em>&nbsp;: read from <em>ifile</em> instead of <tt>/etc/hosts</tt>. </li>
+ <li> <tt>-o</tt>&nbsp;<em>ofile</em>&nbsp;: write to <em>ofile</em> instead of <tt>/etc/hosts.cdb</tt>. </li>
+</ul>
+
+<h2> Notes </h2>
+
+<ul>
+ <li> The <tt>/etc/hosts</tt> file is an old way of specifying IP from/to domain
+name correspondences. It's convenient in a pinch when a user needs to locally
+override DNS data - for instance, to redirect common advertising sites to 127.0.0.1 -
+but it does not map exactly to the DNS view of domain names. </li>
+ <li> Due to this, and to its line-by-line text syntax, lookups using this file
+are terribly inefficient and rely on approximate qualification heuristics. </li>
+ <li> To avoid that, s6-dns tools prefer having the <tt>/etc/hosts</tt> data in
+a format that's both more DNS-like and more efficient; the file output by
+s6-dns-hosts-compile is the result. </li>
+ <li> When asked to take <tt>/etc/hosts</tt> data into account, s6-dns tools will
+first look for a <tt>/etc/hosts.cdb</tt> file and use the data from it. If
+absent, they will read the <tt>/etc/hosts</tt> file and compile its contents
+into a temporary cdb file under <tt>/tmp</tt> (which they immediately unlink),
+and use that cdb to query hosts data. </li>
+ <li> As a consequence, lookups are always efficient, but there's an initial
+compilation step. Using s6-dns-hosts-compile to produce a <tt>/etc/hosts.cdb</tt>
+file in advance saves the cost of that compilation step in subsequent
+invocations of s6-dns tools. </li>
+ <li> If s6-dns tools detect that <tt>/etc/hosts</tt> has been modified more recently
+than <tt>/etc/hosts.cdb</tt>, they will not use <tt>/etc/hosts.cdb</tt> and will
+perform the compilation step into a temporary file. So, remember to run
+s6-dns-hosts-compile after modifying your <tt>/etc/hosts</tt>. </li>
+</ul>
+
+</body>
+</html>

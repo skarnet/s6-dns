@@ -1,9 +1,11 @@
 Changelog for s6-dns.
 
-In 2.3.5.6
+In 2.3.6.0
 ----------
 
  - Bugfixes.
+ - New s6dns_hosts functions.
+ - New command: s6-dns-hosts-compile
 
 
 In 2.3.5.5

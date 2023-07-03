@@ -15,7 +15,8 @@ s6-dnsip4-filter \
 s6-dnsip6-filter \
 s6-dnsname-filter \
 s6-dnsq \
-s6-dnsqr
+s6-dnsqr \
+s6-dns-hosts-compile
 
 LIBEXEC_TARGETS :=
 

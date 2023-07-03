@@ -23,5 +23,6 @@
 /s6-dnssoa
 /s6-dnssrv
 /s6-dnstxt
+/s6-dns-hosts-compile
 /s6-randomip
 /skadnsd

@@ -24,6 +24,7 @@ s6dns_fmt_mx.o
 s6dns_fmt_soa.o
 s6dns_fmt_srv.o
 s6dns_fmt_caa.o
+s6dns_hosts_compile.o
 s6dns_message_counts_next.o
 s6dns_message_counts_pack.o
 s6dns_message_counts_unpack.o

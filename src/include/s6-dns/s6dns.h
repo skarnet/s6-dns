@@ -11,6 +11,7 @@
 #include <s6-dns/s6dns-rci.h>
 #include <s6-dns/s6dns-resolve.h>
 #include <s6-dns/s6dns-fmt.h>
+#include <s6-dns/hosts.h>
 
 extern int s6dns_init (void) ;
 extern void s6dns_finish (void) ;
