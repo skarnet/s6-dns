@@ -306,7 +306,7 @@ static int name_write_iter (void *data, void *aux)
   char keybase[4] = "q4:" ;
   struct iovec kv[2] = { { .iov_base = keybase, .iov_len = 3 }, { .iov_base = blah->hd->storage.s + node->pos, .iov_len = strlen(blah->hd->storage.s + node->pos) + 1 } } ;
   struct iovec dv = { .iov_base = node->ipv4.s, .iov_len = node->ipv4.len } ;
-  LOLDEBUG("name_write_iter: name: %s, ipv4.len: %u, ipv6.len: %u", blah->hd->storage.s + node->pos, (unsigned int)node->ipv4.len, (unsigned int)node->ipv6.len) ;
+  LOLDEBUG("name_write_iter: name: %s, ipv4.len: %zu, ipv6.len: %zu", blah->hd->storage.s + node->pos, node->ipv4.len, node->ipv6.len) ;
   if (node->ipv4.len && !cdbmake_addv(blah->cm, kv, 2, &dv, 1)) return 0 ;
   if (node->ipv6.len)
   {
@@ -327,7 +327,7 @@ static int ip_write_iter (void *data, void *aux)
     char fmt[IP6_FMT] ;
     if (blah->key[1] == '6') fmt[ip6_fmt(fmt, node->addr)] = 0 ;
     else fmt[ip4_fmt(fmt, node->addr)] = 0 ;
-    LOLDEBUG("ip_write_iter: %s: names: %u", fmt, (unsigned int)n) ;
+    LOLDEBUG("ip_write_iter: %s: names: %zu", fmt, n) ;
   }
 #endif
   if (n)
