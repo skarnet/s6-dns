@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <sys/uio.h>
 
+#include <skalibs/bytestr.h>
 #include <skalibs/buffer.h>
 #include <skalibs/fmtscan.h>
 #include <skalibs/cdbmake.h>
@@ -12,7 +13,6 @@
 #include <skalibs/genalloc.h>
 #include <skalibs/gensetdyn.h>
 #include <skalibs/avltree.h>
-#include <skalibs/lolstdio.h>
 
 #include <s6-dns/hosts.h>
 
@@ -38,11 +38,11 @@ typedef struct hostdata_s hostdata, *hostdata_ref ;
 struct hostdata_s
 {
   stralloc storage ;
-  gensetdyn alias ;
+  gensetdyn unq ;
   gensetdyn fqdn ;
   gensetdyn ipv4 ;
   gensetdyn ipv6 ;
-  avltree byalias ;
+  avltree byunq ;
   avltree byfqdn ;
   avltree byipv4 ;
   avltree byipv6 ;
@@ -50,11 +50,11 @@ struct hostdata_s
 #define HOSTDATA_ZERO \
 { \
   .storage = STRALLOC_ZERO, \
-  .alias = GENSETDYN_INIT(node_name, 3, 3, 8), \
+  .unq = GENSETDYN_INIT(node_name, 3, 3, 8), \
   .fqdn = GENSETDYN_INIT(node_name, 3, 3, 8), \
   .ipv4 = GENSETDYN_INIT(node_ip, 3, 3, 8), \
   .ipv6 = GENSETDYN_INIT(node_ip, 3, 3, 8), \
-  .byalias = AVLTREE_ZERO, \
+  .byunq = AVLTREE_ZERO, \
   .byfqdn = AVLTREE_ZERO, \
   .byipv4 = AVLTREE_ZERO, \
   .byipv6 = AVLTREE_ZERO \
@@ -86,14 +86,14 @@ static void node_ip_free (void *data)
 
 static void hostdata_free (hostdata *hd)
 {
-  gensetdyn_deepfree(&hd->alias, &node_name_free) ;
-  gensetdyn_deepfree(&hd->fqdn, &node_name_free) ;
-  gensetdyn_deepfree(&hd->ipv4, &node_ip_free) ;
-  gensetdyn_deepfree(&hd->ipv6, &node_ip_free) ;
-  avltree_free(&hd->byalias) ;
+  avltree_free(&hd->byunq) ;
   avltree_free(&hd->byfqdn) ;
   avltree_free(&hd->byipv4) ;
   avltree_free(&hd->byipv6) ;
+  gensetdyn_deepfree(&hd->unq, &node_name_free) ;
+  gensetdyn_deepfree(&hd->fqdn, &node_name_free) ;
+  gensetdyn_deepfree(&hd->ipv4, &node_ip_free) ;
+  gensetdyn_deepfree(&hd->ipv6, &node_ip_free) ;
   stralloc_free(&hd->storage) ;
 }
 
@@ -103,10 +103,10 @@ static int name_cmp (void const *a, void const *b, void *aux)
   return strcmp((char const *)a, (char const *)b) ;
 }
 
-static void *byalias_dtok (uint32_t d, void *aux)
+static void *byunq_dtok (uint32_t d, void *aux)
 {
   hostdata *hd = aux ;
-  return hd->storage.s + GENSETDYN_P(node_name, &hd->alias, d)->pos ;
+  return hd->storage.s + GENSETDYN_P(node_name, &hd->unq, d)->pos ;
 }
 
 static void *byfqdn_dtok (uint32_t d, void *aux)
@@ -177,7 +177,6 @@ static int s6dns_hosts_parse (buffer *b, hostdata *hd)
     if (r == -1) goto err ;
     if (!r) cur = 0 ;
     c = table[state][cclass(cur)] ;
-    LOLDEBUG("parse: state: %hhu, event: %c, newstate: %hhu, actions: %s%s%s%s", state, cur, c & 0x07, c & 0x08 ? "p" : "", c & 0x10 ? "s" : "", c & 0x20 ? "f" : "", c & 0x40 ? "n" : "") ;
     state = c & 0x07 ;
     if (c & 0x08) if (!stralloc_catb(&hd->storage, &cur, 1)) goto err ;
     if (c & 0x10)
@@ -187,9 +186,6 @@ static int s6dns_hosts_parse (buffer *b, hostdata *hd)
       if (ip6_scan(hd->storage.s + mark, ip))
       {
         uint32_t d ;
-#ifdef DEBUG
-        LOLDEBUG("parse: ipv6 found: %s", hd->storage.s + mark) ;
-#endif
         if (!avltree_search(&hd->byipv6, ip, &d))
         {
           if (!gensetdyn_new(&hd->ipv6, &d)) goto err ;
@@ -202,9 +198,6 @@ static int s6dns_hosts_parse (buffer *b, hostdata *hd)
       }
       else if (ip4_scan(hd->storage.s + mark, ip))
       {
-#ifdef DEBUG
-        LOLDEBUG("parse: ipv4 found: %s", hd->storage.s + mark) ;
-#endif
         uint32_t d ;
         if (!avltree_search(&hd->byipv4, ip, &d))
         {
@@ -217,7 +210,6 @@ static int s6dns_hosts_parse (buffer *b, hostdata *hd)
         node = GENSETDYN_P(node_ip, &hd->ipv4, d) ;
       }
       else goto err ;
-      LOLDEBUG("parse: %s has %zu names so far", hd->storage.s + mark, genalloc_len(size_t, &node->names)) ;
       hd->storage.len = mark ;
       flags &= ~2 ;
     }
@@ -225,27 +217,26 @@ static int s6dns_hosts_parse (buffer *b, hostdata *hd)
     {
       node_name *noden ;
       size_t i = 0 ;
+      case_lowerb(hd->storage.s + mark, hd->storage.len - mark) ;
       if (flags & 2)
       {
         uint32_t d ;
         if (!stralloc_0(&hd->storage)) goto err ;
-        LOLDEBUG("parse: alias found: %s", hd->storage.s + mark) ;
-        if (!avltree_search(&hd->byalias, hd->storage.s + mark, &d))
+        if (!avltree_search(&hd->byunq, hd->storage.s + mark, &d))
         {
-          if (!gensetdyn_new(&hd->alias, &d)) goto err ;
-          GENSETDYN_P(node_name, &hd->alias, d)->pos = mark ;
-          GENSETDYN_P(node_name, &hd->alias, d)->ipv4 = stralloc_zero ;
-          GENSETDYN_P(node_name, &hd->alias, d)->ipv6 = stralloc_zero ;
-          if (!avltree_insert(&hd->byalias, d)) goto err ;
+          if (!gensetdyn_new(&hd->unq, &d)) goto err ;
+          GENSETDYN_P(node_name, &hd->unq, d)->pos = mark ;
+          GENSETDYN_P(node_name, &hd->unq, d)->ipv4 = stralloc_zero ;
+          GENSETDYN_P(node_name, &hd->unq, d)->ipv6 = stralloc_zero ;
+          if (!avltree_insert(&hd->byunq, d)) goto err ;
         }
         else hd->storage.len = mark ;
-        noden = GENSETDYN_P(node_name, &hd->alias, d) ;
+        noden = GENSETDYN_P(node_name, &hd->unq, d) ;
       }
       else
       {
         uint32_t d ;
         if (!stralloc_catb(&hd->storage, ".", 2)) goto err ;
-        LOLDEBUG("parse: fqdn found: %s", hd->storage.s + mark) ;
         if (!avltree_search(&hd->byfqdn, hd->storage.s + mark, &d))
         {
           if (!gensetdyn_new(&hd->fqdn, &d)) goto err ;
@@ -257,33 +248,23 @@ static int s6dns_hosts_parse (buffer *b, hostdata *hd)
         else hd->storage.len = mark ;
         noden = GENSETDYN_P(node_name, &hd->fqdn, d) ;
       }
-      LOLDEBUG("parse: %s has %zu ipv4 and %zu ipv6 so far", hd->storage.s + noden->pos, noden->ipv4.len >> 2, noden->ipv6.len >> 4) ;
       for (; i < genalloc_len(size_t, &node->names) ; i++)
         if (!strcmp(hd->storage.s + noden->pos, hd->storage.s + genalloc_s(size_t, &node->names)[i])) break ;
       if (i >= genalloc_len(size_t, &node->names))
-      {
-        LOLDEBUG("parse: adding it to current ipv%s", flags & 1 ? "6" : "4") ;
         if (!genalloc_catb(size_t, &node->names, &noden->pos, 1)) goto err ;
-      }
       if (flags & 1)
       {
         for (i = 0 ; i < noden->ipv6.len ; i += 16)
           if (!memcmp(node->addr, noden->ipv6.s + i, 16)) break ;
         if (i >= noden->ipv6.len)
-        {
-          LOLDEBUG("parse: adding current ipv6 to address list for %s", hd->storage.s + noden->pos) ;
           if (!stralloc_catb(&noden->ipv6, node->addr, 16)) goto err ;
-        }
       }
       else
       {
         for (i = 0 ; i < noden->ipv4.len ; i += 4)
           if (!memcmp(node->addr, noden->ipv4.s + i, 4)) break ;
         if (i >= noden->ipv4.len)
-        {
-          LOLDEBUG("parse: adding current ipv4 to address list for %s", hd->storage.s + noden->pos) ;
           if (!stralloc_catb(&noden->ipv4, node->addr, 4)) goto err ;
-        }
       }
       mark = hd->storage.len ;
     }
@@ -303,16 +284,15 @@ static int name_write_iter (void *data, void *aux)
 {
   node_name *node = data ;
   hdcm *blah = aux ;
-  char keybase[4] = "q4:" ;
-  struct iovec kv[2] = { { .iov_base = keybase, .iov_len = 3 }, { .iov_base = blah->hd->storage.s + node->pos, .iov_len = strlen(blah->hd->storage.s + node->pos) + 1 } } ;
+  struct iovec kv[3] = { { .iov_base = blah->key, .iov_len = 2 }, { .iov_base = ":", .iov_len = 1 }, { .iov_base = blah->hd->storage.s + node->pos, .iov_len = strlen(blah->hd->storage.s + node->pos) } } ;
   struct iovec dv = { .iov_base = node->ipv4.s, .iov_len = node->ipv4.len } ;
-  LOLDEBUG("name_write_iter: name: %s, ipv4.len: %zu, ipv6.len: %zu", blah->hd->storage.s + node->pos, node->ipv4.len, node->ipv6.len) ;
   if (node->ipv4.len && !cdbmake_addv(blah->cm, kv, 2, &dv, 1)) return 0 ;
   if (node->ipv6.len)
   {
-    keybase[1] = '6' ;
+    blah->key[1] = '6' ;
     dv.iov_base = node->ipv6.s ; dv.iov_len = node->ipv6.len ;
     if (!cdbmake_addv(blah->cm, kv, 2, &dv, 1)) return 0 ;
+    blah->key[1] = '4' ;
   }
   return 1 ;
 }
@@ -322,14 +302,6 @@ static int ip_write_iter (void *data, void *aux)
   node_ip *node = data ;
   hdcm *blah = aux ;
   size_t n = genalloc_len(size_t, &node->names) ;
-#ifdef DEBUG
-  {
-    char fmt[IP6_FMT] ;
-    if (blah->key[1] == '6') fmt[ip6_fmt(fmt, node->addr)] = 0 ;
-    else fmt[ip4_fmt(fmt, node->addr)] = 0 ;
-    LOLDEBUG("ip_write_iter: %s: names: %zu", fmt, n) ;
-  }
-#endif
   if (n)
   {
     size_t const *p = genalloc_s(size_t, &node->names) ;
@@ -347,17 +319,13 @@ static int ip_write_iter (void *data, void *aux)
 
 static int s6dns_hosts_write (hostdata *hd, cdbmaker *cm)
 {
-  hdcm blah = { .hd = hd, .cm = cm, .key = { 'q', '4' } } ;
-  LOLDEBUG("writing alias") ;
-  if (gensetdyn_iter(&hd->alias, &name_write_iter, &blah) < gensetdyn_n(&hd->alias)) return 0 ;
+  hdcm blah = { .hd = hd, .cm = cm, .key = { 'u', '4' } } ;
+  if (gensetdyn_iter(&hd->unq, &name_write_iter, &blah) < gensetdyn_n(&hd->unq)) return 0 ;
   blah.key[0] = 'a' ;
-  LOLDEBUG("writing fqdn") ;
   if (gensetdyn_iter(&hd->fqdn, &name_write_iter, &blah) < gensetdyn_n(&hd->fqdn)) return 0 ;
   blah.key[0] = 'p' ;
-  LOLDEBUG("writing ipv4") ;
   if (gensetdyn_iter(&hd->ipv4, &ip_write_iter, &blah) < gensetdyn_n(&hd->ipv4)) return 0 ;
   blah.key[1] = '6' ;
-  LOLDEBUG("writing ipv6") ;
   if (gensetdyn_iter(&hd->ipv6, &ip_write_iter, &blah) < gensetdyn_n(&hd->ipv6)) return 0 ;
   return 1 ;
 }
@@ -371,7 +339,7 @@ int s6dns_hosts_compile (int fdr, int fdw)
   {
     char buf[BUFFER_INSIZE] ;
     buffer b = BUFFER_INIT(&buffer_read, fdr, buf, BUFFER_INSIZE) ;
-    avltree_init(&hd.byalias, 3, 3, 8, &byalias_dtok, &name_cmp, &hd) ;
+    avltree_init(&hd.byunq, 3, 3, 8, &byunq_dtok, &name_cmp, &hd) ;
     avltree_init(&hd.byfqdn, 3, 3, 8, &byfqdn_dtok, &name_cmp, &hd) ;
     avltree_init(&hd.byipv4, 3, 3, 8, &byipv4_dtok, &ipv4_cmp, &hd) ;
     avltree_init(&hd.byipv6, 3, 3, 8, &byipv6_dtok, &ipv6_cmp, &hd) ;

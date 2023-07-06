@@ -25,6 +25,12 @@ s6dns_fmt_soa.o
 s6dns_fmt_srv.o
 s6dns_fmt_caa.o
 s6dns_hosts_compile.o
+s6dns_hosts_aaaaa_q.o
+s6dns_hosts_aaaaa_string.o
+s6dns_hosts_ip_q.o
+s6dns_hosts_ip_string.o
+s6dns_hosts_name.o
+s6dns_hosts_here.o
 s6dns_message_counts_next.o
 s6dns_message_counts_pack.o
 s6dns_message_counts_unpack.o
