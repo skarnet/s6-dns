@@ -1,0 +1,129 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>s6-dns: the s6dns_hosts library interface</title>
+    <meta name="Description" content="s6-dns: the s6dns_hosts library interface" />
+    <meta name="Keywords" content="s6-dns dns s6dns_hosts library libs6dns /etc/hosts" />
+    <!-- <link rel="stylesheet" type="text/css" href="//skarnet.org/default.css" /> -->
+  </head>
+<body>
+
+<p>
+<a href="index.html">libs6dns</a><br />
+<a href="../">s6-dns</a><br />
+<a href="//skarnet.org/software/">Software</a><br />
+<a href="//skarnet.org/">skarnet.org</a>
+</p>
+
+<h1> The <tt>s6dns_hosts</tt> library interface </h1>
+
+<p>
+ The following functions are declared in the <tt>s6-dns/hosts.h</tt> header,
+and implemented in the <tt>libs6dns.a</tt> or <tt>libs6dns.so</tt> library.
+</p>
+
+<h2> General information </h2>
+
+<p>
+ <tt>s6dns_hosts</tt> provides functions and macros - mostly macros -
+to perform name-to-IP or IP-to-name resolution according to the
+local <tt>/etc/hosts</tt> file.
+</p>
+
+<p>
+ Most of the functions declared here are variations of another, more
+generic function. Typically, a <em>foobar_r</em> function is the
+generic one, and will take additional arguments such as: a pointer to
+a local hosts database (compiled to an efficient format), and/or a
+list and number of rules for qualification. The corresponding <em>foobar</em>
+function is the same, except that it uses global variables to fill
+these additional arguments: for instance, the hosts database made from
+<tt>/etc/hosts</tt>, or the qualification rules computed from
+<tt>/etc/resolv.conf</tt>. We document the simpler functions &mdash; even
+though they're macros, we pretend they're functions; please refer to
+the <a href="https://git.skarnet.org/cgi-bin/cgit.cgi/s6-dns/tree/src/include/s6-dns/hosts.h">s6-dns/hosts.h</a>
+file for the exact prototypes or if you want to use the generic functions.
+</p>
+
+<ul>
+ <li> <tt>s6dns_engine_here</tt>: a global
+<a href="s6dns-engine.html">s6dns_engine_t</a> storing the current
+query, for sequential queries. </li>
+ <li> <tt>s6dns_debughook_zero</tt>: a global <tt>s6dns_debughook_t</tt>
+meaning no debugging is needed. </li>
+ <li> <tt>s6dns_rci_here</tt>: a global
+<a href="s6dns-rci.html">s6dns_rci_t</a> containing the current
+resolv.conf information. </li>
+</ul>
+
+<h2> Global variables </h2>
+
+<p>
+<code> cdb s6dns_hosts_here </code> <br />
+<tt>s6dns_hosts_here</tt> is the global <tt>cdb</tt> database containing
+the compiled data from <tt>/etc/hosts</tt>. You normally do not need to
+use it manually because it is implicitly supplied to functions when you
+use the macros without a <tt>_r</tt> suffix.
+</p>
+
+
+<h2> Functions </h2>
+
+<h3> Preparation </h3>
+
+<p>
+<code> int s6dns_hosts_compile (int fdr, int fdw) </code> <br />
+Compiles the text file data from file descriptor <tt>fdr</tt>,
+which should be in <tt>/etc/hosts</tt> format, into a cdb file
+written to file descriptor <tt>fdw</tt>. <tt>fdr</tt> must be
+open for reading, and <tt>fdw</tt> must be open for writing and
+seekable. The function returns 1 on success and 0 (and sets errno)
+on failure.
+</p>
+
+<p>
+ You normally don't need to use this function yourself, because
+it's implicitly used by the following one.
+</p>
+
+<p>
+<code> int s6dns_hosts_init (void) </code> <br />
+Initializes the database from the <tt>/etc/hosts</tt> file.
+If there's a pre-compiled <tt>/etc/hosts.cdb</tt> file that
+is more recent than <tt>/etc/hosts</tt>, then it is used;
+else, the <tt>/etc/hosts</tt> file is compiled into a
+temporary file under <tt>/tmp</tt>, which is used and
+immediately unlinked. The function returns 1 on success and
+0 (and sets errno) on failure.
+</p>
+
+<p>
+<code> int s6dns_hosts_init_r (cdb *c, char const *txtfile, char const *cdbfile, char const *prefix) </code> <br />
+The generic version of the above function. Initializes the database
+in <em>*c</em> from the compiled file <em>cdbfile</em> if it exists and is
+more recent than <em>txtfile</em>, else compiles <em>txtfile</em> into
+a temporary file with a path starting with <em>prefix</em>, makes it
+accessible in <em>*c</em> and immediately unlinks it.
+</p>
+
+<p>
+<code> void s6dns_hosts_free (void) </code> <br />
+Frees the compiled hosts database. Only use this if
+you're certain you'll have no more use for it.
+</p>
+
+<p>
+<code> void s6dns_hosts_free_r (cdb *c) </code> <br />
+The generic version of the above function.
+</p>
+
+<h3> IP to name resolution </h3>
+
+<p>
+<code> int s6dns_hosts_name_r (cdb const *c, char const *ip, stralloc *storage, genalloc *indices, int is6) </code> <br />
+</p>
+
+</body>
+</html>

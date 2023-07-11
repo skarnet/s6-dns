@@ -13,8 +13,10 @@ extern cdb s6dns_hosts_here ;
 
 extern int s6dns_hosts_compile (int, int) ;
 
-extern int s6dns_hosts_init (cdb *) ;
-#define s6dns_hosts_free(c) cdb_free(c)
+extern int s6dns_hosts_init_r (cdb *, char const *, char const *, char const *) ;
+#define s6dns_hosts_init() s6dns_hosts_init_r(&s6dns_hosts_here, "/etc/hosts", "/etc/hosts.cdb", "/tmp/hosts.cdb")
+#define s6dns_hosts_free_r(c) cdb_free(c)
+#define s6dns_hosts_free() s6dns_hosts_free_r(&s6dns_hosts_here)
 
 
 
