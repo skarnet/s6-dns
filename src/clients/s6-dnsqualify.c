@@ -2,8 +2,10 @@
 
 #include <sys/types.h>
 #include <string.h>
+
 #include <skalibs/strerr.h>
 #include <skalibs/buffer.h>
+
 #include <s6-dns/s6dns.h>
 
 #define USAGE "s6-dnsqualify name"
@@ -16,7 +18,10 @@ int main (int argc, char const *const *argv)
   if (argc < 2) dieusage() ;
   if (!s6dns_domain_fromstring(&d, argv[1], strlen(argv[1])))
     strerr_diefu2sys(100, "make a domain name from ", argv[1]) ;
-  if (!s6dns_init()) strerr_diefu1sys(111, "s6dns_init") ;
+
+  if (!s6dns_rci_init(&s6dns_rci_here, "/etc/resolv.conf"))
+    strerr_diefu1sys(111, "initialize structures from /etc/resolv.conf") ;
+
   {
     s6dns_domain_t list[s6dns_rci_here.rulesnum] ;
     unsigned int n = s6dns_qualify(list, &d) ;

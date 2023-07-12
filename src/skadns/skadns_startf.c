@@ -2,6 +2,7 @@
 
 #include <skalibs/posixplz.h>
 #include <skalibs/textclient.h>
+
 #include <s6-dns/skadns.h>
 
 int skadns_startf (skadns_t *a, tain const *deadline, tain *stamp)

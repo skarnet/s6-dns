@@ -7,5 +7,6 @@
 void s6dns_finish ()
 {
   s6dns_engine_free(&s6dns_engine_here) ;
+  s6dns_hosts_free(&s6dns_hosts_here) ;
   s6dns_rci_free(&s6dns_rci_here) ;
 }

@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <string.h>
 #include <errno.h>
+
 #include <skalibs/types.h>
 #include <skalibs/sgetopt.h>
 #include <skalibs/strerr.h>
@@ -10,6 +11,7 @@
 #include <skalibs/tai.h>
 #include <skalibs/genalloc.h>
 #include <skalibs/random.h>
+
 #include <s6-dns/s6dns.h>
 
 #define USAGE "s6-dnssoa [ -q ] [ -r ] [ -t timeout ] name"

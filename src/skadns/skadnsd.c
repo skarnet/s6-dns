@@ -115,7 +115,9 @@ int main (void)
   if (ndelay_on(1) < 0) strerr_diefu2sys(111, "ndelay_on ", "1") ;
   if (!sig_ignore(SIGPIPE)) strerr_diefu1sys(111, "ignore SIGPIPE") ;
   tain_now_set_stopwatch_g() ;
-  if (!s6dns_init()) strerr_diefu1sys(111, "s6dns_init") ;
+
+  if (!s6dns_rci_init(&s6dns_rci_here, "/etc/resolv.conf"))
+    strerr_diefu1sys(111, "initialize structures from /etc/resolv.conf") ;
 
   {
     tain deadline ;

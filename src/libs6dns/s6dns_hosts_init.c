@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <time.h>
 
 #include <skalibs/posixplz.h>
 #include <skalibs/cdb.h>
@@ -12,7 +13,7 @@
 
 #include <s6-dns/hosts.h>
 
-int s6dns_hosts_init_r (cdb *c, char const *txtfile, char const *cdbfile, char const *tmpprefix)
+int s6dns_hosts_init (cdb *c, char const *txtfile, char const *cdbfile, char const *tmpprefix)
 {
   int fdr ;
   int fdc = openc_read(cdbfile) ;
@@ -25,7 +26,8 @@ int s6dns_hosts_init_r (cdb *c, char const *txtfile, char const *cdbfile, char c
       if (errno == ENOENT) goto useit ;
       else goto errc ;
     }
-    if (stc.st_mtim > str.st_mtim) goto useit ;
+    if (stc.st_mtim.tv_sec > str.st_mtim.tv_sec
+     || (stc.st_mtim.tv_sec == str.st_mtim.tv_sec && stc.st_mtim.tv_nsec > str.st_mtim.tv_nsec)) goto useit ;
     fd_close(fdc) ;
   }
 

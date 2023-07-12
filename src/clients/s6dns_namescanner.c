@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <limits.h>
 #include <errno.h>
+
 #include <s6-dns/s6dns-domain.h>
 #include "s6dns-generic-filter.h"
 

@@ -5,7 +5,9 @@
 
 #include <sys/types.h>
 #include <stdint.h>
+
 #include <skalibs/stralloc.h>
+
 #include <s6-dns/s6dns-domain.h>
 
 typedef size_t scan_func (s6dns_domain_t *, char const *) ;

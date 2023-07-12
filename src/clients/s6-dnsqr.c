@@ -3,12 +3,14 @@
 #include <string.h>
 #include <stdint.h>
 #include <errno.h>
+
 #include <skalibs/types.h>
 #include <skalibs/strerr.h>
 #include <skalibs/sgetopt.h>
 #include <skalibs/buffer.h>
 #include <skalibs/genwrite.h>
 #include <skalibs/tai.h>
+
 #include <s6-dns/s6dns.h>
 #include <s6-dns/s6dns-analyze.h>
 #include <s6-dns/s6dns-debug.h>
@@ -54,7 +56,9 @@ int main (int argc, char const *const *argv)
     if (debuglevel & 2) { dbh.pre_send = &s6dns_debug_dumpdt_pre_send ; dbh.post_send = &s6dns_debug_dumpdt_post_send ; }
     tain_now_set_stopwatch_g() ;
     tain_add_g(&deadline, &deadline) ;
-    if (!s6dns_init()) strerr_diefu1sys(111, "s6dns_init") ;
+    if (!s6dns_rci_init(&s6dns_rci_here, "/etc/resolv.conf"))
+      strerr_diefu1sys(111, "initialize structures from /etc/resolv.conf") ;
+
     if (!s6dns_resolve_core_r_g(&d, qtype, &s6dns_engine_here, &s6dns_rci_here.servers, &dbh, &deadline))
     {
       char fmt[UINT16_FMT] ;

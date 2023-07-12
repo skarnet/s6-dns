@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <errno.h>
+
 #include <skalibs/types.h>
 #include <skalibs/bitarray.h>
 #include <skalibs/strerr.h>
@@ -11,6 +12,7 @@
 #include <skalibs/genwrite.h>
 #include <skalibs/tai.h>
 #include <skalibs/ip46.h>
+
 #include <s6-dns/s6dns.h>
 #include <s6-dns/s6dns-analyze.h>
 #include <s6-dns/s6dns-debug.h>
@@ -60,11 +62,10 @@ int main (int argc, char const *const *argv)
     {
       ip46 z[S6DNS_MAX_SERVERS] ;
       size_t n ;
-      unsigned int k = 0 ;
       if (!*argv[2+i]) continue ;
       if (!ip46_scanlist(z, S6DNS_MAX_SERVERS - j, argv[2 + i], &n))
         strerr_diefu2sys(100, "make an IP address list out of ", argv[2+i]) ;
-      for (; k < n ; k++)
+      for (size_t k = 0 ; k < n ; k++)
       {
         memcpy(s6dns_ip46list_ip(&servers, j + k), z[k].ip, SKALIBS_IP_SIZE) ;
 #ifdef SKALIBS_IPV6_ENABLED

@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <string.h>
 #include <errno.h>
+
 #include <skalibs/types.h>
 #include <skalibs/sgetopt.h>
 #include <skalibs/strerr.h>
@@ -10,6 +11,7 @@
 #include <skalibs/tai.h>
 #include <skalibs/genalloc.h>
 #include <skalibs/random.h>
+
 #include <s6-dns/s6dns.h>
 
 #define USAGE "s6-dnssrv [ -q ] [ -r ] [ -t timeout ] service protocol name"
@@ -19,30 +21,36 @@ int main (int argc, char const *const *argv)
 {
   genalloc srvs = GENALLOC_ZERO ; /* array of s6dns_message_rr_srv_t */
   tain deadline ;
-  size_t i = 0 ;
   unsigned int t = 0 ;
   int flagqualify = 0 ;
   int flagunsort = 0 ;
   PROG = "s6-dnssrv" ;
-  for (;;)
+
   {
-    int opt = lgetopt(argc, argv, "qt:") ;
-    if (opt == -1) break ;
-    switch (opt)
+    subgetopt l = SUBGETOPT_ZERO ;
+    for (;;)
     {
-      case 'q' : flagqualify = 1 ; break ;
-      case 'r' : flagunsort = 1 ; break ;
-      case 't' : if (!uint0_scan(subgetopt_here.arg, &t)) dieusage() ; break ;
-      default : dieusage() ;
+      int opt = subgetopt_r(argc, argv, "qrt:", &l) ;
+      if (opt == -1) break ;
+      switch (opt)
+      {
+        case 'q' : flagqualify = 1 ; break ;
+        case 'r' : flagunsort = 1 ; break ;
+        case 't' : if (!uint0_scan(l.arg, &t)) dieusage() ; break ;
+        default : dieusage() ;
+      }
     }
+    argc -= l.ind ; argv += l.ind ;
   }
-  argc -= subgetopt_here.ind ; argv += subgetopt_here.ind ;
   if (argc < 3) dieusage() ;
 
   tain_now_set_stopwatch_g() ;
   if (t) tain_from_millisecs(&deadline, t) ; else deadline = tain_infinite_relative ;
   tain_add_g(&deadline, &deadline) ;
-  if (!s6dns_init()) strerr_diefu1sys(111, "s6dns_init") ;
+
+  if (!s6dns_rci_init(&s6dns_rci_here, "/etc/resolv.conf"))
+    strerr_diefu1sys(111, "initialize structures from /etc/resolv.conf") ;
+
   {
     size_t n0 = strlen(argv[0]) ;
     size_t n1 = strlen(argv[1]) ;
@@ -63,7 +71,7 @@ int main (int argc, char const *const *argv)
   }
   if (!genalloc_len(s6dns_message_rr_srv_t, &srvs)) return 1 ;
   if (flagunsort) random_unsort(srvs.s, genalloc_len(s6dns_message_rr_srv_t, &srvs), sizeof(s6dns_message_rr_srv_t)) ;
-  for (i = 0 ; i < genalloc_len(s6dns_message_rr_srv_t, &srvs) ; i++)
+  for (size_t i = 0 ; i < genalloc_len(s6dns_message_rr_srv_t, &srvs) ; i++)
   {
     char buf[S6DNS_FMT_SRV] ;
     size_t len = s6dns_fmt_srv(buf, S6DNS_FMT_SRV, genalloc_s(s6dns_message_rr_srv_t, &srvs) + i) ;

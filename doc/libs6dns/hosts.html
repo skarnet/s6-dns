@@ -71,7 +71,7 @@ use the macros without a <tt>_r</tt> suffix.
 
 <h2> Functions </h2>
 
-<h3> Preparation </h3>
+<h3> Compilation </h3>
 
 <p>
 <code> int s6dns_hosts_compile (int fdr, int fdw) </code> <br />
@@ -84,45 +84,158 @@ on failure.
 </p>
 
 <p>
- You normally don't need to use this function yourself, because
-it's implicitly used by the following one.
+ You normally don't need to use this function yourself. To
+compile the hosts database prior to use, you can call the
+<a href="../s6-dns-hosts-compile.html">s6-dns-hosts-compile</a>
+program (which uses this function). Alternatively,
+at initialization time, the hosts database will be compiled
+automatically if there isn't a more recent compiled version.
 </p>
 
+<h3> Initialization </h3>
+
 <p>
-<code> int s6dns_hosts_init (void) </code> <br />
-Initializes the database from the <tt>/etc/hosts</tt> file.
-If there's a pre-compiled <tt>/etc/hosts.cdb</tt> file that
+<code> int s6dns_hosts_init (cdb *c, char const *txtfile, char const *cdbfile, char const *prefix) </code> <br />
+Initializes the compiled hosts database in <em>*c</em>.
+If there's a pre-compiled <em>cdbfile</em> file that
 is more recent than <tt>/etc/hosts</tt>, then it is used;
-else, the <tt>/etc/hosts</tt> file is compiled into a
-temporary file under <tt>/tmp</tt>, which is used and
-immediately unlinked. The function returns 1 on success and
-0 (and sets errno) on failure.
+else, the <em>txtfile</em> file is compiled into a
+temporary file starting with <em>prefix</em>, which is used and
+immediately unlinked. The function returns -1 (and sets errno)
+on failure, 1 on success, and 0 if it can find neither a
+suitable <em>cdbfile</em> nor a suitable <em>txtfile</em>.
 </p>
 
 <p>
-<code> int s6dns_hosts_init_r (cdb *c, char const *txtfile, char const *cdbfile, char const *prefix) </code> <br />
-The generic version of the above function. Initializes the database
-in <em>*c</em> from the compiled file <em>cdbfile</em> if it exists and is
-more recent than <em>txtfile</em>, else compiles <em>txtfile</em> into
-a temporary file with a path starting with <em>prefix</em>, makes it
-accessible in <em>*c</em> and immediately unlinks it.
+<code> void s6dns_hosts_free (cdb *c) </code> <br />
+Frees the compiled hosts database in <em>c</em>.
 </p>
 
 <p>
-<code> void s6dns_hosts_free (void) </code> <br />
-Frees the compiled hosts database. Only use this if
-you're certain you'll have no more use for it.
+ You probably don't need to use these functions yourself:
+instead, the higher-level <tt>s6dns_init()</tt> and
+<tt>s6dns_finish()</tt> functions perform all the necessary
+initialization and cleanup, including the hosts database one.
 </p>
 
-<p>
-<code> void s6dns_hosts_free_r (cdb *c) </code> <br />
-The generic version of the above function.
-</p>
 
 <h3> IP to name resolution </h3>
 
 <p>
-<code> int s6dns_hosts_name_r (cdb const *c, char const *ip, stralloc *storage, genalloc *indices, int is6) </code> <br />
+<code> int s6dns_hosts_name (char const *ip, stralloc *storage, genalloc *indices, int is6) </code> <br />
+Gets the list of names for IP address <em>ip</em> from the hosts database.
+The names are stored in the stralloc <em>*storage</em>; for each name,
+its index in <em>storage&rarr;s</em> is appended, as a <tt>size_t</tt>,
+to the genalloc <em>*indices</em>. If <em>is6</em> is nonzero, <em>ip</em>
+is interpreted as an IPv6 address, i.e. a network byte order sequence of
+16 bytes; otherwise it is interpreted as an IPv4 address, i.e. a network
+byte order sequence of 4 bytes. The function returns -1 (and sets errno)
+in case of failure, 0 if no match could be found (which includes no
+existing hosts database), or the number of names it found. Names listed
+as the first name on a line in <tt>/etc/hosts</tt> are always given as
+fully qualified, i.e. with a terminating dot; other names are given as
+they were input in <tt>/etc/hosts</tt>.
+</p>
+
+<p>
+<code> int s6dns_hosts_name4 (char const *ip, stralloc *storage, genalloc *indices) </code> <br />
+Same, but <em>ip</em> is assumed to be an IPv4.
+</p>
+
+<p>
+<code> int s6dns_hosts_name6 (char const *ip, stralloc *storage, genalloc *indices) </code> <br />
+Same, but <em>ip</em> is assumed to be an IPv6.
+</p>
+
+<h3> Name to IP resolution </h3>
+
+<h4> Fully qualified names </h4>
+
+<p>
+<code> extern int s6dns_hosts_a_noq (char const *name, stralloc *ip4s) </code> <br />
+Gets the list of IPv4 addresses for name <em>name</em> from the hosts database.
+The addresses are stored in the stralloc <em>*ip4s</em>, in network byte order,
+4 bytes per item. <em>name</em> is assumed to be fully qualified: <tt>skarnet.org</tt>
+will yield the same results as <tt>skarnet.org.</tt>, and <tt>blah</tt> will yield
+the same results as <tt>blah.</tt> with the ending dot. The function returns -1
+(and sets errno) in case of failure, 0 if no match (including no valid hosts
+database), or the number of IP addresses appended to <em>*ip4s</em> (i.e. the
+length increase divided by 4).
+</p>
+
+<p>
+<code> extern int s6dns_hosts_aaaa_noq (char const *name, stralloc *ip6s) </code> <br />
+Same as above, but gets the list of IPv6 addresses for <em>name</em>; there are
+16 bytes per address instead of 4.
+</p>
+
+<p>
+<code> extern int s6dns_hosts_aaaaa_noq (char const *name, genalloc *ips) </code> <br />
+Same as above, but gets the list of all IP addresses for <em>name</em>, v4 or v6
+indiscriminately. Every address is stored in the genalloc <em>*ips</em> as an
+<a href="https://git.skarnet.org/cgi-bin/cgit.cgi/skalibs/tree/src/headers/ip46-header#n21"><tt>ip46full</tt> structure</a>.
+</p>
+
+<h4> Aliases </h4>
+
+<p>
+<code> extern int s6dns_hosts_a_unq (char const *name, stralloc *ip4s) </code> <br />
+Gets the list of IPv4 addresses for name <em>name</em> from the hosts database.
+The addresses are stored in the stralloc <em>*ip4s</em>, in network byte order,
+4 bytes per item. <em>name</em> is assumed to be unqualified: <tt>blah</tt>
+is interpreted as a local alias that will only match a <tt>blah</tt>
+entry in <tt>/etc/hosts</tt> that does <strong>not</strong> appear as a first
+entry. The function returns -1
+(and sets errno) in case of failure, 0 if no match (including no valid hosts
+database), or the number of IP addresses appended to <em>*ip4s</em> (i.e. the
+length increase divided by 4).
+</p>
+
+<p>
+<code> extern int s6dns_hosts_aaaa_unq (char const *name, stralloc *ip6s) </code> <br />
+Same as above, but gets the list of IPv6 addresses for <em>name</em>; there are
+16 bytes per address instead of 4.
+</p>
+
+<p>
+<code> extern int s6dns_hosts_aaaaa_unq (char const *name, genalloc *ips) </code> <br />
+Same as above, but gets the list of all IP addresses for <em>name</em>, v4 or v6
+indiscriminately. Every address is stored in the genalloc <em>*ips</em> as an
+<a href="https://git.skarnet.org/cgi-bin/cgit.cgi/skalibs/tree/src/headers/ip46-header#n21"><tt>ip46full</tt> structure</a>.
+</p>
+
+<h4> With qualification </h4>
+
+<p>
+<code> extern int s6dns_hosts_a_q (char const *name, stralloc *ip4s) </code> <br />
+Gets the list of IPv4 addresses, from the hosts database, for all possible
+qualifications for name <em>name</em>.
+The addresses are stored in the stralloc <em>*ip4s</em>, in network byte order,
+4 bytes per item. The function returns -1
+(and sets errno) in case of failure, 0 if no match (including no valid hosts
+database), or the number of IP addresses appended to <em>*ip4s</em> (i.e. the
+length increase divided by 4).
+</p>
+
+<p>
+ First, <em>name</em> is looked up in the hosts database as a simple
+unqualified names. Then, <em>name</em> is qualified with all the suffixes
+read from <tt>/etc/resolv.conf</tt>, and all of the resulting FQDNs are
+looked up in the hosts database. All the results are concatenated and
+appended to the <em>*ip4s</em> stralloc.
+</p>
+
+<p>
+<code> extern int s6dns_hosts_aaaa_q (char const *name, stralloc *ip6s) </code> <br />
+Same as above, but gets the list of IPv6 addresses for <em>name</em>; there are
+16 bytes per address instead of 4.
+</p>
+
+<p>
+<code> extern int s6dns_hosts_aaaaa_q (char const *name, genalloc *ips) </code> <br />
+Same as above, but gets the list of all IP addresses for <em>name</em>, v4 or v6
+indiscriminately. Every address is stored in the genalloc <em>*ips</em> as an
+<a href="https://git.skarnet.org/cgi-bin/cgit.cgi/skalibs/tree/src/headers/ip46-header#n21"><tt>ip46full</tt> structure</a>.
 </p>
 
 </body>

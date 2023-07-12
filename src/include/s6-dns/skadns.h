@@ -5,10 +5,12 @@
 
 #include <stdint.h>
 #include <errno.h>
+
 #include <skalibs/tai.h>
 #include <skalibs/genalloc.h>
 #include <skalibs/gensetdyn.h>
 #include <skalibs/textclient.h>
+
 #include <s6-dns/config.h>
 #include <s6-dns/s6dns-domain.h>
 

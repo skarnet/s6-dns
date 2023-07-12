@@ -1,6 +1,6 @@
 /* ISC license. */
 
-#include <sys/types.h>
+#include <stddef.h>
 #include <errno.h>
 
 #include <skalibs/types.h>
@@ -22,22 +22,23 @@ int main (int argc, char const *const *argv)
   size_t what = 0 ;
   int finite = 0 ;
   PROG = "s6-randomip" ;
-  for (;;)
   {
-    int opt = lgetopt(argc, argv, "46n:") ;
-    if (opt == -1) break ;
-    switch (opt)
+    subgetopt l = SUBGETOPT_ZERO ;
+    for (;;)
     {
-      case '4' : what |= 1 ; break ;
-      case '6' : what |= 2 ; break ;
-      case 'n' :
-        if (!uint0_scan(subgetopt_here.arg, &n)) dieusage() ;
-        finite = 1 ;
-        break ;
-      default : dieusage() ;
+      int opt = subgetopt_r(argc, argv, "46n:", &l) ;
+      if (opt == -1) break ;
+      switch (opt)
+      {
+        case '4' : what |= 1 ; break ;
+        case '6' : what |= 2 ; break ;
+        case 'n' : if (!uint0_scan(l.arg, &n)) dieusage() ; finite = 1 ;
+          break ;
+        default : dieusage() ;
+      }
     }
+    argc -= l.ind ; argv += l.ind ;
   }
-  argc -= subgetopt_here.ind ; argv += subgetopt_here.ind ;
   if (!what) what = 1 ;
   what = 1 << (1 << what) ; 
   for (i = 0 ; !finite || (i < n) ; i++)
@@ -52,7 +53,7 @@ int main (int argc, char const *const *argv)
     random_buf(ip, len) ;
     len = (len == 16) ? ip6_fmt(fmt, ip) : ip4_fmt(fmt, ip) ;
     fmt[len++] = '\n' ;
-    if (buffer_put(buffer_1, fmt, len) < (ssize_t)len)
+    if (buffer_put(buffer_1, fmt, len) < len)
       strerr_diefu1sys(111, "write to stdout") ;
   }
   if (!buffer_flush(buffer_1))

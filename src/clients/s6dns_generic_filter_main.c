@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <stdint.h>
 #include <errno.h>
+
 #include <skalibs/error.h>
 #include <skalibs/types.h>
 #include <skalibs/sgetopt.h>
@@ -15,6 +16,7 @@
 #include <skalibs/buffer.h>
 #include <skalibs/bufalloc.h>
 #include <skalibs/skamisc.h>
+
 #include <s6-dns/s6dns-constants.h>
 #include <s6-dns/s6dns-domain.h>
 #include <s6-dns/skadns.h>

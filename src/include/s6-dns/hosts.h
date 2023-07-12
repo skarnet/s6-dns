@@ -13,11 +13,8 @@ extern cdb s6dns_hosts_here ;
 
 extern int s6dns_hosts_compile (int, int) ;
 
-extern int s6dns_hosts_init_r (cdb *, char const *, char const *, char const *) ;
-#define s6dns_hosts_init() s6dns_hosts_init_r(&s6dns_hosts_here, "/etc/hosts", "/etc/hosts.cdb", "/tmp/hosts.cdb")
-#define s6dns_hosts_free_r(c) cdb_free(c)
-#define s6dns_hosts_free() s6dns_hosts_free_r(&s6dns_hosts_here)
-
+extern int s6dns_hosts_init (cdb *, char const *, char const *, char const *) ;
+#define s6dns_hosts_free(c) cdb_free(c)
 
 
  /* IP to name */
@@ -41,8 +38,8 @@ extern int s6dns_hosts_ip_string_r (cdb const *, char const *, stralloc *, unsig
 #define s6dns_hosts_ip_noq(name, sa, is6) s6dns_hosts_ip_noq_r(&s6dns_hosts_here, (name), sa, is6)
 #define s6dns_hosts_ip_unq(name, sa, is6) s6dns_hosts_ip_unq_r(&s6dns_hosts_here, (name), sa, is6)
 
-#define s6dns_hosts_a_string_r(c, name, sa, isalias) s6dns_hosts_ip_string_r(c, name, sa, !!(isunq) << 1)
-#define s6dns_hosts_aaaa_string_r(c, name, sa, isalias) s6dns_hosts_ip_string_r(c, name, sa, (!!(isunq) << 1) | 1)
+#define s6dns_hosts_a_string_r(c, name, sa, isunq) s6dns_hosts_ip_string_r(c, name, sa, !!(isunq) << 1)
+#define s6dns_hosts_aaaa_string_r(c, name, sa, isunq) s6dns_hosts_ip_string_r(c, name, sa, (!!(isunq) << 1) | 1)
 extern int s6dns_hosts_aaaaa_string_r (cdb const *, char const *, genalloc *, int) ;
 
 #define s6dns_hosts_a_string(name, sa, isunq) s6dns_hosts_a_string_r(&s6dns_hosts_here, (name), sa, isunq)
@@ -68,14 +65,14 @@ extern int s6dns_hosts_aaaaa_string_r (cdb const *, char const *, genalloc *, in
 
  /* name to IP, with qualification */
 
-extern int s6dns_hosts_ip_q_r (cdb const *, char const *, stralloc *sa, char const *, unsigned int, int) ;
-#define s6dns_hosts_a_q_r(c, name, sa, rules, rulesnum) s6dns_hosts_ip_q_r(c, name, sa, rules, rulesnum, 0)
-#define s6dns_hosts_aaaa_q_r(c, name, rules, rulesnum, sa) s6dns_hosts_ip_q_r(c, name, sa, rules, rulesnum, 1)
+extern int s6dns_hosts_ip_q_r (cdb const *, char const *, stralloc *, char const *, unsigned int, int) ;
+#define s6dns_hosts_a_q_r(c, name, sa, rules, rulesnum) s6dns_hosts_ip_q_r(c, name, sa, rules, (rulesnum), 0)
+#define s6dns_hosts_aaaa_q_r(c, name, sa, rules, rulesnum) s6dns_hosts_ip_q_r(c, name, sa, rules, (rulesnum), 1)
 extern int s6dns_hosts_aaaaa_q_r (cdb const *, char const *, genalloc *, char const *, unsigned int) ;
 
 #define s6dns_hosts_ip_q(name, sa, is6) s6dns_hosts_ip_q_r(&s6dns_hosts_here, (name), sa, s6dns_rci_here.rules.s, s6dns_rci_here.rulesnum, is6)
 #define s6dns_hosts_a_q(name, sa) s6dns_hosts_a_q_r(&s6dns_hosts_here, (name), sa, s6dns_rci_here.rules.s, s6dns_rci_here.rulesnum)
-#define s6dns_hosts_aaaa_q(name, sa) s6dns_hosts_ip_q_r(&s6dns_hosts_here, (name), sa, s6dns_rci_here.rules.s, s6dns_rci_here.rulesnum)
-#define s6dns_hosts_aaaaa_q(name, ga) s6dns_hosts_aaaaa_q_r(&s6dns_hosts_here, (name), ga)
+#define s6dns_hosts_aaaa_q(name, sa) s6dns_hosts_aaaa_q_r(&s6dns_hosts_here, (name), sa, s6dns_rci_here.rules.s, s6dns_rci_here.rulesnum)
+#define s6dns_hosts_aaaaa_q(name, ga) s6dns_hosts_aaaaa_q_r(&s6dns_hosts_here, (name), ga, s6dns_rci_here.rules.s, s6dns_rci_here.rulesnum)
 
 #endif
