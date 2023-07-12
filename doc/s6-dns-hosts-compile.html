@@ -31,7 +31,7 @@ data contained in the hosts file.
 </pre>
 
 <ul>
- <li> s6-randomip reads the <tt>/etc/hosts</tt> file, which must follow the
+ <li> s6-dns-hosts-compile reads the <tt>/etc/hosts</tt> file, which must follow the
 <a href="https://man7.org/linux/man-pages/man5/hosts.5.html">traditional hosts format</a>. </li>
  <li> It outputs a CDB database in the <tt>/etc/hosts.cdb</tt> file. </li>
  <li> It exits 0. </li>
@@ -68,7 +68,8 @@ invocations of s6-dns tools. </li>
  <li> If s6-dns tools detect that <tt>/etc/hosts</tt> has been modified more recently
 than <tt>/etc/hosts.cdb</tt>, they will not use <tt>/etc/hosts.cdb</tt> and will
 perform the compilation step into a temporary file. So, remember to run
-s6-dns-hosts-compile after modifying your <tt>/etc/hosts</tt>. </li>
+s6-dns-hosts-compile after modifying your <tt>/etc/hosts</tt> if you want to keep
+the tiny performance improvement. </li>
 </ul>
 
 </body>
