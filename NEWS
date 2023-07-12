@@ -6,6 +6,8 @@ In 2.3.6.0
  - Bugfixes.
  - New s6dns_hosts functions.
  - New command: s6-dns-hosts-compile
+ - s6-dnsip* and s6-dnsname now support a -h option, to make
+use of /etc/hosts data.
 
 
 In 2.3.5.5
