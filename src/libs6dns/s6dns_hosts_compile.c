@@ -286,12 +286,12 @@ static int name_write_iter (void *data, void *aux)
   hdcm *blah = aux ;
   struct iovec kv[3] = { { .iov_base = blah->key, .iov_len = 2 }, { .iov_base = ":", .iov_len = 1 }, { .iov_base = blah->hd->storage.s + node->pos, .iov_len = strlen(blah->hd->storage.s + node->pos) } } ;
   struct iovec dv = { .iov_base = node->ipv4.s, .iov_len = node->ipv4.len } ;
-  if (node->ipv4.len && !cdbmake_addv(blah->cm, kv, 2, &dv, 1)) return 0 ;
+  if (node->ipv4.len && !cdbmake_addv(blah->cm, kv, 3, &dv, 1)) return 0 ;
   if (node->ipv6.len)
   {
     blah->key[1] = '6' ;
     dv.iov_base = node->ipv6.s ; dv.iov_len = node->ipv6.len ;
-    if (!cdbmake_addv(blah->cm, kv, 2, &dv, 1)) return 0 ;
+    if (!cdbmake_addv(blah->cm, kv, 3, &dv, 1)) return 0 ;
     blah->key[1] = '4' ;
   }
   return 1 ;
