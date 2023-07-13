@@ -57,7 +57,9 @@ the default. </li>
  <li> <tt>-h</tt>&nbsp;: use data from <tt>/etc/hosts</tt>, if available.
 If there's a compiled <tt>/etc/hosts.cdb</tt> file that is newer than <tt>/etc/hosts</tt>,
 it will be used instead. (See
-<a href="s6-dns-hosts-compile.html">s6-dns-hosts-compile</a> for details.) </li>
+<a href="s6-dns-hosts-compile.html">s6-dns-hosts-compile</a> for details.)
+If the lookup in the hosts database returns at least one result, then
+no DNS lookup is performed. </li>
  <li> <tt>-r</tt>&nbsp;: random. By default, the program does not sort the
 result, but prints them in the order received from the DNS. With this
 option, it performs a random permutation on the results before printing

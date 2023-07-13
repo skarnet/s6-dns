@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 #include <stdio.h>
 
 #include <skalibs/sgetopt.h>
@@ -48,6 +49,7 @@ int main (int argc, char const *const *argv)
     if (!s6dns_hosts_compile(fdr, fdw))
       strerr_diefu4sys(111, "compile ", ifile, " to ", tmp) ;
     if (fsync(fdw) == -1) strerr_diefu2sys(111, "fsync ", tmp) ;
+    if (fchmod(fdw, 0644) == -1) strerr_diefu2sys(111, "fchmod ", tmp) ;
     if (rename(tmp, ofile) == -1) strerr_diefu4sys(111, "rename ", tmp, " to ", ofile) ;
   }
   return 0 ;

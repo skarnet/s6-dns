@@ -47,15 +47,15 @@ extern int s6dns_hosts_aaaaa_string_r (cdb const *, char const *, genalloc *, in
 #define s6dns_hosts_aaaaa_string(name, ga, isunq) s6dns_hosts_aaaaa_string_r(&s6dns_hosts_here, (name), ga, isunq)
 
 #define s6dns_hosts_a_noq_r(c, name, sa) s6dns_hosts_a_string_r(c, name, (sa), 0)
-#define s6dns_hosts_aaaa_noq_r(c, name, sa) s6dns_hosts_aaaa_string_r(c, name, (sa), 1)
+#define s6dns_hosts_aaaa_noq_r(c, name, sa) s6dns_hosts_aaaa_string_r(c, name, (sa), 0)
 #define s6dns_hosts_aaaaa_noq_r(c, name, ga) s6dns_hosts_aaaaa_string_r(c, name, (ga), 0)
 
 #define s6dns_hosts_a_noq(name, sa) s6dns_hosts_a_noq_r(&s6dns_hosts_here, (name), sa)
 #define s6dns_hosts_aaaa_noq(name, sa) s6dns_hosts_aaaa_noq_r(&s6dns_hosts_here, (name), sa)
 #define s6dns_hosts_aaaaa_noq(name, ga) s6dns_hosts_aaaaa_noq_r(&s6dns_hosts_here, (name), ga)
 
-#define s6dns_hosts_a_unq_r(c, name, sa) s6dns_hosts_a_string_r(c, name, (sa), 2)
-#define s6dns_hosts_aaaa_unq_r(c, name, sa) s6dns_hosts_aaaa_string_r(c, name, (sa), 3)
+#define s6dns_hosts_a_unq_r(c, name, sa) s6dns_hosts_a_string_r(c, name, (sa), 1)
+#define s6dns_hosts_aaaa_unq_r(c, name, sa) s6dns_hosts_aaaa_string_r(c, name, (sa), 1)
 #define s6dns_hosts_aaaaa_unq_r(c, name, ga) s6dns_hosts_aaaaa_string_r(c, name, (ga), 1)
 
 #define s6dns_hosts_a_unq(name, sa) s6dns_hosts_a_unq_r(&s6dns_hosts_here, (name), sa)

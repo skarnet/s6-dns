@@ -6,6 +6,7 @@
 #include <skalibs/cdb.h>
 #include <skalibs/stralloc.h>
 #include <skalibs/genalloc.h>
+#include <skalibs/skamisc.h>
 
 #include <s6-dns/hosts.h>
 
@@ -24,7 +25,7 @@ int s6dns_hosts_name_r (cdb const *c, char const *ip, stralloc *sa, genalloc *ga
   if (!c->map) return 0 ;
   if (is6) tmp[1] = '6' ;
   memcpy(tmp + 3, ip, is6 ? 16 : 4) ;
-  r = cdb_find(c, &data, tmp, 7) ;
+  r = cdb_find(c, &data, tmp, is6 ? 19 : 7) ;
   if (r <= 0) return r ;
   if (!data.len) return 0 ;
   if (data.s[data.len - 1]) return (errno = EPROTO, -1) ;
