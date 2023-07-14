@@ -148,12 +148,6 @@ static inline uint8_t cclass (char c)
   return c & 0x80 ? 9 : ctable[(uint8_t)c] - '0' ;
 }
 
-static inline char next (buffer *b)
-{
-  char c ;
-  return buffer_get(b, &c, 1) <= 0 ? 0 : c ;
-}
-
 static int s6dns_hosts_parse (buffer *b, hostdata *hd)
 {
   static uint8_t const table[6][10] =
