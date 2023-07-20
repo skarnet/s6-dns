@@ -18,7 +18,7 @@ extern int s6dns_hosts_aaaaa_string_r (cdb const *c, char const *name, genalloc 
   if (r <= 0) return r ;
   if (!genalloc_readyplus(ip46full, ga, r)) return -1 ;
   for (size_t i = 0 ; i < r ; i++)
-    ip46full_from_ip4(genalloc_s(ip46full, ga) + i, sa.s + (i << 2)) ;
+    ip46full_from_ip4(genalloc_s(ip46full, ga) + gabase + i, sa.s + (i << 2)) ;
   genalloc_setlen(ip46full, ga, gabase + r) ;
   sa.len = 0 ;
   r = s6dns_hosts_aaaa_string_r(c, name, &sa, isunq) ;
@@ -27,7 +27,7 @@ extern int s6dns_hosts_aaaaa_string_r (cdb const *c, char const *name, genalloc 
   {
     if (!genalloc_readyplus(ip46full, ga, r)) goto err ;
     for (size_t i = 0 ; i < r ; i++)
-      ip46full_from_ip6(genalloc_s(ip46full, ga) + i, sa.s + (i << 4)) ;
+      ip46full_from_ip6(genalloc_s(ip46full, ga) + genalloc_len(ip46full, ga) + i, sa.s + (i << 4)) ;
     genalloc_setlen(ip46full, ga, genalloc_len(ip46full, ga) + r) ;
   }
   stralloc_free(&sa) ;

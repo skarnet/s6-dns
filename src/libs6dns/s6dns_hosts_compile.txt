@@ -1,3 +1,5 @@
+
+
 class	|	0	1	2	3	4	5	6	7	8	9
 st\ev	|	\0	space	#	\n	-	.	:	0-9	alpha	other
 
@@ -7,7 +9,7 @@ START	|							p	p	p
 COMMENT	|
 01	|	END	COMMENT	COMMENT	START	COMMENT	COMMENT	COMMENT	COMMENT	COMMENT	COMMENT
 
-IP	|	s	s		sa		p	p	p	p
+IP	|	s	s		s		p	p	p	p
 02	|	END	IPDONE	X	START	X	IP	IP	IP	IP	X
 
 IPDONE	|									p
@@ -19,13 +21,13 @@ NAME	|	f	fn		f	p	p		p	p
 NAMES	|									p
 05	|	END	NAMES	COMMENT START	X	X	X	X	NAME	X
 
-END = 06
-X = 07
+END = 0a
+X = 0b
 
-state: 3 bits
+state: 4 bits
 actions: 4 bits
 
-0x08	p	store cur
-0x10	s	scan IP, reset fqdn
-0x20	f	scan name
-0x40	n	fqdn done, now aliases
+0x10	p	store cur
+0x20	s	scan IP, reset fqdn
+0x40	f	scan name
+0x80	n	fqdn done, now aliases

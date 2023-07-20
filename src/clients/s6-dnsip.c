@@ -82,7 +82,7 @@ int main (int argc, char const *const *argv)
     char fmt[IP6_FMT] ;
     size_t n = ip46full_fmt(fmt, genalloc_s(ip46full, &ips) + i) ;
     fmt[n++] = '\n' ;
-    if (buffer_put(buffer_1small, fmt, n) < (ssize_t)n)
+    if (buffer_put(buffer_1small, fmt, n) < 0)
       strerr_diefu1sys(111, "write to stdout") ;
   }
   if (!buffer_flush(buffer_1small))
