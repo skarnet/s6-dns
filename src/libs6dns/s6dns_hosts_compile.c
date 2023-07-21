@@ -230,7 +230,8 @@ static int s6dns_hosts_parse (buffer *b, hostdata *hd)
       else
       {
         uint32_t d ;
-        if (!stralloc_catb(&hd->storage, ".", 2)) goto err ;
+        if ((hd->storage.s[hd->storage.len - 1] != '.' && !stralloc_catb(&hd->storage, ".", 1))
+         || !stralloc_0(&hd->storage)) goto err ;
         if (!avltree_search(&hd->byfqdn, hd->storage.s + mark, &d))
         {
           if (!gensetdyn_new(&hd->fqdn, &d)) goto err ;
