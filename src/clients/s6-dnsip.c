@@ -72,7 +72,6 @@ int main (int argc, char const *const *argv)
   {
     r = s6dns_resolve_aaaaa_g(&ips, argv[0], strlen(argv[0]), flagqualify, &deadline) ;
     if (r < 0) strerr_diefu2sys((errno == ETIMEDOUT) ? 99 : 111, "resolve ", argv[0]) ;
-    if (!r) strerr_diefu4x(2, "resolve ", argv[0], ": ", s6dns_constants_error_str(errno)) ;
   }
 
   if (!genalloc_len(ip46full, &ips)) return 1 ;

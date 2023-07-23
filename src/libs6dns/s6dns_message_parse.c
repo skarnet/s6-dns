@@ -1,7 +1,9 @@
 /* ISC license. */
 
 #include <errno.h>
+
 #include <skalibs/error.h>
+
 #include <s6-dns/s6dns-constants.h>
 #include <s6-dns/s6dns-message.h>
 
