@@ -9,9 +9,12 @@
 
 #include <skalibs/posixplz.h>
 #include <skalibs/cdb.h>
+#include <skalibs/djbtime.h>
 #include <skalibs/djbunix.h>
 
 #include <s6-dns/hosts.h>
+
+#include <skalibs/posixishard.h>
 
 int s6dns_hosts_init (cdb *c, char const *txtfile, char const *cdbfile, char const *tmpprefix)
 {
@@ -26,8 +29,7 @@ int s6dns_hosts_init (cdb *c, char const *txtfile, char const *cdbfile, char con
       if (errno == ENOENT) goto useit ;
       else goto errc ;
     }
-    if (stc.st_mtim.tv_sec > str.st_mtim.tv_sec
-     || (stc.st_mtim.tv_sec == str.st_mtim.tv_sec && stc.st_mtim.tv_nsec > str.st_mtim.tv_nsec)) goto useit ;
+    if (timespec_cmp(&stc.ST_MTIM, &str.ST_MTIM) > 0) goto useit ;
     fd_close(fdc) ;
   }
 
