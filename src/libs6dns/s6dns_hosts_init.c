@@ -1,13 +1,15 @@
 /* ISC license. */
 
+#include <skalibs/nonposix.h>
+
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
 #include <stdlib.h>
-#include <sys/stat.h>
 #include <time.h>
 
 #include <skalibs/posixplz.h>
+#include <skalibs/stat.h>
 #include <skalibs/cdb.h>
 #include <skalibs/djbtime.h>
 #include <skalibs/djbunix.h>
@@ -29,7 +31,7 @@ int s6dns_hosts_init (cdb *c, char const *txtfile, char const *cdbfile, char con
       if (errno == ENOENT) goto useit ;
       else goto errc ;
     }
-    if (timespec_cmp(&stc.ST_MTIM, &str.ST_MTIM) > 0) goto useit ;
+    if (timespec_cmp(&stc.st_mtim, &str.st_mtim) > 0) goto useit ;
     fd_close(fdc) ;
   }
 
