@@ -86,7 +86,7 @@ int s6dns_analyze_packet (genwrite *gp, char const *packet, unsigned int packetl
     char buf[257] ;
     unsigned int len ;
     uint16_t qtype ;
-    uint16 qclass ;
+    uint16_t qclass ;
     section = s6dns_message_counts_next(&counts) ;
     if (section != 1) break ;
     add("query: ") ;
