@@ -70,6 +70,11 @@ than <tt>/etc/hosts.cdb</tt>, they will not use <tt>/etc/hosts.cdb</tt> and will
 perform the compilation step into a temporary file. So, remember to run
 s6-dns-hosts-compile after modifying your <tt>/etc/hosts</tt> if you want to keep
 the tiny performance improvement. </li>
+ <li> Some tools write link-local addresses in <tt>/etc/hosts</tt> i.e. IPv6 addresses
+followed by a <tt>%</tt> (percent) and a network interface name. This is nonstandard
+and unusable with the DNS protocol, which does not take interface names into
+account. <tt>s6-dns-hosts-compile</tt> will ignore such lines if they appear in
+your hosts file. </li>
 </ul>
 
 </body>

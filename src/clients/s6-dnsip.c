@@ -12,9 +12,7 @@
 #include <skalibs/tai.h>
 #include <skalibs/random.h>
 
-#include <s6-dns/s6dns-rci.h>
-#include <s6-dns/hosts.h>
-#include <s6-dns/s6dns-resolve.h>
+#include <s6-dns/s6dns.h>
 
 #define USAGE "s6-dnsip [ -q ] [ -H | -h ] [ -r ] [ -t timeout ] domain"
 #define dieusage() strerr_dieusage(100, USAGE)
@@ -54,13 +52,8 @@ int main (int argc, char const *const *argv)
   if (t) tain_from_millisecs(&deadline, t) ; else deadline = tain_infinite_relative ;
   tain_add_g(&deadline, &deadline) ;
 
-  if (!s6dns_rci_init(&s6dns_rci_here, "/etc/resolv.conf"))
-    strerr_diefu1sys(111, "initialize structures from /etc/resolv.conf") ;
-  if (flaghosts)
-  {
-    flaghosts = s6dns_hosts_init(&s6dns_hosts_here, "/etc/hosts", "/etc/hosts.cdb", "/tmp/hosts.cdb") ;
-    if (flaghosts == -1) strerr_diefu1sys(111, "initialize hosts database from /etc/hosts or /etc/hosts.cdb") ;
-  }
+  if (!s6dns_init_options(flaghosts))
+    strerr_diefu1sys(111, "parse /etc/resolv.conf or /etc/hosts") ;
 
   if (flaghosts)
   {
