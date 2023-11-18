@@ -3,10 +3,11 @@ Changelog for s6-dns.
 In 2.3.7.0
 ----------
 
- - New s6dns_init_options() function,
-to choose whether to support /etc/hosts or not.
- - Properly ignore link-local addresses in /etc/hosts
+ - New s6dns_init_options() function, to choose whether
+to support /etc/hosts or not.
+ - Properly ignore link-local addresses in hosts files
 instead of erroring out on them.
+ - New s6dns_hosts_name46() macro.
 
 
 In 2.3.6.0

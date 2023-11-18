@@ -3,6 +3,7 @@
 #ifndef S6DNS_HOSTS_H
 #define S6DNS_HOSTS_H
 
+#include <skalibs/ip46.h>
 #include <skalibs/cdb.h>
 #include <skalibs/stralloc.h>
 #include <skalibs/genalloc.h>
@@ -26,6 +27,7 @@ extern int s6dns_hosts_name_r (cdb const *, char const *, stralloc *, genalloc *
 #define s6dns_hosts_name(ip, sa, ga, is6) s6dns_hosts_name_r(&s6dns_hosts_here, (ip), sa, ga, is6)
 #define s6dns_hosts_name4(ip, sa, ga) s6dns_hosts_name4_r(&s6dns_hosts_here, (ip), sa, ga)
 #define s6dns_hosts_name6(ip, sa, ga) s6dns_hosts_name6_r(&s6dns_hosts_here, (ip), sa, ga)
+#define s6dns_hosts_name46(i, sa, ga) s6dns_hosts_name((i)->ip, sa, (ga), (i)->is6)
 
 
  /* name to IP. noq: name is an fqdn. unq: name is unqualified. */

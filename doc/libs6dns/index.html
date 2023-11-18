@@ -98,8 +98,9 @@ header:
 s6dns_init() calls <a href="s6dns-rci.html">s6dns_rci_init()</a>,
 extracting <tt>resolv.conf</tt> information to an internal global
 variable. The function returns 1 on success, and 0 (and sets errno)
-on failure. </li>
- <li> Call <tt>s6dns_finish()</tt> when you're done with the libs6dns.
+on failure. To also use the hosts database, you can call
+<tt>s6dns_init_options(1)</tt> instead. </li>
+ <li> Call <tt>s6dns_finish()</tt> when you're done with libs6dns.
 It frees the resources used. </li>
 </ul>
 

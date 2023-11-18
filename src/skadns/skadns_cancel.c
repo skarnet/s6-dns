@@ -1,15 +1,14 @@
 /* ISC license. */
 
-/* OpenBSD sucks. In other news, the sky is blue. */
-#ifndef _BSD_SOURCE
-#define _BSD_SOURCE
-#endif
+#include <skalibs/bsdsnowflake.h>
 
 #include <errno.h>
+
 #include <skalibs/uint16.h>
 #include <skalibs/error.h>
 #include <skalibs/gensetdyn.h>
 #include <skalibs/textclient.h>
+
 #include <s6-dns/skadns.h>
 
 int skadns_cancel (skadns_t *a, uint16_t id, tain const *deadline, tain *stamp)

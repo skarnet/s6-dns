@@ -1,13 +1,12 @@
 /* ISC license. */
 
-/* OpenBSD sucks. More news at 11. */
-#ifndef _BSD_SOURCE
-#define _BSD_SOURCE
-#endif
+#include <skalibs/bsdsnowflake.h>
 
 #include <errno.h>
+
 #include <skalibs/alloc.h>
 #include <skalibs/gensetdyn.h>
+
 #include <s6-dns/skadns.h>
 
 int skadns_release (skadns_t *a, uint16_t id)

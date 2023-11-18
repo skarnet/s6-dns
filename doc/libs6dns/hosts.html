@@ -80,7 +80,8 @@ which should be in <tt>/etc/hosts</tt> format, into a cdb file
 written to file descriptor <tt>fdw</tt>. <tt>fdr</tt> must be
 open for reading, and <tt>fdw</tt> must be open for writing and
 seekable. The function returns 1 on success and 0 (and sets errno)
-on failure.
+on failure. A syntax error in the text file results in failure,
+but link-local addresses are silently ignored.
 </p>
 
 <p>
