@@ -1,6 +1,7 @@
 /* ISC license. */
 
 #include <skalibs/textclient.h>
+
 #include <s6-dns/skadns.h>
 
 int skadns_start (skadns_t *a, char const *path, tain const *deadline, tain *stamp)

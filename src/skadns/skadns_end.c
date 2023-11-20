@@ -1,10 +1,12 @@
 /* ISC license. */
 
 #include <stdint.h>
+
 #include <skalibs/alloc.h>
 #include <skalibs/genalloc.h>
 #include <skalibs/gensetdyn.h>
 #include <skalibs/textclient.h>
+
 #include <s6-dns/skadns.h>
 
 static int skadnsanswer_free (void *p, void *stuff)

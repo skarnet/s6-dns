@@ -4,9 +4,11 @@
 #include <string.h>
 #include <stdint.h>
 #include <errno.h>
+
 #include <skalibs/uint16.h>
 #include <skalibs/gensetdyn.h>
 #include <skalibs/textclient.h>
+
 #include <s6-dns/skadns.h>
 
 
