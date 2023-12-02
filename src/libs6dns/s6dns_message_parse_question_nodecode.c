@@ -16,7 +16,7 @@ int s6dns_message_parse_question_nodecode (s6dns_message_counts_t *counts, s6dns
   uint16_t qtype ;
   uint16_t qclass ;
   if (!counts->qd) return (errno = EINVAL, 0) ;
-  if (!s6dns_message_get_domain_nodecode(&d, packet, packetlen, pos)) return 0 ;
+  if (!s6dns_message_get_domain_nodecode(d.s, 255, packet, packetlen, pos)) return 0 ;
   if (*pos + 4 > packetlen) return (errno = EPROTO, 0) ;
   uint16_unpack_big(packet + *pos, &qtype) ; *pos += 2 ;
   uint16_unpack_big(packet + *pos, &qclass) ; *pos += 2 ;
