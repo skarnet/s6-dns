@@ -84,6 +84,7 @@ s6dns_message_parse_getrr.o
 s6dns_message_parse_init.o
 s6dns_message_parse_next.o
 s6dns_message_parse_question.o
+s6dns_message_parse_question_nodecode.o
 s6dns_message_parse_skipqd.o
 s6dns_rci_free.o
 s6dns_rci_here.o

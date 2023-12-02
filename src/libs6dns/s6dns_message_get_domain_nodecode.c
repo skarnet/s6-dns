@@ -4,6 +4,7 @@
 #include <errno.h>
 
 #include <skalibs/posixishard.h>
+#include <skalibs/bytestr.h>
 
 #include <s6-dns/s6dns-message.h>
 
@@ -45,5 +46,6 @@ size_t s6dns_message_get_domain_nodecode (char *out, size_t outmax, char const *
     }
     else return (errno = EPROTONOSUPPORT, 0) ; /* unsupported extension */
   }
+  case_lowerb(out, w) ;
   return w ;
 }

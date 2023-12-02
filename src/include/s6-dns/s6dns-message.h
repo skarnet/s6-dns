@@ -188,6 +188,7 @@ extern unsigned int s6dns_message_parse_next (s6dns_message_counts_t *, s6dns_me
 
  /* For when you want to write a cache */
 
+extern int s6dns_message_parse_question_nodecode (s6dns_message_counts_t *, s6dns_domain_t *, uint16_t *, char const *, unsigned int, unsigned int *) ;
 extern int s6dns_message_parse_question (s6dns_message_counts_t *, s6dns_domain_t *, uint16_t *, char const *, unsigned int, unsigned int *) ;
 
 #endif
