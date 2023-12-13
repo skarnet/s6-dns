@@ -11,11 +11,13 @@ unsigned int s6dns_domain_tostring (char *s, size_t max, s6dns_domain_t const *d
   if (d->len == 1)
   {
     s[0] = '.' ;
+    s[1] = 0 ;
     return 1 ;
   }
   else
   {
     memcpy(s, d->s + 1, d->len - 1) ;
+    s[d->len - 1] = 0 ;
     return d->len - 1 ;
   }
 }

@@ -5,6 +5,9 @@
 #include <strings.h>
 #include <stdint.h>
 #include <errno.h>
+#ifdef DEBUG
+#include <stdlib.h>
+#endif
 
 #include <skalibs/posixishard.h>
 #include <skalibs/uint16.h>
@@ -396,6 +399,9 @@ int s6dns_engine_init_r (s6dns_engine_t *dt, s6dns_ip46list_t const *servers, ui
   memcpy(dt->sa.s + 14, q, qlen) ;
   uint16_pack_big(dt->sa.s + 14 + qlen, qtype) ;
   uint16_pack_big(dt->sa.s + 16 + qlen, S6DNS_C_IN) ;
+#ifdef DEBUG
+  if (getenv("S6DNS_FORCE_TCP")) dt->flagtcp = 1 ; else
+#endif
   if (qlen > 496) dt->flagtcp = 1 ;
   else
   {
