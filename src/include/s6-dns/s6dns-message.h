@@ -186,9 +186,8 @@ extern int s6dns_message_parse_getrr (s6dns_message_rr_t_ref, char const *, unsi
 extern unsigned int s6dns_message_parse_next (s6dns_message_counts_t *, s6dns_message_rr_t const *, char const *, unsigned int, unsigned int *) ;
 
 
- /* For when you want to write a cache */
+ /* For when you want to write a cache or server */
 
-extern int s6dns_message_parse_question_nodecode (s6dns_message_counts_t *, s6dns_domain_t *, uint16_t *, char const *, unsigned int, unsigned int *) ;
 extern int s6dns_message_parse_question (s6dns_message_counts_t *, s6dns_domain_t *, uint16_t *, char const *, unsigned int, unsigned int *) ;
 
 #endif
