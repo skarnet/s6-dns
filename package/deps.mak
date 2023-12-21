@@ -13,21 +13,7 @@ src/include/s6-dns/s6dns-rci.h: src/include/s6-dns/s6dns-constants.h src/include
 src/include/s6-dns/s6dns-resolve.h: src/include/s6-dns/s6dns-constants.h src/include/s6-dns/s6dns-domain.h src/include/s6-dns/s6dns-engine.h src/include/s6-dns/s6dns-ip46.h src/include/s6-dns/s6dns-message.h src/include/s6-dns/s6dns-rci.h
 src/include/s6-dns/s6dns.h: src/include/s6-dns/hosts.h src/include/s6-dns/s6dns-constants.h src/include/s6-dns/s6dns-domain.h src/include/s6-dns/s6dns-engine.h src/include/s6-dns/s6dns-fmt.h src/include/s6-dns/s6dns-ip46.h src/include/s6-dns/s6dns-message.h src/include/s6-dns/s6dns-rci.h src/include/s6-dns/s6dns-resolve.h
 src/include/s6-dns/skadns.h: src/include/s6-dns/config.h src/include/s6-dns/s6dns-domain.h
-src/caches/dcache-internal.h: src/include/s6-dns/dcache.h
 src/clients/s6dns-generic-filter.h: src/include/s6-dns/s6dns-domain.h
-src/caches/dcache_add.o src/caches/dcache_add.lo: src/caches/dcache_add.c src/caches/dcache-internal.h src/include/s6-dns/dcache.h
-src/caches/dcache_clean_expired.o src/caches/dcache_clean_expired.lo: src/caches/dcache_clean_expired.c src/caches/dcache-internal.h src/include/s6-dns/dcache.h
-src/caches/dcache_delete.o src/caches/dcache_delete.lo: src/caches/dcache_delete.c src/caches/dcache-internal.h src/include/s6-dns/dcache.h
-src/caches/dcache_free.o src/caches/dcache_free.lo: src/caches/dcache_free.c src/include/s6-dns/dcache.h
-src/caches/dcache_init.o src/caches/dcache_init.lo: src/caches/dcache_init.c src/include/s6-dns/dcache.h
-src/caches/dcache_load.o src/caches/dcache_load.lo: src/caches/dcache_load.c src/include/s6-dns/dcache.h
-src/caches/dcache_save.o src/caches/dcache_save.lo: src/caches/dcache_save.c src/include/s6-dns/dcache.h
-src/caches/dcache_search.o src/caches/dcache_search.lo: src/caches/dcache_search.c src/caches/dcache-internal.h src/include/s6-dns/dcache.h
-src/caches/shibari.o src/caches/shibari.lo: src/caches/shibari.c src/include/s6-dns/s6dns.h
-src/caches/shibari_whitelist_add6.o src/caches/shibari_whitelist_add6.lo: src/caches/shibari_whitelist_add6.c src/caches/shibari-internal.h
-src/caches/shibari_whitelist_ip4_match.o src/caches/shibari_whitelist_ip4_match.lo: src/caches/shibari_whitelist_ip4_match.c src/caches/shibari-internal.h
-src/caches/shibari_whitelist_ip6_match.o src/caches/shibari_whitelist_ip6_match.lo: src/caches/shibari_whitelist_ip6_match.c src/caches/shibari-internal.h
-src/caches/shibari_whitelist_read.o src/caches/shibari_whitelist_read.lo: src/caches/shibari_whitelist_read.c src/caches/shibari-internal.h
 src/clients/s6-dnsip.o src/clients/s6-dnsip.lo: src/clients/s6-dnsip.c src/include/s6-dns/s6dns.h
 src/clients/s6-dnsip4-filter.o src/clients/s6-dnsip4-filter.lo: src/clients/s6-dnsip4-filter.c src/include/s6-dns/s6dns-constants.h src/include/s6-dns/s6dns-message.h src/clients/s6dns-generic-filter.h
 src/clients/s6-dnsip4.o src/clients/s6-dnsip4.lo: src/clients/s6-dnsip4.c src/include/s6-dns/s6dns.h
@@ -162,22 +148,6 @@ src/skadns/skadns_zero.o src/skadns/skadns_zero.lo: src/skadns/skadns_zero.c src
 src/skadns/skadnsd.o src/skadns/skadnsd.lo: src/skadns/skadnsd.c src/include/s6-dns/s6dns.h src/include/s6-dns/skadns.h
 src/utilities/s6-dns-hosts-compile.o src/utilities/s6-dns-hosts-compile.lo: src/utilities/s6-dns-hosts-compile.c src/include/s6-dns/hosts.h
 
-ifeq ($(strip $(STATIC_LIBS_ARE_PIC)),)
-libdcache.a.xyzzy: src/caches/dcache_add.o src/caches/dcache_clean_expired.o src/caches/dcache_delete.o src/caches/dcache_free.o src/caches/dcache_init.o src/caches/dcache_load.o src/caches/dcache_save.o src/caches/dcache_search.o
-else
-libdcache.a.xyzzy: src/caches/dcache_add.lo src/caches/dcache_clean_expired.lo src/caches/dcache_delete.lo src/caches/dcache_free.lo src/caches/dcache_init.lo src/caches/dcache_load.lo src/caches/dcache_save.lo src/caches/dcache_search.lo
-endif
-libdcache.so.xyzzy: EXTRA_LIBS :=
-libdcache.so.xyzzy: src/caches/dcache_add.lo src/caches/dcache_clean_expired.lo src/caches/dcache_delete.lo src/caches/dcache_free.lo src/caches/dcache_init.lo src/caches/dcache_load.lo src/caches/dcache_save.lo src/caches/dcache_search.lo
-ifeq ($(strip $(STATIC_LIBS_ARE_PIC)),)
-libshibari.a.xyzzy: src/caches/shibari_whitelist_add6.o src/caches/shibari_whitelist_ip4_match.o src/caches/shibari_whitelist_ip6_match.o src/caches/shibari_whitelist_read.o
-else
-libshibari.a.xyzzy: src/caches/shibari_whitelist_add6.lo src/caches/shibari_whitelist_ip4_match.lo src/caches/shibari_whitelist_ip6_match.lo src/caches/shibari_whitelist_read.lo
-endif
-libshibari.so.xyzzy: EXTRA_LIBS :=
-libshibari.so.xyzzy: src/caches/shibari_whitelist_add6.lo src/caches/shibari_whitelist_ip4_match.lo src/caches/shibari_whitelist_ip6_match.lo src/caches/shibari_whitelist_read.lo
-shibari: EXTRA_LIBS := -lskarnet ${SOCKET_LIB} ${SYSCLOCK_LIB}
-shibari: src/caches/shibari.o libshibari.a.xyzzy ${LIBDCACHE} ${LIBS6DNS}
 s6-dnsip: EXTRA_LIBS := -lskarnet ${SOCKET_LIB} ${SYSCLOCK_LIB}
 s6-dnsip: src/clients/s6-dnsip.o ${LIBS6DNS}
 s6-dnsip4: EXTRA_LIBS := -lskarnet ${SOCKET_LIB} ${SYSCLOCK_LIB}

@@ -20,4 +20,4 @@ s6-dns-hosts-compile
 
 LIBEXEC_TARGETS :=
 
-LIB_DEFS := S6DNS=s6dns SKADNS=skadns DCACHE=dcache
+LIB_DEFS := S6DNS=s6dns SKADNS=skadns
