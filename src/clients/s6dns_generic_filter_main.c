@@ -77,7 +77,6 @@ int s6dns_generic_filter_main (int argc, char const *const *argv, char const *co
   }
   if (!flag4 && !flag6) flag4 = 1 ;
   if (maxconn < 1) maxconn = 1 ;
-  if (maxconn > SKADNS_MAXCONCURRENCY) maxconn = SKADNS_MAXCONCURRENCY ;
   if (maxlines < maxconn) maxlines = maxconn ;
 
   tain_now_set_stopwatch_g() ;

@@ -2,6 +2,9 @@
 
 #include <string.h>
 #include <errno.h>
+
+#include <skalibs/bytestr.h>
+
 #include <s6-dns/s6dns-domain.h>
 
 unsigned int s6dns_domain_tostring (char *s, size_t max, s6dns_domain_t const *d)
@@ -18,6 +21,7 @@ unsigned int s6dns_domain_tostring (char *s, size_t max, s6dns_domain_t const *d
   {
     memcpy(s, d->s + 1, d->len - 1) ;
     s[d->len - 1] = 0 ;
+    case_lowerb(s, d->len - 1) ;
     return d->len - 1 ;
   }
 }

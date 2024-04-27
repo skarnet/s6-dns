@@ -2,6 +2,7 @@
 
 #include <string.h>
 #include <errno.h>
+
 #include <s6-dns/s6dns-domain.h>
 #include <s6-dns/s6dns-fmt.h>
 

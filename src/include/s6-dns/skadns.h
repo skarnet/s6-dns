@@ -19,7 +19,6 @@
 #define SKADNS_BANNER1_LEN (sizeof SKADNS_BANNER1 - 1)
 #define SKADNS_BANNER2 "skadns v1.0 (a)\n"
 #define SKADNS_BANNER2_LEN (sizeof SKADNS_BANNER2 - 1)
-#define SKADNS_MAXCONCURRENCY 1000
 
 typedef struct skadnsanswer_s skadnsanswer_t, *skadnsanswer_t_ref ;
 struct skadnsanswer_s

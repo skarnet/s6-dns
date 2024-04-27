@@ -2,7 +2,8 @@
 
 #include <string.h>
 #include <errno.h>
-#include <skalibs/bytestr.h>
+#include <ctype.h>
+
 #include <s6-dns/s6dns-domain.h>
 
 int s6dns_domain_fromstring (s6dns_domain_t *d, char const *s, size_t len)
@@ -16,7 +17,7 @@ int s6dns_domain_fromstring (s6dns_domain_t *d, char const *s, size_t len)
     if (lastdot)
     {
       if ((j >= 255) || (lastdot++ >= 64)) return (errno = ENAMETOOLONG, 0) ;
-      d->s[j++] = s[i] ;
+      d->s[j++] = tolower(s[i]) ;
     }
     if (s[i] == '.') lastdot = 0 ;
     else if (!lastdot)
@@ -25,7 +26,6 @@ int s6dns_domain_fromstring (s6dns_domain_t *d, char const *s, size_t len)
       lastdot = 1 ;
     }
   }
-  case_lowerb(d->s + 1, j-1) ;
   d->len = j ;
   return 1 ;
 }
