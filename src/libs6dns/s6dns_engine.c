@@ -55,43 +55,6 @@ static int relevant (char const *q, unsigned int qlen, char const *ans, unsigned
   return 1 ;
 }
 
-static int s6dns_mininetstring_read (int fd, stralloc *sa, uint32_t *w)
-{
-  if (!*w)
-  {
-    unsigned char pack[2] ;
-    switch (fd_read(fd, (char *)pack, 2))
-    {
-      case -1 : return -1 ;
-      case 0 : return 0 ;
-      case 1 : *w = ((uint32_t)pack[0] << 8) | (1U << 31) ; break ;
-      case 2 : *w = ((uint32_t)pack[0] << 8) | (uint32_t)pack[1] | (1U << 30) ; break ;
-      default : return (errno = EDOM, -1) ;
-    }
-  }
-  if (*w & (1U << 31))
-  {
-    unsigned char c ;
-    switch (fd_read(fd, (char *)&c, 1))
-    {
-      case -1 : return -1 ;
-      case 0 : return (errno = EPIPE, -1) ;
-      case 1 : *w |= (uint32_t)c | (1U << 30) ; *w &= ~(1U << 31) ; break ;
-      default : return (errno = EDOM, -1) ;
-    }
-  }
-  if (*w & (1U << 30))
-  {
-    if (!stralloc_readyplus(sa, *w & ~(1U << 30))) return -1 ;
-    *w &= ~(1U << 30) ;
-  }
-  {
-    size_t r = allread(fd, sa->s + sa->len, *w) ;
-    sa->len += r ; *w -= r ;
-  }
-  return *w ? -1 : 1 ;
-}
-
 
  /* Network core functions: transport-dependent */
 
@@ -285,7 +248,7 @@ static int s6dns_engine_read_udp (s6dns_engine_t *dt, tain const *stamp)
 
 static int s6dns_engine_read_tcp (s6dns_engine_t *dt, tain const *stamp)
 {
-  ssize_t r = sanitize_read(s6dns_mininetstring_read(dt->fd, &dt->sa, &dt->protostate)) ;
+  ssize_t r = sanitize_read(mininetstring_read(dt->fd, &dt->sa, &dt->protostate)) ;
   if (r < 0) return (prepare_next(dt, stamp, 1), 0) ;
   else if (!r) return (errno = EAGAIN, 0) ;
   else if ((dt->sa.len - dt->querylen) < 12)

@@ -1,5 +1,12 @@
 Changelog for s6-dns.
 
+In 2.3.7.3
+----------
+
+ - Depend on skalibs-2.14.3.0, remove s6dns_mininetstring_read
+ - Better debug packet dump in s6-dnsq[r]
+
+
 In 2.3.7.2
 ----------
 
