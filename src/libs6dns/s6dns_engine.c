@@ -15,6 +15,7 @@
 #include <skalibs/error.h>
 #include <skalibs/tai.h>
 #include <skalibs/stralloc.h>
+#include <skalibs/netstring.h>
 #include <skalibs/socket.h>
 #include <skalibs/djbunix.h>
 #include <skalibs/ip46.h>
