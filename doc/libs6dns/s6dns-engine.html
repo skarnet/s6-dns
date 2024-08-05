@@ -252,5 +252,16 @@ if <tt>s6dns_engine_event()</tt> returned 1.
  You should recycle or free <em>dt</em> after reading the response packet.
 </p>
 
+<p>
+<code> void s6dns_engine_query (s6dns_engine_t const *dt, char **name, uint16_t *len, uint16_t *qtype) </code>
+</p>
+
+<p>
+ Recalls the query encoded in <em>*dt</em>: stores a pointer to the encoded name in
+<em>*name</em>, its length in <em>*len</em> and the query type in <em>*qtype</em>.
+You can call this function
+even if <em>dt</em> has been recycled - but, of course, not if it has been freed.
+</p>
+
 </body>
 </html>

@@ -102,7 +102,9 @@ extern int s6dns_engine_timeout (s6dns_engine_t *, tain const *) ;
 extern int s6dns_engine_event (s6dns_engine_t *, tain const *) ;
 #define s6dns_engine_event_g(dt) s6dns_engine_event((dt), &STAMP)
 
+extern void s6dns_engine_query (s6dns_engine_t const *, char **, uint16_t *, uint16_t *) ;
 #define s6dns_engine_packet(dt) ((dt)->sa.s + (dt)->querylen)
 #define s6dns_engine_packetlen(dt) ((unsigned int)((dt)->sa.len - (dt)->querylen))
+
 
 #endif

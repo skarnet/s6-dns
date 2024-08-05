@@ -36,6 +36,7 @@ s6dns_engine_free.o
 s6dns_engine_freen.o
 s6dns_engine_here.o
 s6dns_engine_nextdeadline.o
+s6dns_engine_query.o
 s6dns_engine_zero.o
 s6dns_finish.o
 s6dns_fmt_caa.o
