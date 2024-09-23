@@ -3,9 +3,10 @@ Changelog for s6-dns.
 In 2.3.8.0
 ----------
 
- - Depend on skalibs-2.14.3.0, remove s6dns_mininetstring_read
- - Better debug packet dump in s6-dnsq[r]
- - New s6dns_engine_query() to get the query encoded in a dt
+ - Depend on skalibs-2.14.3.0, remove s6dns_mininetstring_read.
+ - Better debug packet dump in s6-dnsq[r].
+ - New s6dns_engine_query() to get the query encoded in a dt.
+ - Install static libraries in /usr/lib by default.
 
 
 In 2.3.7.2
