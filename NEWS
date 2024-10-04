@@ -1,6 +1,6 @@
 Changelog for s6-dns.
 
-In 2.3.8.0
+In 2.4.0.0
 ----------
 
  - Depend on skalibs-2.14.3.0, remove s6dns_mininetstring_read.
