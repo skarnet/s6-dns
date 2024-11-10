@@ -36,7 +36,7 @@ static inline void dnsio_free (dnsio *p)
   s6dns_engine_free(&p->dt) ;
 }
 
-static void remove (size_t i)
+static void dnsio_remove (size_t i)
 {
   size_t n = genalloc_len(dnsio, &g) ;
   dnsio *a = genalloc_s(dnsio, &g) ;
@@ -51,7 +51,7 @@ static void fail (size_t i)
   char pack[3] ;
   uint16_pack_big(pack, p->id) ;
   pack[2] = p->dt.status ;
-  remove(i) ;
+  dnsio_remove(i) ;
   if (!textmessage_put(textmessage_sender_x, pack, 3))
     strerr_diefu1sys(111, "textmessage_put") ;
 }
@@ -110,7 +110,7 @@ static int parse_protocol (struct iovec const *v, void *context)
         answer(ENOENT) ;
         break ;
       }
-      remove(i) ;
+      dnsio_remove(i) ;
       answer(0) ;
       break ;
     }
@@ -190,7 +190,7 @@ int main (void)
         pack[2] = 0 ;
         if (!textmessage_putv(textmessage_sender_x, v, 2))
           strerr_diefu1sys(111, "textmessage_put") ;
-        remove(i--) ;
+        dnsio_remove(i--) ;
       }
     }
 
