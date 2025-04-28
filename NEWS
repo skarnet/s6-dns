@@ -1,9 +1,10 @@
 Changelog for s6-dns.
 
-In 2.4.0.1
+In 2.4.1.0
 ----------
 
  - Bugfixes.
+ - pkg-config support.
 
 
 In 2.4.0.0

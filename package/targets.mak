@@ -21,3 +21,5 @@ s6-dns-hosts-compile
 LIBEXEC_TARGETS :=
 
 LIB_DEFS := S6DNS=s6dns SKADNS=skadns
+S6DNS_DESCRIPTION := A client library for DNS resolution
+SKADNS_DESCRIPTION := A client library for asynchronous DNS resolution
