@@ -9,8 +9,8 @@ Build Instructions
   - skalibs version 2.14.4.0 or later: https://skarnet.org/software/skalibs/
 
  This software will run on any operating system that implements
-POSIX.1-2008, available at:
-  https://pubs.opengroup.org/onlinepubs/9699919799/
+POSIX.1-2024, available at:
+  https://pubs.opengroup.org/onlinepubs/9799919799/
 
 
 * Standard usage
