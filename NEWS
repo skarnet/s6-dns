@@ -3,7 +3,7 @@ Changelog for s6-dns.
 In 2.4.1.0
 ----------
 
- - Bugfixes.
+ - Bugfixes. (And a workaround for a bionic bug.)
  - pkg-config support.
 
 
