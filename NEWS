@@ -1,5 +1,11 @@
 Changelog for s6-dns.
 
+In 2.4.1.1
+----------
+
+ - Support for shared libraries on MacOS.
+
+
 In 2.4.1.0
 ----------
 
