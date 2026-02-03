@@ -346,6 +346,7 @@ int s6dns_engine_event (s6dns_engine_t *dt, tain const *stamp)
 int s6dns_engine_init_r (s6dns_engine_t *dt, s6dns_ip46list_t const *servers, uint32_t options, char const *q, unsigned int qlen, uint16_t qtype, s6dns_debughook_t const *dbh, tain const *deadline, tain const *stamp)
 {
   s6dns_message_header_t h = S6DNS_MESSAGE_HEADER_ZERO ;
+  if (!qtype) { dt->status = EINVAL ; return 1 ; }
   if (!stralloc_ready(&dt->sa, qlen + 18)) return 0 ;
   dt->deadline = *deadline ;
   dt->localdeadline = *stamp ;
