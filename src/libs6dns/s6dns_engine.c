@@ -235,7 +235,7 @@ static int s6dns_engine_read_udp (s6dns_engine_t *dt, tain const *stamp)
     case 0 : case 3 : break ; /* normal operation */
     case 1 : case 4 : case 5 :
       memset(s6dns_ip46list_ip(&dt->servers, dt->curserver), 0, SKALIBS_IP_SIZE) ; /* do not query it again */
-    default : prepare_next(dt, stamp, 0) ; return 0 ;
+    default : errno = 0 ; prepare_next(dt, stamp, 0) ; return 0 ;
   }
   if (!stralloc_catb(&dt->sa, buf, r))
   {
@@ -275,7 +275,7 @@ static int s6dns_engine_read_tcp (s6dns_engine_t *dt, tain const *stamp)
       case 0 : case 3 : break ; /* normal operation */
       case 1 : case 4 : case 5 :
         memset(s6dns_ip46list_ip(&dt->servers, dt->curserver), 0, SKALIBS_IP_SIZE) ; /* do not query it again */
-      default : goto badanswer ;
+      default : errno = 0 ; goto badanswer ;
     }
     fd_close(dt->fd) ; dt->fd = -1 ;
     dt->flagreading = 0 ;
